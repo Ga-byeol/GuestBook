@@ -20,8 +20,6 @@ bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 
     if (!hwnd) return false;
 
-    ShowWindow(hwnd, SW_SHOW);
-
 	return true;
 }
 

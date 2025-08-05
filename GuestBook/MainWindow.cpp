@@ -24,8 +24,6 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     UpdateWindow(hwnd);
 
     return true;
-
-	return 0;
 }
 
 LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
