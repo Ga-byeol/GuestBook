@@ -69,7 +69,7 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 void DrawWindow::OnPaint(HDC hdc, const RECT&) {
 
-	renderer.DrawAllWithCurrent(hdc, store.Paths(), store.Current());
+	controller.DrawAllStrokesWithCurrent(hdc, store.Strokes(), store.Current());
 }
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {

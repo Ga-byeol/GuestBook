@@ -1,9 +1,9 @@
 #pragma once
 #include <windows.h>
 #include <vector>
-#include "DrawPath.h"
-#include "DrawPathRenderer.h"
-#include "DrawPathStore.h"
+#include "StructStroke.h"
+#include "DrawController.h"
+#include "StrokeStore.h"
 
 class ToolWindow;
 
@@ -30,6 +30,6 @@ private:
 
     ToolWindow* toolWindow = nullptr;
 
-    DrawPathRenderer renderer;
-    DrawPathStore    store;
+    DrawController controller;
+    StrokeStore    store;
 };

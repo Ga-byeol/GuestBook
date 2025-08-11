@@ -1,4 +1,4 @@
-#include "DrawPathRenderer.h"
+#include "DrawController.h"
 
 namespace {
     void PolylineSafe(HDC hdc, const std::vector<POINT>& pts) {
@@ -15,24 +15,24 @@ namespace {
 }
 
 
-void DrawPathRenderer::DrawPathOnDC(HDC hdc, const DrawPath& path, int penWidth, COLORREF color) {
+void DrawController::DrawStrokeOnDC(HDC hdc, const StructStroke& stroke, int penWidth, COLORREF color) {
     HPEN pen = CreatePen(PS_SOLID, penWidth, color);
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
 
-    PolylineSafe(hdc, path.points);
+    PolylineSafe(hdc, stroke.points);
 
     SelectObject(hdc, oldBrush);
     SelectObject(hdc, oldPen);
     DeleteObject(pen);
 }
 
-void DrawPathRenderer::DrawAll(HDC hdc, const std::vector<DrawPath>& paths, int penWidth, COLORREF color) {
+void DrawController::DrawAllStrokes(HDC hdc, const std::vector<StructStroke>& strokes, int penWidth, COLORREF color) {
     HPEN pen = CreatePen(PS_SOLID, penWidth, color);
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
 
-    for (const auto& p : paths) {
+    for (const auto& p : strokes) {
         PolylineSafe(hdc, p.points);
     }
 
@@ -41,13 +41,13 @@ void DrawPathRenderer::DrawAll(HDC hdc, const std::vector<DrawPath>& paths, int 
     DeleteObject(pen);
 }
 
-void DrawPathRenderer::DrawAllWithCurrent(HDC hdc, const std::vector<DrawPath>& paths, const DrawPath* current,
+void DrawController::DrawAllStrokesWithCurrent(HDC hdc, const std::vector<StructStroke>& stroke, const StructStroke* current,
     int penWidth, COLORREF color) {
     HPEN pen = CreatePen(PS_SOLID, penWidth, color);
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
 
-    for (const auto& p : paths) {
+    for (const auto& p : stroke) {
         PolylineSafe(hdc, p.points);
     }
     if (current) {

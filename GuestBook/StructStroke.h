@@ -2,6 +2,6 @@
 #include <vector>
 #include <windows.h>
 
-struct DrawPath {
+struct StructStroke {
 	std::vector<POINT> points;
 };
