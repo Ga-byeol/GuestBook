@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include <windows.h>
-#include "StructStroke.h"
+#include "Stroke.h"
 
 class StrokeStore {
 public:
@@ -10,12 +10,12 @@ public:
     void End();
     void Clear();
 
-    const std::vector<StructStroke>& Strokes() const { return strokes; }
-    const StructStroke* Current() const { return recording ? &current : nullptr; }
+    const std::vector<Stroke>& Strokes() const { return strokes; }
+    const Stroke* Current() const { return recording ? &current : nullptr; }
     bool IsRecording() const { return recording; }
 
 private:
-    std::vector<StructStroke> strokes;
-    StructStroke current;
+    std::vector<Stroke> strokes;
+    Stroke current;
     bool recording = false;
 };

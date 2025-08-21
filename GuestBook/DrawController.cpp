@@ -1,7 +1,7 @@
 #include "DrawController.h"
 
 namespace {
-    void PolylineSafe(HDC hdc, const std::vector<POINT>& pts) {
+    void PolylineSafe(HDC hdc, const std::vector<Point>& pts) {
         if (pts.empty()) return;
 
         if (pts.size() == 1) {
@@ -10,12 +10,18 @@ namespace {
             LineTo(hdc, pts[0].x + 1, pts[0].y);
             return;
         }
-        ::Polyline(hdc, pts.data(), static_cast<int>(pts.size()));
+        std::vector<POINT> gdiPts;
+        gdiPts.reserve(pts.size());
+        for (auto& p : pts) {
+            gdiPts.push_back({ static_cast<LONG>(p.x), static_cast<LONG>(p.y) });
+        }
+
+        ::Polyline(hdc, gdiPts.data(), static_cast<int>(gdiPts.size())); 
     }
 }
 
 
-void DrawController::DrawStrokeOnDC(HDC hdc, const StructStroke& stroke, int penWidth, COLORREF color) {
+void DrawController::DrawStrokeOnDC(HDC hdc, const Stroke& stroke, int penWidth, COLORREF color) {
     HPEN pen = CreatePen(PS_SOLID, penWidth, color);
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
@@ -27,7 +33,7 @@ void DrawController::DrawStrokeOnDC(HDC hdc, const StructStroke& stroke, int pen
     DeleteObject(pen);
 }
 
-void DrawController::DrawAllStrokes(HDC hdc, const std::vector<StructStroke>& strokes, int penWidth, COLORREF color) {
+void DrawController::DrawAllStrokes(HDC hdc, const std::vector<Stroke>& strokes, int penWidth, COLORREF color) {
     HPEN pen = CreatePen(PS_SOLID, penWidth, color);
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
@@ -41,7 +47,7 @@ void DrawController::DrawAllStrokes(HDC hdc, const std::vector<StructStroke>& st
     DeleteObject(pen);
 }
 
-void DrawController::DrawAllStrokesWithCurrent(HDC hdc, const std::vector<StructStroke>& stroke, const StructStroke* current,
+void DrawController::DrawAllStrokesWithCurrent(HDC hdc, const std::vector<Stroke>& stroke, const Stroke* current,
     int penWidth, COLORREF color) {
     HPEN pen = CreatePen(PS_SOLID, penWidth, color);
     HGDIOBJ oldPen = SelectObject(hdc, pen);

@@ -128,7 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
-    <ClInclude Include="StructStroke.h" />
+    <ClInclude Include="Stroke.h" />
     <ClInclude Include="DrawController.h" />
     <ClInclude Include="StrokeStore.h" />
     <ClInclude Include="DrawWindow.h" />
@@ -141,7 +141,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="StructStroke.cpp" />
     <ClCompile Include="DrawController.cpp" />
     <ClCompile Include="StrokeStore.cpp" />
     <ClCompile Include="DrawWindow.cpp" />

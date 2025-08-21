@@ -2,13 +2,13 @@
 
 void StrokeStore::Begin(int x, int y) {
 	current.points.clear();
-	current.points.push_back(POINT{ x, y });
+	current.points.push_back(Point{ x, y, 0 });
 	recording = true;
 }
 
 void StrokeStore::Add(int x, int y) {
 	if (!recording) return;
-	current.points.push_back(POINT{ x, y });
+	current.points.push_back(Point{ x, y, 0 });
 }
 
 void StrokeStore::End() {

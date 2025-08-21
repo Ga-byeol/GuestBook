@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <vector>
-#include "StructStroke.h"
+#include "Stroke.h"
 #include "DrawController.h"
 #include "StrokeStore.h"
 
