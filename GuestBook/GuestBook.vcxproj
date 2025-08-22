@@ -128,6 +128,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Stroke.h" />
+    <ClInclude Include="DrawController.h" />
+    <ClInclude Include="StrokeStore.h" />
     <ClInclude Include="DrawWindow.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GuestBook.h" />
@@ -138,6 +141,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="DrawController.cpp" />
+    <ClCompile Include="StrokeStore.cpp" />
     <ClCompile Include="DrawWindow.cpp" />
     <ClCompile Include="GuestBook.cpp" />
     <ClCompile Include="MainWindow.cpp" />

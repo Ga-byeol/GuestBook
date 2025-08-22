@@ -3,8 +3,8 @@
 #include <windows.h>
 
 struct Point {
-    int x, y;
-    DWORD timestamp;
+    int x, y;   //점의 좌표
+    DWORD timestamp;    //기록된 시간
 };
 
 struct Stroke {
