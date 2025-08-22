@@ -8,6 +8,13 @@ void StrokeStore::Begin(int x, int y) {
 
 void StrokeStore::Add(int x, int y) {
 	if (!recording) return;
+
+	if (!current.points.empty()) {
+		const Point& last = current.points.back();
+		if (last.x == x && last.y == y) {
+			return;
+		}
+	}
 	current.points.push_back(Point{ x, y, 0 });
 }
 

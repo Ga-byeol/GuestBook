@@ -3,7 +3,7 @@
 #include <windows.h>
 
 struct Point {
-    int x, y; //Á¡ÀÇ ÁÂÇ¥
+    int x, y;   //Á¡ÀÇ ÁÂÇ¥
     DWORD timestamp;    //±â·ÏµÈ ½Ã°£
 };
 
