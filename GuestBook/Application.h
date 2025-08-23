@@ -8,10 +8,11 @@ class Application {
 public:
     bool Init(HINSTANCE hInstance, int nCmdShow);
     int Run();
-
+    void DrawForReplay();
 private:
     HINSTANCE hInstance = nullptr;
     MainWindow mainWindow;
     DrawWindow drawWindow;
     ToolWindow toolWindow;
+    // ReplayController replayController;
 };
