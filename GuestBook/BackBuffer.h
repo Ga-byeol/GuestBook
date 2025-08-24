@@ -15,8 +15,8 @@ private:
 	HDC memdc = nullptr; // 메모리 DC
 	HBITMAP bmp = nullptr; // 백버퍼 비트맵
 	HGDIOBJ old = nullptr; // Select 이전 객체
-	int w = 0;
-	int h = 0;
+	int width = 0;
+	int height = 0;
 };
 
 inline void BackBuffer::CreateBuffer(HDC refDC, int w, int h) {
@@ -25,7 +25,8 @@ inline void BackBuffer::CreateBuffer(HDC refDC, int w, int h) {
 	memdc = CreateCompatibleDC(refDC);
 	bmp = CreateCompatibleBitmap(refDC, w, h);
 	old = SelectObject(memdc, bmp);
-	w = w; h = h;
+	width = w; 
+	height = h;
 }
 
 inline void BackBuffer::ClearBuffer(const RECT& rc) const {
@@ -35,7 +36,7 @@ inline void BackBuffer::ClearBuffer(const RECT& rc) const {
 
 inline void BackBuffer::DrawBufferToScreen(HDC dst, int x, int y) const {
 	if (!memdc) return;
-	BitBlt(dst, x, y, w, h, memdc, 0, 0, SRCCOPY);
+	BitBlt(dst, x, y, width, height, memdc, 0, 0, SRCCOPY);
 }
 
 inline void BackBuffer::ReleaseBuffer() {
@@ -45,5 +46,5 @@ inline void BackBuffer::ReleaseBuffer() {
 		DeleteDC(memdc);
 	}
 	memdc = nullptr; bmp = nullptr; old = nullptr;
-	w = h = 0;
+	width = height = 0;
 }
