@@ -8,15 +8,13 @@
 
 class ReplayController
 {
-	Application app;
 public:
 	ReplayController() = default;
 	void StartReplay();
-	void setApplication(Application &a) { app = a; } // app.DrawForReplay()
+	void SetApplication(Application* a) { app = a; } // app.DrawForReplay()
 	StrokeStore store;
-	void setStroke(int asd) {
-	}
 private:
+	Application* app;
 	std::thread ReplayThread;
 	std::mutex ReplayMutex;
 	std::vector<Stroke> ReplayStroke;
