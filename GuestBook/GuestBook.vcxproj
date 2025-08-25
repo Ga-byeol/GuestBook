@@ -142,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BackBuffer.cpp" />
     <ClCompile Include="DrawController.cpp" />
     <ClCompile Include="StrokeStore.cpp" />
     <ClCompile Include="DrawWindow.cpp" />
