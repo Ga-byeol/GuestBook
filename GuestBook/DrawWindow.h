@@ -1,9 +1,12 @@
 #pragma once
 #include <windows.h>
 #include <vector>
+#include <condition_variable>
 #include "Stroke.h"
 #include "DrawController.h"
 #include "StrokeStore.h"
+
+#define WM_USER_REPLAY_UPDATE (WM_USER + 1)
 
 class ToolWindow;
 

@@ -61,6 +61,10 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 	case WM_LBUTTONUP:
 		OnLButtonUp((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
 		return 0;
+
+	case WM_USER_REPLAY_UPDATE:
+		InvalidateRect(hwnd, NULL, false);
+		return 0;
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
