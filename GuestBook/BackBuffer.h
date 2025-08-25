@@ -3,7 +3,8 @@
 
 class BackBuffer {
 public:
-	~BackBuffer() { ReleaseBuffer(); }
+	BackBuffer() = default;
+	~BackBuffer();
 
 	void CreateBuffer(HDC refDC, int w, int h);
 	void ClearBuffer(const RECT& rc) const;
@@ -18,33 +19,3 @@ private:
 	int width = 0;
 	int height = 0;
 };
-
-inline void BackBuffer::CreateBuffer(HDC refDC, int w, int h) {
-	if (memdc && bmp && w == w && h == h) return; // 맞으면 그대로
-	ReleaseBuffer(); 
-	memdc = CreateCompatibleDC(refDC);
-	bmp = CreateCompatibleBitmap(refDC, w, h);
-	old = SelectObject(memdc, bmp);
-	width = w; 
-	height = h;
-}
-
-inline void BackBuffer::ClearBuffer(const RECT& rc) const {
-	if (!memdc) return;
-	FillRect(memdc, &rc, (HBRUSH)(COLOR_WINDOW + 1)); // 윈도우 기본 배경
-}
-
-inline void BackBuffer::DrawBufferToScreen(HDC dst, int x, int y) const {
-	if (!memdc) return;
-	BitBlt(dst, x, y, width, height, memdc, 0, 0, SRCCOPY);
-}
-
-inline void BackBuffer::ReleaseBuffer() {
-	if (memdc) {
-		if (old) SelectObject(memdc, old);
-		if (bmp) DeleteObject(bmp);
-		DeleteDC(memdc);
-	}
-	memdc = nullptr; bmp = nullptr; old = nullptr;
-	width = height = 0;
-}
