@@ -30,3 +30,31 @@ void StrokeStore::Clear() {
 	current.points.clear();
 	recording = false;
 }
+
+void StrokeStore::ReplayCopyStroke(Stroke& dest, const Stroke& src) {
+	/// src(원본) 값을 dest(목적지)에 복사 대입함
+	/// dest.points = src.points
+	/// dest.color = src.color
+	/// dest.thickness = src.thickness
+	/// ReplayStroke안의 선 정보를 참조하고 있는 k를 tempStroke에 복사함
+	dest = src;
+}
+
+void StrokeStore::ReplaySetCurrentStyle(COLORREF color, int thickness) {
+	current.color = color;
+	current.thickness = thickness;
+}
+
+void StrokeStore::ReplayCopyPointToCurrent(int x, int y) {
+	/// pt(tempStorke.points 정보를 복사함)를 current에 넣는다
+	current.points.push_back(Point{ x, y });
+}
+
+void StrokeStore::ReplayCopyTempToStrokes(Stroke& s) {
+	/// tempStroke 선을 Strokes에 넣는다 
+	strokes.push_back(s);
+}
+
+void StrokeStore::ReplayClearCurrent() {
+	current.points.clear();
+}
