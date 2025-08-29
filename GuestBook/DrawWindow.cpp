@@ -67,9 +67,18 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 
-void DrawWindow::OnPaint(HDC hdc, const RECT&) {
+void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
 
-	controller.DrawStrokes(hdc, store.Strokes(), store.Current());
+	const int w = rcClient.right - rcClient.left;
+	const int h = rcClient.bottom - rcClient.top;
+	if (w <= 0 || h <= 0) return;
+
+	back.CreateBuffer(hdc, w, h);
+	back.ClearBuffer(rcClient);
+
+	HDC mem = back.dc();
+	controller.DrawStrokes(mem, store.Strokes(), store.Current());
+	back.DrawBufferToScreen(hdc);
 }
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
