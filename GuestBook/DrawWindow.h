@@ -4,7 +4,6 @@
 #include "Stroke.h"
 #include "DrawController.h"
 #include "StrokeStore.h"
-#include "BackBuffer.h"
 
 class ToolWindow;
 
@@ -33,6 +32,4 @@ private:
 
     DrawController controller;
     StrokeStore    store;
-    BackBuffer back;
-    
 };

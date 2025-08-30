@@ -1,4 +1,5 @@
 #include "DrawWindow.h"
+#include "MainWindow.h"
 
 bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 	hInstance = hInst;
@@ -42,6 +43,11 @@ LRESULT CALLBACK DrawWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 
 LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
+	
+	/// 배경 지우기를 ClearBuffer()에서 함(눈 깜빡임 줄이기)
+	case WM_ERASEBKGND:
+		return 1;
+
 	case WM_PAINT: {
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hwnd, &ps);
@@ -67,18 +73,22 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 
-void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
+void DrawWindow::OnPaint(HDC hdc, const RECT& rc) {
+	auto owner = reinterpret_cast<MainWindow*>(GetWindowLongPtr(GetParent(hwnd), GWLP_USERDATA));
+	BackBuffer* back = owner ? owner->GetBackBuffer() : nullptr;
 
-	const int w = rcClient.right - rcClient.left;
-	const int h = rcClient.bottom - rcClient.top;
-	if (w <= 0 || h <= 0) return;
+	if (!back || !back->dc()) {
+		/// 안전 장치
+		controller.DrawStrokes(hdc, store.Strokes(), store.Current());
+		return;
+	}
 
-	back.CreateBuffer(hdc, w, h);
-	back.ClearBuffer(rcClient);
-
-	HDC mem = back.dc();
+	back->ClearBuffer(rc);
+	HDC mem = back->dc();
 	controller.DrawStrokes(mem, store.Strokes(), store.Current());
-	back.DrawBufferToScreen(hdc);
+
+	/// 화면DC인 hdc에 BitBlt
+	back->DrawBufferToScreen(hdc);
 }
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
