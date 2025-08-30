@@ -3,6 +3,7 @@
 #include "MainWindow.h"
 #include "DrawWindow.h"
 #include "ToolWindow.h"
+#include "ReplayController.h"
 
 class Application {
 public:
@@ -14,5 +15,5 @@ private:
     MainWindow mainWindow;
     DrawWindow drawWindow;
     ToolWindow toolWindow;
-    // ReplayController replayController;
+    ReplayController replayController;
 };

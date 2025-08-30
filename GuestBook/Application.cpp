@@ -20,7 +20,7 @@ bool Application::Init(HINSTANCE hInst, int nCmdShow) {
     toolWindow.SetDrawWindow(&drawWindow);
     drawWindow.SetToolWindow(&toolWindow);
     
-    /// replayController.SetApplication(this);
+    replayController.SetApplication(this);
 
     mainWindow.ResizeChildren();
     mainWindow.Show(nCmdShow);

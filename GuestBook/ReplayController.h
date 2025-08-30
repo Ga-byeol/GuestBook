@@ -12,6 +12,9 @@ public:
 	ReplayController() = default;
 	void StartReplay();
 	void SetApplication(Application* a) { app = a; } // app.DrawForReplay()
+	bool ReplayRecording = FALSE;
+	void ClickReplay();
+	void ReplayPause();
 	StrokeStore store;
 private:
 	Application* app;
