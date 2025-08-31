@@ -70,8 +70,10 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
                 if (w > 0 && h > 0) {
                     HDC drawDc = GetDC(drawHwnd);     
                     self->backbuffer.CreateBuffer(drawDc, w, h);    ///drawDc기준으로 버퍼 생성         
+                    self->frontbuffer.CreateBuffer(drawDc, w, h);
                     ReleaseDC(drawHwnd, drawDc);    /// DC 반납                            
 
+                    SendMessage(drawHwnd, WM_APP + 1, 0, 0);
                     InvalidateRect(drawHwnd, nullptr, FALSE);    
                 }
             }
@@ -102,8 +104,4 @@ void MainWindow::ResizeChildren() {
 
     if (drawWindow)
         MoveWindow(drawWindow->GetHwnd(), 0, 50, rcClient.right, rcClient.bottom - 50, TRUE);
-}
-
-BackBuffer* MainWindow::GetBackBuffer() {
-    return &backbuffer;
 }

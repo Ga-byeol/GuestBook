@@ -18,7 +18,8 @@ public:
 	void ResizeChildren();
 
 	/// BackBuffer 필요시 호출 getter
-	BackBuffer* GetBackBuffer();
+	BackBuffer* GetBackBuffer() { return &backbuffer; }
+	BackBuffer* GetFrontBuffer() { return &frontbuffer; }
 
 private:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -29,5 +30,6 @@ private:
 	DrawWindow* drawWindow = nullptr;
 	ToolWindow* toolWindow = nullptr;
 	BackBuffer backbuffer;
+	BackBuffer frontbuffer;
 };
 

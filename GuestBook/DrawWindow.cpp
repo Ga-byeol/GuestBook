@@ -1,6 +1,8 @@
 #include "DrawWindow.h"
 #include "MainWindow.h"
 
+#define DM_REBUILD (WM_APP + 1)
+
 bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 	hInstance = hInst;
 
@@ -43,10 +45,29 @@ LRESULT CALLBACK DrawWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 
 LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
-	
+
 	/// 배경 지우기를 ClearBuffer()에서 함(눈 깜빡임 줄이기)
 	case WM_ERASEBKGND:
 		return 1;
+
+	case DM_REBUILD:
+	{
+		auto owner = reinterpret_cast<MainWindow*>(
+			GetWindowLongPtr(GetParent(hwnd), GWLP_USERDATA));
+		BackBuffer* back = owner ? owner->GetBackBuffer() : nullptr;
+		if (back && back->dc()) {
+			RECT rc; GetClientRect(hwnd, &rc);
+			
+			/// 누적버퍼 초기화
+			back->ClearBuffer(rc);                                       
+			
+			/// 저장된 선들만 1회 렌더
+			controller.DrawStrokes(back->dc(), store.Strokes(), nullptr);
+		}
+		InvalidateRect(hwnd, nullptr, FALSE);
+		return 0;
+	}
+
 
 	case WM_PAINT: {
 		PAINTSTRUCT ps;
@@ -76,19 +97,24 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 void DrawWindow::OnPaint(HDC hdc, const RECT& rc) {
 	auto owner = reinterpret_cast<MainWindow*>(GetWindowLongPtr(GetParent(hwnd), GWLP_USERDATA));
 	BackBuffer* back = owner ? owner->GetBackBuffer() : nullptr;
+	BackBuffer* front = owner ? owner->GetFrontBuffer() : nullptr;
 
-	if (!back || !back->dc()) {
+	if (!back || !back->dc() || !front || !front->dc()) {
 		/// 안전 장치
 		controller.DrawStrokes(hdc, store.Strokes(), store.Current());
 		return;
 	}
+	int w = rc.right - rc.left, h = rc.bottom - rc.top;
 
-	back->ClearBuffer(rc);
-	HDC mem = back->dc();
-	controller.DrawStrokes(mem, store.Strokes(), store.Current());
+	/// front <- back 복사하기
+	BitBlt(front->dc(), 0, 0, w, h, back->dc(), 0, 0, SRCCOPY);
 
-	/// 화면DC인 hdc에 BitBlt
-	back->DrawBufferToScreen(hdc);
+	/// current만 front에 복사하기
+	static const std::vector<Stroke> empty;
+	controller.DrawStrokes(front->dc(), empty, store.Current());
+
+	/// front -> 화면DC인 hdc에 BitBlt
+	front->DrawBufferToScreen(hdc);
 }
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
@@ -107,6 +133,19 @@ void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
 void DrawWindow::OnLButtonUp(int x, int y, WPARAM) {
 	if (!store.IsRecording()) return;
 	store.Add(x, y);
+
+	auto owner = reinterpret_cast<MainWindow*>(
+		GetWindowLongPtr(GetParent(hwnd), GWLP_USERDATA));
+	BackBuffer* back = owner ? owner->GetBackBuffer() : nullptr;
+
+	if (back && back->dc()) {
+		const Stroke* cur = store.Current();
+			if(cur && !cur->points.empty()) {
+			static const std::vector<Stroke> empty;
+			controller.DrawStrokes(back->dc(), empty, cur);
+		}
+	}
+
 	store.End();
 	ReleaseCapture();
 	InvalidateRect(hwnd, nullptr, FALSE);
