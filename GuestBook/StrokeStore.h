@@ -9,6 +9,7 @@ public:
     void Add(int x, int y);
     void End();
     void Clear();
+    void SetCurrentStyle(COLORREF c, int t);
 
     const std::vector<Stroke>& Strokes() const { return strokes; }
     const Stroke* Current() const { return recording ? &current : nullptr; }

@@ -2,10 +2,12 @@
 #include <windows.h>
 #include <vector>
 #include "Stroke.h"
+#include "UIDrawBridge.h"
 #include "DrawController.h"
 #include "StrokeStore.h"
 
 class ToolWindow;
+class UIDrawBridge;
 
 class DrawWindow
 {
@@ -15,6 +17,12 @@ public:
     HWND GetHwnd() const { return hwnd; }
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
+
+    /// 주입하는 통로
+    void SetBridge(UIDrawBridge* b) { bridge = b; }
+
+    /// 저장소 포인터를 제공
+    StrokeStore* GetStore() { return &store; }
 
 private:
     LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
@@ -32,4 +40,7 @@ private:
 
     DrawController controller;
     StrokeStore    store;
+
+    /// 보관
+    UIDrawBridge* bridge = nullptr;
 };

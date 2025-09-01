@@ -1,4 +1,8 @@
 #include "MainWindow.h"
+#define CLEAR 104
+#define ERASE 105
+#define BRUSH 106
+#define COLOR 107
 
 bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     hInstance = hInst;
@@ -13,7 +17,7 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     RegisterClass(&wc);
 
     hwnd = CreateWindowEx(
-        0, wc.lpszClassName, L"Guest Book", WS_OVERLAPPEDWINDOW,
+        0, wc.lpszClassName, L"Guest Book", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
         CW_USEDEFAULT, CW_USEDEFAULT, 
         900, 700,
         NULL, NULL, hInst, this);
@@ -57,6 +61,7 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
     case WM_SIZE:
     {
         if (self) {
+           /// self->ConnectUIDraw();
             self->ResizeChildren();
             /// 자식창 클라이언트 크기 맞추어 재배치
 
@@ -64,14 +69,20 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 
                 ///백버퍼 크기 맞추기 위해 Draw창 핸들Hwnd 얻기
                 HWND drawHwnd = self->drawWindow->GetHwnd();
-                RECT rc; GetClientRect(drawHwnd, &rc);   /// 드로우 클라이언트 크기 얻음
+                RECT rc;
+                GetClientRect(drawHwnd, &rc);   /// 드로우 클라이언트 크기 얻음
                 int w = rc.right - rc.left;
                 int h = rc.bottom - rc.top;
                 if (w > 0 && h > 0) {
                     HDC drawDc = GetDC(drawHwnd);     
                     self->backbuffer.CreateBuffer(drawDc, w, h);    ///drawDc기준으로 버퍼 생성         
-                    self->frontbuffer.CreateBuffer(drawDc, w, h);
-                    ReleaseDC(drawHwnd, drawDc);    /// DC 반납                            
+                    self->frontbuffer.CreateBuffer(drawDc, w, h);                          
+
+                    ///만든 버퍼를 즉시 초기화하여 깜빡임을 방지하기
+                    RECT r{ 0,0,w,h };
+                    self->backbuffer.ClearBuffer(r);
+                    self->frontbuffer.ClearBuffer(r);
+                    ReleaseDC(drawHwnd, drawDc);    /// DC 반납  
 
                     SendMessage(drawHwnd, WM_APP + 1, 0, 0);
                     InvalidateRect(drawHwnd, nullptr, FALSE);    
@@ -104,4 +115,15 @@ void MainWindow::ResizeChildren() {
 
     if (drawWindow)
         MoveWindow(drawWindow->GetHwnd(), 0, 50, rcClient.right, rcClient.bottom - 50, TRUE);
+}
+
+void MainWindow::ConnectUIDraw() {
+    if (!drawWindow || !toolWindow) return;
+    if (!drawWindow->GetHwnd() || !toolWindow->GetHwnd()) return;
+
+    bridge.store = drawWindow->GetStore();
+    bridge.hDraw = drawWindow->GetHwnd();
+
+    drawWindow->SetBridge(&bridge);  // Draw: 게터로 읽기만
+    SetProp(toolWindow->GetHwnd(), L"APP_BRIDGE", &bridge);
 }

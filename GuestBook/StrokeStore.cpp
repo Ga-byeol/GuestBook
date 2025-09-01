@@ -30,3 +30,9 @@ void StrokeStore::Clear() {
 	current.points.clear();
 	recording = false;
 }
+
+void StrokeStore::SetCurrentStyle(COLORREF c, int t) {
+	if (!recording) return;
+	current.color = c;
+	current.thickness = t;
+}

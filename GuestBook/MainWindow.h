@@ -3,6 +3,8 @@
 #include "DrawWindow.h"
 #include "ToolWindow.h"
 #include "BackBuffer.h"
+#include "UIDrawBridge.h" 
+#include "StrokeStore.h" 
 
 class MainWindow
 {
@@ -11,8 +13,14 @@ public:
 	bool Create(HINSTANCE hInstance, int nCmdShow);
 	HWND GetHwnd() const { return hwnd; }
 
-	void SetDrawWindow(DrawWindow* draw) { drawWindow = draw; }
-	void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
+	void SetDrawWindow(DrawWindow* draw) {
+		drawWindow = draw; 
+		ConnectUIDraw();
+	}
+	void SetToolWindow(ToolWindow* tool) {
+		toolWindow = tool; 
+		ConnectUIDraw();
+	}
 
 	void Show(int nCmdShow = SW_SHOW);
 	void ResizeChildren();
@@ -21,9 +29,12 @@ public:
 	BackBuffer* GetBackBuffer() { return &backbuffer; }
 	BackBuffer* GetFrontBuffer() { return &frontbuffer; }
 
+	void ConnectUIDraw();
+
 private:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	
+
+
 	HWND hwnd = nullptr;
 	HINSTANCE hInstance = nullptr;
 
@@ -31,5 +42,6 @@ private:
 	ToolWindow* toolWindow = nullptr;
 	BackBuffer backbuffer;
 	BackBuffer frontbuffer;
+	UIDrawBridge bridge{};
 };
 
