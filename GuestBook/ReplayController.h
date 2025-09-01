@@ -14,7 +14,8 @@ public:
 	void SetApplication(Application* a) { app = a; } // app.DrawForReplay()
 	bool ReplayRecording = FALSE;
 	void ClickReplay();
-	void ReplayPause();
+	std::condition_variable Pause;
+	
 	StrokeStore store;
 private:
 	Application* app;
