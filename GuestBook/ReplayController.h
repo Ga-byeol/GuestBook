@@ -6,10 +6,13 @@
 #include "StrokeStore.h"
 #include "Application.h"
 
+class Application;
+
 class ReplayController
 {
 public:
 	ReplayController() = default;
+	ReplayController(Application* a) : app(a) {};
 	void StartReplay();
 	void SetApplication(Application* a) { app = a; } // app.DrawForReplay()
 	bool ReplayRecording = FALSE;

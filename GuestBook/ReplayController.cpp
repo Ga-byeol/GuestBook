@@ -9,8 +9,11 @@ void ReplayController::StartReplay() {
 	if (store.Strokes().empty()) {
 		return;
 	}
+	std::unique_lock<std::mutex> lock(ReplayMutex);
+	if (!ReplayRecording) {
+		Pause.wait(lock, [this]() {return ReplayRecording == TRUE;});
+	}
 	ReplayThread = std::thread([this]() {
-		std::unique_lock<std::mutex> lock(ReplayMutex);
 		ReplayStroke = store.Strokes();
 		store.Clear();
 		app->DrawForReplay();
@@ -18,9 +21,6 @@ void ReplayController::StartReplay() {
 			Stroke tempStroke = k;
 			for (auto pt : tempStroke.points) {
 				// ReplayRecordingÀÌ false¸é ¸ØÃã
-				if (!ReplayRecording) {
-					Pause.wait(lock, [this]() {return ReplayRecording == TRUE;});
-				}
 				store.ReplayCopyPointToCurrent(pt.x, pt.y);
 				app->DrawForReplay();
 				Sleep(pt.timestamp);
