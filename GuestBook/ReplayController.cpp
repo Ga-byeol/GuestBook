@@ -1,4 +1,5 @@
 #include "ReplayController.h"
+#include "Application.h"
 
 void ReplayController::ClickReplay() {
 	if (ReplayRecording == TRUE) ReplayRecording = FALSE;
@@ -10,9 +11,9 @@ void ReplayController::StartReplay() {
 		return;
 	}
 	std::unique_lock<std::mutex> lock(ReplayMutex);
-	if (!ReplayRecording) {
+	/*if (!ReplayRecording) {
 		Pause.wait(lock, [this]() {return ReplayRecording == TRUE;});
-	}
+	}*/
 	ReplayThread = std::thread([this]() {
 		ReplayStroke = store.Strokes();
 		store.Clear();

@@ -13,7 +13,7 @@ public:
 
     void SetDrawWindow(DrawWindow* draw) { drawWindow = draw; }
 
-    
+    ButtonController& GetButtonController() { return buttonController; }
 
 private:
     static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -25,13 +25,6 @@ private:
    
     DrawWindow* drawWindow = nullptr;
     
-    /*ButtonController ButtonSave;
-    ButtonController ButtonLoad;
-    ButtonController ButtonReplay;
-    ButtonController ButtonClearall;
-    ButtonController ButtonErase;
-    ButtonController ButtonBrush;
-    ButtonController ButtonColor;*/
     ButtonController buttonController;
 };
 

@@ -29,7 +29,6 @@ bool ToolWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
     if (!hwnd) return false;
     buttonController.Init(hwnd, hInstance);
     CreateButton();
-    buttonController.MessageOption();
     return true;
 }
 LRESULT CALLBACK ToolWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {

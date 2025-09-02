@@ -4,7 +4,6 @@
 #include <thread>
 #include <mutex>
 #include "StrokeStore.h"
-#include "Application.h"
 
 class Application;
 
@@ -14,7 +13,6 @@ public:
 	ReplayController() = default;
 	ReplayController(Application* a) : app(a) {};
 	void StartReplay();
-	void SetApplication(Application* a) { app = a; } // app.DrawForReplay()
 	bool ReplayRecording = FALSE;
 	void ClickReplay();
 	std::condition_variable Pause;

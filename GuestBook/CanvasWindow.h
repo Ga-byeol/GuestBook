@@ -1,19 +1,18 @@
 #pragma once
 #include <windows.h>
 #include <vector>
-#include <condition_variable>
 #include "Stroke.h"
 #include "DrawController.h"
-#include "StrokeStore.h"
+#include "StrokeController.h"
 
-#define WM_USER_REPLAY_UPDATE (WM_USER + 1)
+#define WM_USER_UPDATE (WM_USER+1)
 
 class ToolWindow;
 
-class DrawWindow
+class CanvasWindow
 {
 public:
-    DrawWindow() = default;
+    CanvasWindow() = default;
     bool Create(HWND parentHwnd, HINSTANCE hInstance);
     HWND GetHwnd() const { return hwnd; }
 
@@ -33,6 +32,6 @@ private:
 
     ToolWindow* toolWindow = nullptr;
 
-    DrawController controller;
-    StrokeStore store;
+    DrawController drawController;
+    StrokeController strokeController;
 };
