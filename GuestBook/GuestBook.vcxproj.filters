@@ -65,9 +65,6 @@
     <ClCompile Include="DrawWindow.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ToolWindow.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="StrokeStore.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
