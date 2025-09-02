@@ -19,7 +19,7 @@ bool Application::Init(HINSTANCE hInst, int nCmdShow) {
 
     toolWindow.SetDrawWindow(&drawWindow);
     drawWindow.SetToolWindow(&toolWindow);
-        
+
     mainWindow.ResizeChildren();
     mainWindow.Show(nCmdShow);
 
@@ -33,4 +33,8 @@ int Application::Run() {
         DispatchMessage(&msg);
     }
     return (int)msg.wParam;
+}
+
+void Application::DrawForReplay() {
+    PostMessage(drawWindow.GetHwnd(), WM_USER_REPLAY_UPDATE, 0, 0);
 }

@@ -3,12 +3,15 @@
 #include "MainWindow.h"
 #include "DrawWindow.h"
 #include "ToolWindow.h"
+#include "ReplayController.h"
+
+class ReplayController;
 
 class Application {
 public:
     bool Init(HINSTANCE hInstance, int nCmdShow);
     int Run();
-
+    void DrawForReplay();
 private:
     HINSTANCE hInstance = nullptr;
     MainWindow mainWindow;
