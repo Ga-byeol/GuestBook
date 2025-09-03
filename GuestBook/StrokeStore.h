@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
+#include <mutex>
 #include <windows.h>
+
 #include "Stroke.h"
 
 class StrokeStore {
@@ -11,17 +13,20 @@ public:
     void Clear();
     void ReplayCopyStroke(Stroke& dest, const Stroke& src);
     void ReplaySetCurrentStyle(COLORREF color, int thickness);
-    void ReplayCopyPointToCurrent(int x, int y);
+    void ReplayCopyPointToCurrent(Stroke s);
     void ReplayCopyTempToStrokes(Stroke& s);
     void ReplayClearCurrent();
 
 
-    const std::vector<Stroke>& Strokes() const { return strokes; }
+    const std::vector<Stroke> Strokes() const { return strokes; }
     const Stroke* Current() const { return recording ? &current : nullptr; }
     bool IsRecording() const { return recording; }
 
 private:
+
+    std::mutex mtx;
     std::vector<Stroke> strokes;
+    
     Stroke current;
     bool recording = false;
 };

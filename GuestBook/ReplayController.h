@@ -10,17 +10,23 @@ class Application;
 class ReplayController
 {
 public:
-	ReplayController() = default;
-	ReplayController(Application* a) : app(a) {};
+	ReplayController(Application* a, StrokeStore* s) : app(a), store(s) {};
+	~ReplayController() { StopReplay(); }
 	void StartReplay();
-	bool ReplayRecording = FALSE;
-	void ClickReplay();
-	std::condition_variable Pause;
-	
-	StrokeStore store;
+
 private:
+	void PauseReplay();
+	void ResumeReplay();
+	void StopReplay();
+
 	Application* app;
-	std::thread ReplayThread;
-	std::mutex ReplayMutex;
-	std::vector<Stroke> ReplayStroke;
+	StrokeStore* store = nullptr;
+	std::thread replayThread;
+	std::mutex mtx;
+	std::condition_variable cv;
+	std::vector<Stroke> replayStrokes;
+	
+	bool isPaused = false;
+	bool isReplaying = false;
+	bool stopRequested = false;
 };

@@ -63,7 +63,8 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 
 	case WM_USER_REPLAY_UPDATE:
-		InvalidateRect(hwnd, NULL, false);
+		InvalidateRect(hwnd, NULL, true);
+		UpdateWindow(hwnd);
 		return 0;
 	}
 	return DefWindowProc(hwnd, msg, wParam, lParam);
