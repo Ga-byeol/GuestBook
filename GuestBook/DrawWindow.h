@@ -16,6 +16,8 @@ public:
     DrawWindow() = default;
     bool Create(HWND parentHwnd, HINSTANCE hInstance);
     HWND GetHwnd() const { return hwnd; }
+    StrokeStore& GetStore() { return store; }
+
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
 

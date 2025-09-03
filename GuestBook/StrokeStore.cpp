@@ -26,12 +26,15 @@ void StrokeStore::End() {
 }
 
 void StrokeStore::Clear() {
+	std::lock_guard<std::mutex> lock(mtx);
+
 	strokes.clear();
 	current.points.clear();
 	recording = false;
 }
 
 void StrokeStore::ReplayCopyStroke(Stroke& dest, const Stroke& src) {
+	std::lock_guard<std::mutex> lock(mtx);
 	/// src(원본) 값을 dest(목적지)에 복사 대입함
 	/// dest.points = src.points
 	/// dest.color = src.color
@@ -41,20 +44,24 @@ void StrokeStore::ReplayCopyStroke(Stroke& dest, const Stroke& src) {
 }
 
 void StrokeStore::ReplaySetCurrentStyle(COLORREF color, int thickness) {
+	std::lock_guard<std::mutex> lock(mtx);
 	current.color = color;
 	current.thickness = thickness;
 }
 
-void StrokeStore::ReplayCopyPointToCurrent(int x, int y) {
+void StrokeStore::ReplayCopyPointToCurrent(Stroke s) {
+	std::lock_guard<std::mutex> lock(mtx);
 	/// pt(tempStorke.points 정보를 복사함)를 current에 넣는다
-	current.points.push_back(Point{ x, y });
+	current = s;
 }
 
 void StrokeStore::ReplayCopyTempToStrokes(Stroke& s) {
+	std::lock_guard<std::mutex> lock(mtx);
 	/// tempStroke 선을 Strokes에 넣는다 
 	strokes.push_back(s);
 }
 
 void StrokeStore::ReplayClearCurrent() {
+	std::lock_guard<std::mutex> lock(mtx);
 	current.points.clear();
 }

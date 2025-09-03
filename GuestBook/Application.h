@@ -15,7 +15,7 @@
 
 class Application {
 public:
-    Application() {
+    Application() : replayController(this, &drawWindow.GetStore()) {
         // ToolWindow 안의 ButtonController에 접근
         auto& btnCtrl = toolWindow.GetButtonController();
 
@@ -46,6 +46,7 @@ public:
     bool Init(HINSTANCE hInstance, int nCmdShow);
     int Run();
     void DrawForReplay();
+    StrokeStore& GetStrokes() { return drawWindow.GetStore(); }
 private:
     HINSTANCE hInstance = nullptr;
     MainWindow mainWindow;
