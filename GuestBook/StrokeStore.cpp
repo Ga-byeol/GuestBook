@@ -2,12 +2,15 @@
 
 void StrokeStore::Begin(int x, int y) {
 	current.points.clear();
-	current.points.push_back(Point{ x, y, 0 });
+	lastTime = GetTickCount64();
+	current.points.push_back(Point{ x, y });
 	recording = true;
+	// 색상 가져와야함
 }
 
 void StrokeStore::Add(int x, int y) {
 	if (!recording) return;
+	DWORD now = GetTickCount64();
 
 	if (!current.points.empty()) {
 		const Point& last = current.points.back();
@@ -15,7 +18,9 @@ void StrokeStore::Add(int x, int y) {
 			return;
 		}
 	}
-	current.points.push_back(Point{ x, y, 0 });
+	current.points.push_back(Point{ x, y, now - lastTime });
+	lastTime = now;
+
 }
 
 void StrokeStore::End() {
