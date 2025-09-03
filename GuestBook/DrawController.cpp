@@ -21,7 +21,6 @@ void DrawController::DrawStrokes(HDC hdc,
     int penWidth,
     COLORREF color)
 {
-
     HPEN pen = CreatePen(PS_SOLID, penWidth, color);
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));

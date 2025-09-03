@@ -28,5 +28,6 @@ private:
     std::vector<Stroke> strokes;
     
     Stroke current;
+    DWORD lastTime;
     bool recording = false;
 };
