@@ -5,6 +5,7 @@
 #include "Stroke.h"
 #include "DrawController.h"
 #include "StrokeStore.h"
+#include "MainWindow.h"
 
 #define WM_USER_REPLAY_UPDATE (WM_USER + 1)
 

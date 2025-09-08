@@ -72,9 +72,13 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 
-void DrawWindow::OnPaint(HDC hdc, const RECT&) {
+void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
+	MainWindow* parent = reinterpret_cast<MainWindow*>(GetWindowLongPtr(GetParent(hwnd), GWLP_USERDATA));
 
-	controller.DrawStrokes(hdc, store.Strokes(), store.Current());
+	BackBuffer& back = parent->GetBackBuffer();
+	back.ClearBuffer(rcClient);
+	controller.DrawStrokes(back.dc(), store.Strokes(), store.Current());
+	back.DrawBufferToScreen(hdc);
 }
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
