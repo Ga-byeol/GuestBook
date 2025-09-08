@@ -2,6 +2,7 @@
 #include <windows.h>
 #include "DrawWindow.h"
 #include "ToolWindow.h"
+#include "BackBuffer.h"
 
 class MainWindow
 {
@@ -16,6 +17,8 @@ public:
 	void Show(int nCmdShow = SW_SHOW);
 	void ResizeChildren();
 
+	BackBuffer& GetBackBuffer() { return back; }
+
 private:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	
@@ -24,5 +27,6 @@ private:
 
 	DrawWindow* drawWindow = nullptr;
 	ToolWindow* toolWindow = nullptr;
+	BackBuffer back;
 };
 
