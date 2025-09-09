@@ -22,7 +22,12 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
 
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
-
+    
+    SendMessage(hwnd, WM_SIZE, 0, 0);
+    if (drawWindow) {
+        InvalidateRect(drawWindow->GetHwnd(), NULL, TRUE);
+        UpdateWindow(drawWindow->GetHwnd());
+    }
     return true;
 }
 
@@ -48,6 +53,11 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
             HDC hdc = GetDC(hwnd);
             pThis->back.CreateBuffer(hdc, clientWidth, clientHeight); /// 버퍼 생성
             ReleaseDC(hwnd, hdc); /// hdc 반납
+
+            if (pThis->drawWindow) {
+                pThis->drawWindow->SetBackBuffer(&pThis->back);
+            }
+            pThis->ResizeChildren();
         }
         return 0;
     }
