@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "BackBufferManager.h"
 
 bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     hInstance = hInst;
@@ -23,11 +24,6 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
     
-    SendMessage(hwnd, WM_SIZE, 0, 0);
-    if (drawWindow) {
-        InvalidateRect(drawWindow->GetHwnd(), NULL, TRUE);
-        UpdateWindow(drawWindow->GetHwnd());
-    }
     return true;
 }
 
@@ -51,12 +47,9 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
             int clientHeight = rc.bottom - rc.top;
 
             HDC hdc = GetDC(hwnd);
-            pThis->back.CreateBuffer(hdc, clientWidth, clientHeight); /// 버퍼 생성
+            BackBufferManager::Instance().ResizeBuffer(hdc, clientWidth, clientHeight);
             ReleaseDC(hwnd, hdc); /// hdc 반납
 
-            if (pThis->drawWindow) {
-                pThis->drawWindow->SetBackBuffer(&pThis->back);
-            }
             pThis->ResizeChildren();
         }
         return 0;

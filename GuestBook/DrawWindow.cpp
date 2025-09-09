@@ -1,5 +1,5 @@
 #include "DrawWindow.h"
-#include "Backbuffer.h"
+#include "BackBufferManager.h"
 
 bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 	hInstance = hInst;
@@ -18,10 +18,7 @@ bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 		WS_CHILD | WS_VISIBLE,
 		0, 50, 800, 600,
 		parentHwnd, NULL, hInst, this);
-	if (hwnd) {
-		InvalidateRect(hwnd, NULL, TRUE);
-		UpdateWindow(hwnd);
-	}
+	
 	return hwnd != nullptr;
 }
 
@@ -77,10 +74,10 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
-	if (!backBuffer) { return; }
-	backBuffer->ClearBuffer(rcClient);
-	controller.DrawStrokes(backBuffer->dc(), store.Strokes(), store.Current());
-	backBuffer->DrawBufferToScreen(hdc);
+	BackBuffer& back = BackBufferManager::Instance().GetBuffer();
+	back.ClearBuffer(rcClient);
+	controller.DrawStrokes(back.dc(), store.Strokes(), store.Current());
+	back.DrawBufferToScreen(hdc);
 }
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {

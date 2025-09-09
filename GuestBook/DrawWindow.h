@@ -9,7 +9,6 @@
 #define WM_USER_REPLAY_UPDATE (WM_USER + 1)
 
 class ToolWindow;
-class BackBuffer;
 
 class DrawWindow
 {
@@ -21,7 +20,7 @@ public:
 
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
-    void SetBackBuffer(BackBuffer* buf) { backBuffer = buf;  }
+
 private:
     LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
     void OnPaint(HDC hdc, const RECT& rc);
@@ -35,7 +34,6 @@ private:
     HINSTANCE hInstance = nullptr;
 
     ToolWindow* toolWindow = nullptr;
-    BackBuffer* backBuffer = nullptr;
 
     DrawController controller;
     StrokeStore store;

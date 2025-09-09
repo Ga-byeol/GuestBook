@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="BackBuffer.h" />
+    <ClInclude Include="BackBufferManager.h" />
     <ClInclude Include="ButtonController.h" />
     <ClInclude Include="CanvasWindow.h" />
     <ClInclude Include="ReplayController.h" />
