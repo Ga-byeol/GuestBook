@@ -9,7 +9,7 @@ public:
 	int width = 0;
 	int height = 0;
 
-	void CreateBuffer(HDC refDC, int w, int h);
+	void CreateBuffer(HDC refDC, RECT rc);
 	void ClearBuffer(const RECT& rc) const;
 	void DrawBufferToScreen(HDC dst, int x = 0, int y = 0) const;
 	HDC dc() const { return memdc; }

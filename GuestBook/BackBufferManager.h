@@ -10,8 +10,8 @@ public:
 
 	BackBuffer& GetBuffer() { return buffer; }
 
-    void ResizeBuffer(HDC hdc, int w, int h) {
-        buffer.CreateBuffer(hdc, w, h);
+    void ResizeBuffer(HDC hdc, RECT rc) {
+        buffer.CreateBuffer(hdc, rc);
     }
 
 private:

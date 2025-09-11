@@ -4,7 +4,9 @@ BackBuffer::~BackBuffer() {
 	ReleaseBuffer();
 }
 
-void BackBuffer::CreateBuffer(HDC refDC, int w, int h) {
+void BackBuffer::CreateBuffer(HDC refDC, RECT rc) {
+	int w = rc.right - rc.left;
+	int h = rc.bottom - rc.top;
 	if (memdc && bmp && width == w && height == h) return; // 맞으면 그대로
 
 	ReleaseBuffer();
@@ -23,6 +25,8 @@ void BackBuffer::CreateBuffer(HDC refDC, int w, int h) {
 
 	width = w;
 	height = h;
+
+	FillRect(memdc, &rc, (HBRUSH)(COLOR_WINDOW + 1));
 }
 
 void BackBuffer::ClearBuffer(const RECT& rc) const {
