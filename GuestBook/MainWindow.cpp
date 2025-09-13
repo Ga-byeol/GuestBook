@@ -47,7 +47,11 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
             int clientHeight = rc.bottom - rc.top;
 
             HDC hdc = GetDC(hwnd);
+<<<<<<< HEAD
             BackBufferManager::Instance().ResizeBuffer(hdc, rc);
+=======
+            BackBufferManager::Instance().ResizeBuffer(hdc, clientWidth, clientHeight);
+>>>>>>> eee0e96 (Feature/replaycontroller (#18))
             ReleaseDC(hwnd, hdc); /// hdc ¹Ý³³
 
             pThis->ResizeChildren();

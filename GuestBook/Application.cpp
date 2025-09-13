@@ -36,5 +36,6 @@ int Application::Run() {
 }
 
 void Application::DrawForReplay() {
+    OutputDebugString(L"draw\n");
     PostMessage(drawWindow.GetHwnd(), WM_USER_REPLAY_UPDATE, 0, 0);
 }

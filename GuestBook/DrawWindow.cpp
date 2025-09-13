@@ -74,8 +74,14 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
+<<<<<<< HEAD
 	BackBuffer& back = BackBufferManager::Instance().GetBuffer();
 	//back.ClearBuffer(rcClient);
+=======
+	OutputDebugString(L"OnPaint called\n");
+	BackBuffer& back = BackBufferManager::Instance().GetBuffer();
+	back.ClearBuffer(rcClient);
+>>>>>>> eee0e96 (Feature/replaycontroller (#18))
 	controller.DrawStrokes(back.dc(), store.Strokes(), store.Current());
 	back.DrawBufferToScreen(hdc);
 }

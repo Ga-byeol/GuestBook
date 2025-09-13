@@ -13,13 +13,13 @@ public:
     void Clear();
     void ReplayCopyStroke(Stroke& dest, const Stroke& src);
     void ReplaySetCurrentStyle(COLORREF color, int thickness);
-    void ReplayCopyPointToCurrent(Stroke s);
-    void ReplayCopyTempToStrokes(Stroke& s);
+    void ReplayCopyPointToCurrent(Point pt);
+    void ReplayCopyTempToStrokes();
     void ReplayClearCurrent();
 
 
     const std::vector<Stroke> Strokes() const { return strokes; }
-    const Stroke* Current() const { return recording ? &current : nullptr; }
+    const Stroke* Current() const { return &current; }
     bool IsRecording() const { return recording; }
 
 private:
