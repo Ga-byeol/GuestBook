@@ -4,7 +4,7 @@
 #include "DrawWindow.h"
 #include "ToolWindow.h"
 #include "ReplayController.h"
-
+#include "ColorController.h"
 #define SAVE 101
 #define LOAD 102
 #define REPLAY 103
@@ -15,7 +15,7 @@
 
 class Application {
 public:
-    Application() : replayController(this, &drawWindow.GetStore()) {
+    Application() : replayController(this, &drawWindow.GetStore()){
         // ToolWindow 안의 ButtonController에 접근
         auto& btnCtrl = toolWindow.GetButtonController();
 
@@ -39,7 +39,7 @@ public:
             MessageBox(nullptr, L"브러쉬 버튼", L"TOOL창", MB_OK);
             });
         btnCtrl.RegisterHandler(COLOR, [&]() {
-            MessageBox(nullptr, L"색상 버튼", L"TOOL창", MB_OK);
+                ColorBox.Show();
             });
     }
     bool Init(HINSTANCE hInstance, int nCmdShow);
@@ -51,5 +51,7 @@ private:
     MainWindow mainWindow;
     DrawWindow drawWindow;
     ToolWindow toolWindow;
-    ReplayController replayController;
+    ReplayController replayController; 
+    ColorController ColorBox;
+
 };
