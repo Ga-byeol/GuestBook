@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "BackBufferManager.h"
 
 bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     hInstance = hInst;
@@ -22,12 +23,37 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
 
     ShowWindow(hwnd, nCmdShow);
     UpdateWindow(hwnd);
-
+    
     return true;
 }
 
 LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+    MainWindow* pThis = reinterpret_cast<MainWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+   
     switch (msg) {
+    case WM_NCCREATE: {
+        CREATESTRUCT* cs = reinterpret_cast<CREATESTRUCT*>(lParam);
+        pThis = static_cast<MainWindow*>(cs->lpCreateParams);
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pThis);
+        pThis->hwnd = hwnd;
+        return TRUE;
+    }
+
+    case WM_SIZE: {
+        if (pThis) {
+            RECT rc;
+            GetClientRect(hwnd, &rc);
+            int clientWidth = rc.right - rc.left;
+            int clientHeight = rc.bottom - rc.top;
+
+            HDC hdc = GetDC(hwnd);
+            BackBufferManager::Instance().ResizeBuffer(hdc, clientWidth, clientHeight);
+            ReleaseDC(hwnd, hdc); /// hdc ¹Ý³³
+
+            pThis->ResizeChildren();
+        }
+        return 0;
+    }
 
     case WM_DESTROY:
         PostQuitMessage(0);

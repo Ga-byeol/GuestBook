@@ -41,7 +41,6 @@ public:
         btnCtrl.RegisterHandler(COLOR, [&]() {
             MessageBox(nullptr, L"색상 버튼", L"TOOL창", MB_OK);
             });
-
     }
     bool Init(HINSTANCE hInstance, int nCmdShow);
     int Run();

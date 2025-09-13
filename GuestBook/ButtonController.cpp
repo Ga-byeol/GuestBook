@@ -16,6 +16,7 @@ void ButtonController::Create(HWND parents, LPCWSTR text, int id, int x, int y, 
 		nullptr
 	);
 }
+
 void ButtonController::HandleCommand(WPARAM wParam) {
 	int id = LOWORD(wParam);
 		if (ButtonMessage.count(id)) {
