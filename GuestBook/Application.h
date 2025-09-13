@@ -39,7 +39,8 @@ public:
             MessageBox(nullptr, L"브러쉬 버튼", L"TOOL창", MB_OK);
             });
         btnCtrl.RegisterHandler(COLOR, [&]() {
-                ColorBox.Show();
+                colorBox.Show();
+                drawWindow.setSelectedColor(colorBox.GetColor());
             });
     }
     bool Init(HINSTANCE hInstance, int nCmdShow);
@@ -52,6 +53,6 @@ private:
     DrawWindow drawWindow;
     ToolWindow toolWindow;
     ReplayController replayController; 
-    ColorController ColorBox;
+    ColorController colorBox;
 
 };

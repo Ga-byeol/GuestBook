@@ -1,5 +1,6 @@
 #include "DrawWindow.h"
-#include "ColorController
+#include "ColorController.h"
+#include "BackBufferManager.h"
 
 bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 	hInstance = hInst;
@@ -82,7 +83,7 @@ void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
 	SetCapture(hwnd);
-	store.Begin(x, y);
+	store.Begin(x, y, selectedColor);
 	InvalidateRect(hwnd, nullptr, FALSE);
 }
 
