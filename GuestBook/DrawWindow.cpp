@@ -64,7 +64,7 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 
 	case WM_USER_REPLAY_UPDATE:
-		InvalidateRect(hwnd, NULL, true);
+		InvalidateRect(hwnd, NULL, false);
 		UpdateWindow(hwnd);
 		return 0;
 	}
@@ -74,6 +74,7 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
+	OutputDebugString(L"OnPaint called\n");
 	BackBuffer& back = BackBufferManager::Instance().GetBuffer();
 	back.ClearBuffer(rcClient);
 	controller.DrawStrokes(back.dc(), store.Strokes(), store.Current());
