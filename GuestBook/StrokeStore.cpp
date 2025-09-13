@@ -2,20 +2,25 @@
 
 void StrokeStore::Begin(int x, int y) {
 	current.points.clear();
-	current.points.push_back(Point{ x, y, 0 });
+	lastTime = GetTickCount64();
+	current.points.push_back(Point{ x, y });
 	recording = true;
+	// 색상 가져와야함
 }
 
 void StrokeStore::Add(int x, int y) {
 	if (!recording) return;
+	DWORD now = GetTickCount64();
 
-	if (!current.points.empty()) {
+	/*if (!current.points.empty()) {
 		const Point& last = current.points.back();
 		if (last.x == x && last.y == y) {
 			return;
 		}
-	}
-	current.points.push_back(Point{ x, y, 0 });
+	}*/
+	current.points.push_back(Point{ x, y, now - lastTime });
+	lastTime = now;
+
 }
 
 void StrokeStore::End() {
@@ -49,16 +54,16 @@ void StrokeStore::ReplaySetCurrentStyle(COLORREF color, int thickness) {
 	current.thickness = thickness;
 }
 
-void StrokeStore::ReplayCopyPointToCurrent(Stroke s) {
+void StrokeStore::ReplayCopyPointToCurrent(Point pt) {
 	std::lock_guard<std::mutex> lock(mtx);
 	/// pt(tempStorke.points 정보를 복사함)를 current에 넣는다
-	current = s;
+	current.points.push_back(pt);
 }
 
-void StrokeStore::ReplayCopyTempToStrokes(Stroke& s) {
+void StrokeStore::ReplayCopyTempToStrokes() {
 	std::lock_guard<std::mutex> lock(mtx);
 	/// tempStroke 선을 Strokes에 넣는다 
-	strokes.push_back(s);
+	strokes.push_back(current);
 }
 
 void StrokeStore::ReplayClearCurrent() {

@@ -41,7 +41,6 @@ public:
         btnCtrl.RegisterHandler(COLOR, [&]() {
                 ColorBox.Show();
             });
-
     }
     bool Init(HINSTANCE hInstance, int nCmdShow);
     int Run();

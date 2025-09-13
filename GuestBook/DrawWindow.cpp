@@ -1,9 +1,9 @@
 #include "DrawWindow.h"
-#include "ColorController.h"
+#include "ColorController
+
 bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 	hInstance = hInst;
-
-	WNDCLASS wc = {};
+  WNDCLASS wc = {};
 	wc.lpfnWndProc = DrawWindow::WndProc;
 	wc.hInstance = hInst;
 	wc.lpszClassName = L"DrawWindowClass";
@@ -17,7 +17,7 @@ bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 		WS_CHILD | WS_VISIBLE,
 		0, 50, 800, 600,
 		parentHwnd, NULL, hInst, this);
-
+	
 	return hwnd != nullptr;
 }
 
@@ -63,7 +63,7 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 
 	case WM_USER_REPLAY_UPDATE:
-		InvalidateRect(hwnd, NULL, true);
+		InvalidateRect(hwnd, NULL, false);
 		UpdateWindow(hwnd);
 		return 0;
 	}
@@ -71,10 +71,13 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 }
 
 
+void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
+	OutputDebugString(L"OnPaint called\n");
+	BackBuffer& back = BackBufferManager::Instance().GetBuffer();
+	back.ClearBuffer(rcClient);
+	controller.DrawStrokes(back.dc(), store.Strokes(), store.Current());
+	back.DrawBufferToScreen(hdc);
 
-void DrawWindow::OnPaint(HDC hdc, const RECT&) {
-	
-	controller.DrawStrokes(hdc, store.Strokes(), store.Current());
 }
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
