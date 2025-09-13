@@ -1,5 +1,5 @@
 #include "DrawWindow.h"
-
+#include "ColorController.h"
 bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 	hInstance = hInst;
 
@@ -73,7 +73,7 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 void DrawWindow::OnPaint(HDC hdc, const RECT&) {
-
+	
 	controller.DrawStrokes(hdc, store.Strokes(), store.Current());
 }
 

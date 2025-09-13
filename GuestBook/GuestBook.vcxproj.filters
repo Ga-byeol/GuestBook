@@ -51,6 +51,12 @@
     <ClInclude Include="ReplayController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="ButtonController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorController.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GuestBook.cpp">
@@ -72,6 +78,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="ReplayController.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonController.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ToolWindow.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorController.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

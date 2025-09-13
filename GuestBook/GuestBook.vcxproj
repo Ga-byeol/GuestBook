@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="ButtonController.h" />
+    <ClInclude Include="ColorController.h" />
     <ClInclude Include="ReplayController.h" />
     <ClInclude Include="Stroke.h" />
     <ClInclude Include="DrawController.h" />
@@ -144,6 +145,7 @@
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="ButtonController.cpp" />
+    <ClCompile Include="ColorController.cpp" />
     <ClCompile Include="DrawController.cpp" />
     <ClCompile Include="ReplayController.cpp" />
     <ClCompile Include="StrokeStore.cpp" />
