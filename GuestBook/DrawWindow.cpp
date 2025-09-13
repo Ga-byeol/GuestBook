@@ -1,10 +1,9 @@
 #include "DrawWindow.h"
-#include "BackBufferManager.h"
+#include "ColorController
 
 bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 	hInstance = hInst;
-
-	WNDCLASS wc = {};
+  WNDCLASS wc = {};
 	wc.lpfnWndProc = DrawWindow::WndProc;
 	wc.hInstance = hInst;
 	wc.lpszClassName = L"DrawWindowClass";
@@ -72,13 +71,13 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 }
 
 
-
 void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
 	OutputDebugString(L"OnPaint called\n");
 	BackBuffer& back = BackBufferManager::Instance().GetBuffer();
 	back.ClearBuffer(rcClient);
 	controller.DrawStrokes(back.dc(), store.Strokes(), store.Current());
 	back.DrawBufferToScreen(hdc);
+
 }
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
