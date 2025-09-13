@@ -7,7 +7,7 @@
 
 class StrokeStore {
 public:
-    void Begin(int x, int y);
+    void Begin(int x, int y, COLORREF color);
     void Add(int x, int y);
     void End();
     void Clear();
@@ -19,7 +19,7 @@ public:
 
 
     const std::vector<Stroke> Strokes() const { return strokes; }
-    const Stroke* Current() const { return &current; }
+    const Stroke Current() const { return current; }
     bool IsRecording() const { return recording; }
 
 private:

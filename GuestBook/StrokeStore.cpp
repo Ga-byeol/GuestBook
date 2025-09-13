@@ -1,9 +1,10 @@
 #include "StrokeStore.h"
 
-void StrokeStore::Begin(int x, int y) {
+void StrokeStore::Begin(int x, int y, COLORREF color) {
 	current.points.clear();
 	lastTime = GetTickCount64();
 	current.points.push_back(Point{ x, y });
+	current.color = color;
 	recording = true;
 	// 색상 가져와야함
 }

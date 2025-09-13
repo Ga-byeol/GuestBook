@@ -17,22 +17,30 @@ namespace {
 
 void DrawController::DrawStrokes(HDC hdc,
     const std::vector<Stroke>& strokes,
-    const Stroke* current,
+    const Stroke current,
     int penWidth,
     COLORREF color)
 {
-    HPEN pen = CreatePen(PS_SOLID, penWidth, color);
-    HGDIOBJ oldPen = SelectObject(hdc, pen);
-    HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
+
 
     for (const auto& s : strokes) {
+        HPEN pen = CreatePen(PS_SOLID, penWidth, s.color);
+        HGDIOBJ oldPen = SelectObject(hdc, pen);
+        HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
         DrawPointsLine(hdc, s.points);
+        SelectObject(hdc, oldBrush);
+        SelectObject(hdc, oldPen);
+        DeleteObject(pen);
     }
-    if (current) {
-        DrawPointsLine(hdc, current->points);
+    if (!current.points.empty()) {
+        HPEN pen = CreatePen(PS_SOLID, penWidth, current.color);
+        HGDIOBJ oldPen = SelectObject(hdc, pen);
+        HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
+        DrawPointsLine(hdc, current.points);
+        SelectObject(hdc, oldBrush);
+        SelectObject(hdc, oldPen);
+        DeleteObject(pen);
     }
 
-    SelectObject(hdc, oldBrush);
-    SelectObject(hdc, oldPen);
-    DeleteObject(pen);
+
 }
