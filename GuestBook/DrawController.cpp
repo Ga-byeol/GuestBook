@@ -44,3 +44,22 @@ void DrawController::DrawStrokes(HDC hdc,
 
 
 }
+
+void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidth, COLORREF color) {
+    if (stroke.points.size() < 2) return; 
+
+    HPEN pen = CreatePen(PS_SOLID, penWidth, stroke.color);
+    HGDIOBJ oldPen = SelectObject(hdc, pen);
+    HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
+
+    
+    const Point& prevPoint = stroke.points[stroke.points.size() - 2];
+    const Point& lastPoint = stroke.points.back();
+
+    MoveToEx(hdc, prevPoint.x, prevPoint.y, nullptr);
+    LineTo(hdc, lastPoint.x, lastPoint.y);
+
+    SelectObject(hdc, oldBrush);
+    SelectObject(hdc, oldPen);
+    DeleteObject(pen);
+}

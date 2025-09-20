@@ -1,5 +1,4 @@
 #include "MainWindow.h"
-#include "BackBufferManager.h"
 
 bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     hInstance = hInst;
@@ -39,13 +38,23 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
         return TRUE;
     }
 
-    case WM_SIZE: {
-        if (pThis) {
-            RECT rc;
-            GetClientRect(hwnd, &rc);
-            int clientWidth = rc.right - rc.left;
-            int clientHeight = rc.bottom - rc.top;
+    case WM_CREATE: {
+        RECT rc;
+        GetClientRect(hwnd, &rc);
+        int w = rc.right - rc.left;
+        int h = rc.bottom - rc.top;
 
+        HDC hdc = GetDC(hwnd);
+        pThis->back.CreateBuffer(hdc, w, h);
+        ReleaseDC(hwnd, hdc);
+        return 0;
+    }
+
+    case WM_SIZE: {
+        int w = LOWORD(lParam);
+        int h = HIWORD(lParam);
+
+<<<<<<< HEAD
             HDC hdc = GetDC(hwnd);
 <<<<<<< HEAD
             BackBufferManager::Instance().ResizeBuffer(hdc, rc);
@@ -53,9 +62,15 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
             BackBufferManager::Instance().ResizeBuffer(hdc, clientWidth, clientHeight);
 >>>>>>> eee0e96 (Feature/replaycontroller (#18))
             ReleaseDC(hwnd, hdc); /// hdc �ݳ�
+=======
+        HDC hdc = GetDC(hwnd);
+        pThis->back.CreateBuffer(hdc, w, h);
+        ReleaseDC(hwnd, hdc); /// hdc �ݳ�
+>>>>>>> e953b4c (feat: BackBuffer::DrawDirtyBufferToScreen 구현, MainWindow::WM_CREATE/WM_SIZE 시점 버퍼 생성 및 재생성 처리 구현, DrawWindow 실시간 그리기 구현 (진행 중))
 
-            pThis->ResizeChildren();
-        }
+        pThis->ResizeChildren();
+
+        InvalidateRect(hwnd, nullptr, TRUE);
         return 0;
     }
 

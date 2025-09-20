@@ -4,12 +4,13 @@
 #include <condition_variable>
 #include "Stroke.h"
 #include "DrawController.h"
+#include "StrokeController.h"
 #include "StrokeStore.h"
 
 #define WM_USER_REPLAY_UPDATE (WM_USER + 1)
 
 class ToolWindow;
-
+class MainWindow;
 class DrawWindow
 {
 public:
@@ -34,8 +35,11 @@ private:
     HINSTANCE hInstance = nullptr;
 
     ToolWindow* toolWindow = nullptr;
+    MainWindow* mainWindow = nullptr;
 
-    DrawController controller;
+    DrawController drawCtrl;
+    StrokeController strokeCtrl;
     StrokeStore store;
-    COLORREF selectedColor;
+    COLORREF selectedColor = RGB(0, 0, 0);
+    int penWidth = 2;
 };

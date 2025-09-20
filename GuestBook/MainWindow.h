@@ -2,6 +2,7 @@
 #include <windows.h>
 #include "DrawWindow.h"
 #include "ToolWindow.h"
+#include "BackBuffer.h"
 
 class MainWindow
 {
@@ -9,6 +10,8 @@ public:
 	MainWindow() = default;
 	bool Create(HINSTANCE hInstance, int nCmdShow);
 	HWND GetHwnd() const { return hwnd; }
+	BackBuffer& Back() { return back; }
+	StrokeStore& Store() { return store; }
 
 	void SetDrawWindow(DrawWindow* draw) { drawWindow = draw; }
 	void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
@@ -24,5 +27,8 @@ private:
 
 	DrawWindow* drawWindow = nullptr;
 	ToolWindow* toolWindow = nullptr;
+
+	BackBuffer back;
+	StrokeStore store;
 };
 

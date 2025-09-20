@@ -1,6 +1,7 @@
 #include "DrawWindow.h"
 #include "ColorController.h"
-#include "BackBufferManager.h"
+#include "BackBuffer.h"
+#include "MainWindow.h"
 
 bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 	hInstance = hInst;
@@ -46,8 +47,14 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 	case WM_PAINT: {
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hwnd, &ps);
-		RECT rc; GetClientRect(hwnd, &rc);
+
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		///pThis->back.ClearBuffer(rc);
+		
+		/// pThis->drawController.DrawStrokes(pThis->back.dc(), pThis->StrokeController.GetStrokes(), *pThis->StrokeController.Current(), penWidth, color);
 		OnPaint(hdc, rc);
+		///back.DrawBufferToScreen(hdc);
 		EndPaint(hwnd, &ps);
 		return 0;
 	}
@@ -78,31 +85,72 @@ void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
 	//back.ClearBuffer(rcClient);
 =======
 	OutputDebugString(L"OnPaint called\n");
+<<<<<<< HEAD
 	BackBuffer& back = BackBufferManager::Instance().GetBuffer();
 	back.ClearBuffer(rcClient);
 >>>>>>> eee0e96 (Feature/replaycontroller (#18))
 	controller.DrawStrokes(back.dc(), store.Strokes(), store.Current());
 	back.DrawBufferToScreen(hdc);
+=======
+>>>>>>> e953b4c (feat: BackBuffer::DrawDirtyBufferToScreen êµ¬í˜„, MainWindow::WM_CREATE/WM_SIZE ì‹œì  ë²„í¼ ìƒì„± ë° ìž¬ìƒì„± ì²˜ë¦¬ êµ¬í˜„, DrawWindow ì‹¤ì‹œê°„ ê·¸ë¦¬ê¸° êµ¬í˜„ (ì§„í–‰ ì¤‘))
 
+	BackBuffer& back = mainWindow->Back();
+
+	back.ClearBuffer(rcClient);
+	drawCtrl.DrawStrokes(back.dc(), strokeCtrl.Strokes(), strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(), penWidth, selectedColor); 
+	
+	back.DrawBufferToScreen(hdc);
 }
 
 void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
 	SetCapture(hwnd);
-	store.Begin(x, y, selectedColor);
-	InvalidateRect(hwnd, nullptr, FALSE);
+	strokeCtrl.Begin(x, y);
+	///InvalidateRect(hwnd, nullptr, FALSE);
 }
 
 void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
-	if (store.IsRecording() && (flags & MK_LBUTTON)) {
-		store.Add(x, y);
-		InvalidateRect(hwnd, nullptr, FALSE);
+	if (flags & MK_LBUTTON) {
+		strokeCtrl.Add(x, y);
+
+		const Stroke* cur = strokeCtrl.Current();
+		if (cur && cur->points.size() >= 2) {
+
+			/// ¸¶Áö¸· ¼±¸¸ ¹öÆÛ¿¡ µ¡±×¸®±â
+			BackBuffer& back = mainWindow->Back();
+			drawCtrl.DrawLatestStroke(back.dc(), *cur, penWidth, selectedColor);
+
+			/// dirty rect °è»ê (µÎ Á¡ »çÀÌ ¿µ¿ª)
+			const Point& p1 = cur->points[cur->points.size() - 2];
+			const Point& p2 = cur->points.back();
+			RECT dirty = { min(p1.x, p2.x) - penWidth,
+						   min(p1.y, p2.y) - penWidth,
+						   max(p1.x, p2.x) + penWidth,
+						   max(p1.y, p2.y) + penWidth };
+
+			/// dirty ¿µ¿ª¸¸ È­¸é¿¡ º¹»çÇÏ±â
+			HDC hdc = GetDC(hwnd);
+			back.DrawDirtyBufferToScreen(hdc, dirty);
+			ReleaseDC(hwnd, hdc);
+			///if (store.IsRecording() && (flags & MK_LBUTTON)) {
+			///	store.Add(x, y);
+			///	InvalidateRect(hwnd, nullptr, FALSE);
+		}
 	}
 }
 
 void DrawWindow::OnLButtonUp(int x, int y, WPARAM) {
-	if (!store.IsRecording()) return;
-	store.Add(x, y);
-	store.End();
+	if (!strokeCtrl.IsRecording()) return;
+
+	strokeCtrl.Add(x, y); 
+	strokeCtrl.End();  
 	ReleaseCapture();
+
+	// ÀüÃ¼ ´Ù½Ã ±×¸®±â ¿¹¾à
 	InvalidateRect(hwnd, nullptr, FALSE);
+	
+	///if (!store.IsRecording()) return;
+	///store.Add(x, y);
+	///store.End();
+	///ReleaseCapture();
+	///InvalidateRect(hwnd, nullptr, FALSE);
 }

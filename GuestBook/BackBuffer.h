@@ -6,8 +6,8 @@ public:
 	BackBuffer() = default;
 	~BackBuffer();
 
-	int width = 0;
-	int height = 0;
+	///int width = 0;
+	///int height = 0;
 
 <<<<<<< HEAD
 	void CreateBuffer(HDC refDC, RECT rc);
@@ -16,11 +16,18 @@ public:
 >>>>>>> eee0e96 (Feature/replaycontroller (#18))
 	void ClearBuffer(const RECT& rc) const;
 	void DrawBufferToScreen(HDC dst, int x = 0, int y = 0) const;
-	HDC dc() const { return memdc; }
+	void DrawDirtyBufferToScreen(HDC dst, const RECT& dirty, int x = 0, int y = 0) const;
 	void ReleaseBuffer();
+
+	HDC dc() const { return memdc; }
+	int Width() const { return width; }
+	int Height() const { return height; }
 
 private:
 	HDC memdc = nullptr; // 메모리 DC
 	HBITMAP bmp = nullptr; // 백버퍼 비트맵
 	HGDIOBJ old = nullptr; // Select 이전 객체
+
+	int width = 0;
+	int height = 0;
 };
