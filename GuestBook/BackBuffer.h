@@ -9,11 +9,7 @@ public:
 	///int width = 0;
 	///int height = 0;
 
-<<<<<<< HEAD
-	void CreateBuffer(HDC refDC, RECT rc);
-=======
 	void CreateBuffer(HDC refDC, int w, int h);
->>>>>>> eee0e96 (Feature/replaycontroller (#18))
 	void ClearBuffer(const RECT& rc) const;
 	void DrawBufferToScreen(HDC dst, int x = 0, int y = 0) const;
 	void DrawDirtyBufferToScreen(HDC dst, const RECT& dirty, int x = 0, int y = 0) const;

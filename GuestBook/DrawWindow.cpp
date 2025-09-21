@@ -80,23 +80,11 @@ LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 
 void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
-<<<<<<< HEAD
-	BackBuffer& back = BackBufferManager::Instance().GetBuffer();
-	//back.ClearBuffer(rcClient);
-=======
-	OutputDebugString(L"OnPaint called\n");
-<<<<<<< HEAD
-	BackBuffer& back = BackBufferManager::Instance().GetBuffer();
-	back.ClearBuffer(rcClient);
->>>>>>> eee0e96 (Feature/replaycontroller (#18))
-	controller.DrawStrokes(back.dc(), store.Strokes(), store.Current());
-	back.DrawBufferToScreen(hdc);
-=======
->>>>>>> e953b4c (feat: BackBuffer::DrawDirtyBufferToScreen 구현, MainWindow::WM_CREATE/WM_SIZE 시점 버퍼 생성 및 재생성 처리 구현, DrawWindow 실시간 그리기 구현 (진행 중))
-
 	BackBuffer& back = mainWindow->Back();
 
 	back.ClearBuffer(rcClient);
+
+	///drawController ����� ��ü stroke �׸���
 	drawCtrl.DrawStrokes(back.dc(), strokeCtrl.Strokes(), strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(), penWidth, selectedColor); 
 	
 	back.DrawBufferToScreen(hdc);

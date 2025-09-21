@@ -54,23 +54,12 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
         int w = LOWORD(lParam);
         int h = HIWORD(lParam);
 
-<<<<<<< HEAD
-            HDC hdc = GetDC(hwnd);
-<<<<<<< HEAD
-            BackBufferManager::Instance().ResizeBuffer(hdc, rc);
-=======
-            BackBufferManager::Instance().ResizeBuffer(hdc, clientWidth, clientHeight);
->>>>>>> eee0e96 (Feature/replaycontroller (#18))
-            ReleaseDC(hwnd, hdc); /// hdc �ݳ�
-=======
         HDC hdc = GetDC(hwnd);
         pThis->back.CreateBuffer(hdc, w, h);
         ReleaseDC(hwnd, hdc); /// hdc �ݳ�
->>>>>>> e953b4c (feat: BackBuffer::DrawDirtyBufferToScreen 구현, MainWindow::WM_CREATE/WM_SIZE 시점 버퍼 생성 및 재생성 처리 구현, DrawWindow 실시간 그리기 구현 (진행 중))
-
         pThis->ResizeChildren();
 
-        InvalidateRect(hwnd, nullptr, TRUE);
+        InvalidateRect(hwnd, nullptr, FALSE);
         return 0;
     }
 
