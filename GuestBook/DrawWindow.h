@@ -11,6 +11,8 @@
 
 class ToolWindow;
 class MainWindow;
+class BackBuffer;
+
 class DrawWindow
 {
 public:
@@ -20,8 +22,10 @@ public:
 
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
-
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
+    void setBuffer(BackBuffer& buffer) { backBuffer  = &buffer; }
+    ///BackBuffer& buffer() { return *backBuffer;  }
+
 private:
     LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
     void OnPaint(HDC hdc, const RECT& rc);
@@ -37,6 +41,7 @@ private:
     ToolWindow* toolWindow = nullptr;
     MainWindow* mainWindow = nullptr;
 
+    BackBuffer* backBuffer = nullptr; 
     DrawController drawCtrl;
     StrokeController strokeCtrl;
     StrokeStore store;

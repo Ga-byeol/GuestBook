@@ -1,4 +1,5 @@
 #include "MainWindow.h"
+#include "DrawWindow.h"
 
 bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     hInstance = hInst;
@@ -45,8 +46,13 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
         int h = rc.bottom - rc.top;
 
         HDC hdc = GetDC(hwnd);
-        pThis->back.CreateBuffer(hdc, w, h);
+        pThis->backBuffer.CreateBuffer(hdc, w, h);
         ReleaseDC(hwnd, hdc);
+
+        if (pThis->drawWindow) {
+            pThis->drawWindow->setBuffer(pThis->backBuffer);
+        }
+
         return 0;
     }
 
@@ -55,10 +61,16 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
         int h = HIWORD(lParam);
 
         HDC hdc = GetDC(hwnd);
-        pThis->back.CreateBuffer(hdc, w, h);
+        pThis->backBuffer.CreateBuffer(hdc, w, h);
         ReleaseDC(hwnd, hdc); /// hdc ¹Ý³³
-        pThis->ResizeChildren();
 
+        if (pThis->drawWindow) {
+            pThis->drawWindow->setBuffer(pThis->backBuffer);
+        }
+        ///drawWindow->setBuffer(backBuffer);
+        
+        pThis->ResizeChildren();
+        
         InvalidateRect(hwnd, nullptr, FALSE);
         return 0;
     }

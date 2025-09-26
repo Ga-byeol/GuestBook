@@ -1,17 +1,18 @@
 #pragma once
 #include <windows.h>
-#include "DrawWindow.h"
 #include "ToolWindow.h"
 #include "BackBuffer.h"
+#include "StrokeStore.h"
 
+class DrawWindow;
 class MainWindow
 {
 public:
 	MainWindow() = default;
 	bool Create(HINSTANCE hInstance, int nCmdShow);
 	HWND GetHwnd() const { return hwnd; }
-	BackBuffer& Back() { return back; }
-	StrokeStore& Store() { return store; }
+	///BackBuffer& Back() { return backBuffer; }
+	///StrokeStore& Store() { return storeStroke; }
 
 	void SetDrawWindow(DrawWindow* draw) { drawWindow = draw; }
 	void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
@@ -28,7 +29,7 @@ private:
 	DrawWindow* drawWindow = nullptr;
 	ToolWindow* toolWindow = nullptr;
 
-	BackBuffer back;
-	StrokeStore store;
+	BackBuffer backBuffer;
+	StrokeStore storeStroke;
 };
 
