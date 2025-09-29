@@ -24,6 +24,8 @@ public:
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
     void setBuffer(BackBuffer& buffer) { backBuffer  = &buffer; }
+    void setErasing(bool erase) { erasing = erase; }
+    void ClearAll();
     ///BackBuffer& buffer() { return *backBuffer;  }
 
 private:
@@ -47,4 +49,5 @@ private:
     StrokeStore store;
     COLORREF selectedColor = RGB(0, 0, 0);
     int penWidth = 2;
+    bool erasing = false;
 };

@@ -30,6 +30,6 @@ private:
 	ToolWindow* toolWindow = nullptr;
 
 	BackBuffer backBuffer;
-	StrokeStore storeStroke;
+	StrokeStore strokeStore;
 };
 

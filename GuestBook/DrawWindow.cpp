@@ -86,13 +86,13 @@
 
 		///drawController 사용해 전체 stroke 그리기
 		drawCtrl.DrawStrokes(backBuffer->dc(), strokeCtrl.Strokes(), strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(), penWidth, selectedColor);
-
+		
 		backBuffer->DrawBufferToScreen(hdc);
 	}
 
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
 		SetCapture(hwnd);
-		strokeCtrl.Begin(x, y);
+		strokeCtrl.Begin(x, y, erasing ? RGB(255, 255, 255) : selectedColor);
 		///InvalidateRect(hwnd, nullptr, FALSE);
 	}
 
@@ -105,7 +105,7 @@
 			if (cur && cur->points.size() >= 2) {
 
 				/// 마지막 선만 버퍼에 덧그리기
-				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, penWidth, selectedColor);
+				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, penWidth, erasing ? RGB(255,255,255) : selectedColor);
 
 				/// dirty rect 계산 (두 점 사이 영역)
 				const Point& p1 = cur->points[cur->points.size() - 2];
@@ -128,12 +128,12 @@
 
 	void DrawWindow::OnLButtonUp(int x, int y, WPARAM) {
 		if (!backBuffer) return;
-		if (!strokeCtrl.IsRecording()) return;
+		if (strokeCtrl.IsRecording()) {
 
-		strokeCtrl.Add(x, y);
-		strokeCtrl.End();
-		ReleaseCapture();
-
+			strokeCtrl.Add(x, y);
+			strokeCtrl.End();
+			ReleaseCapture();
+		}
 		// 전체 다시 그리기 예약
 		InvalidateRect(hwnd, nullptr, FALSE);
 
@@ -142,4 +142,9 @@
 		///store.End();
 		///ReleaseCapture();
 		///InvalidateRect(hwnd, nullptr, FALSE);
+	}
+
+	void DrawWindow::ClearAll() {
+		strokeCtrl.Clear();
+		InvalidateRect(hwnd, nullptr, TRUE);
 	}
