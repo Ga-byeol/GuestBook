@@ -6,8 +6,8 @@ public:
 	BackBuffer() = default;
 	~BackBuffer();
 
-	///int width = 0;
-	///int height = 0;
+	int width = 0;
+	int height = 0;
 
 	void CreateBuffer(HDC refDC, int w, int h);
 	void ClearBuffer(const RECT& rc) const;
@@ -24,6 +24,6 @@ private:
 	HBITMAP bmp = nullptr; // 백버퍼 비트맵
 	HGDIOBJ old = nullptr; // Select 이전 객체
 
-	int width = 0;
-	int height = 0;
+	///int width = 0;
+	///int height = 0;
 };

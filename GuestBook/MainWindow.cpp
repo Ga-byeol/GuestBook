@@ -39,39 +39,9 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
         return TRUE;
     }
 
-    case WM_CREATE: {
-        RECT rc;
-        GetClientRect(hwnd, &rc);
-        int w = rc.right - rc.left;
-        int h = rc.bottom - rc.top;
-
-        HDC hdc = GetDC(hwnd);
-        pThis->backBuffer.CreateBuffer(hdc, w, h);
-        ReleaseDC(hwnd, hdc);
-
-        if (pThis->drawWindow) {
-            pThis->drawWindow->setBuffer(pThis->backBuffer);
-        }
-
-        return 0;
-    }
-
     case WM_SIZE: {
-        int w = LOWORD(lParam);
-        int h = HIWORD(lParam);
-
-        HDC hdc = GetDC(hwnd);
-        pThis->backBuffer.CreateBuffer(hdc, w, h);
-        ReleaseDC(hwnd, hdc); /// hdc ¹Ý³³
-
-        if (pThis->drawWindow) {
-            pThis->drawWindow->setBuffer(pThis->backBuffer);
-        }
-        ///drawWindow->setBuffer(backBuffer);
-        
-        pThis->ResizeChildren();
-        
-        InvalidateRect(hwnd, nullptr, FALSE);
+        if (pThis)
+            pThis->ResizeChildren();   
         return 0;
     }
 
@@ -98,4 +68,19 @@ void MainWindow::ResizeChildren() {
 
     if (drawWindow)
         MoveWindow(drawWindow->GetHwnd(), 0, 50, rcClient.right, rcClient.bottom - 50, TRUE);
+
+    int w = rcClient.right - rcClient.left;
+    int h = rcClient.bottom - rcClient.top;
+
+    if (w > 0 && h > 0) {
+        HDC hdc = GetDC(hwnd);
+        backBuffer.CreateBuffer(hdc, w, h);
+        ReleaseDC(hwnd, hdc); 
+
+        backBuffer.ClearBuffer(rcClient);
+
+        if (drawWindow)
+            drawWindow->setBuffer(backBuffer);
+    }
+    InvalidateRect(hwnd, nullptr, FALSE); 
 }

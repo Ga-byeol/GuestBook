@@ -5,7 +5,7 @@ BackBuffer::~BackBuffer() {
 }
 
 void BackBuffer::CreateBuffer(HDC refDC, int w, int h) {
-		if (memdc && bmp && width == w && height == h) return; // 맞으면 그대로
+	if (memdc && bmp && width == w && height == h && w > 0 && h > 0 ) return; // 맞으면 그대로
 
 	ReleaseBuffer();
 

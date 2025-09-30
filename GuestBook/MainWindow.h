@@ -11,8 +11,6 @@ public:
 	MainWindow() = default;
 	bool Create(HINSTANCE hInstance, int nCmdShow);
 	HWND GetHwnd() const { return hwnd; }
-	///BackBuffer& Back() { return backBuffer; }
-	///StrokeStore& Store() { return storeStroke; }
 
 	void SetDrawWindow(DrawWindow* draw) { drawWindow = draw; }
 	void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }

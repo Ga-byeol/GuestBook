@@ -47,14 +47,9 @@
 		case WM_PAINT: {
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hwnd, &ps);
-
 			RECT rc;
 			GetClientRect(hwnd, &rc);
-			///pThis->back.ClearBuffer(rc);
-
-			/// pThis->drawController.DrawStrokes(pThis->back.dc(), pThis->StrokeController.GetStrokes(), *pThis->StrokeController.Current(), penWidth, color);
 			OnPaint(hdc, rc);
-			///back.DrawBufferToScreen(hdc);
 			EndPaint(hwnd, &ps);
 			return 0;
 		}
@@ -80,9 +75,8 @@
 
 
 	void DrawWindow::OnPaint(HDC hdc, const RECT & rcClient) {
-		///BackBuffer& back = mainWindow->Back();
 		if (!backBuffer) return;
-		backBuffer->ClearBuffer(rcClient);
+	///	backBuffer->ClearBuffer(rcClient);
 
 		///drawController 사용해 전체 stroke 그리기
 		drawCtrl.DrawStrokes(backBuffer->dc(), strokeCtrl.Strokes(), strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(), penWidth, selectedColor);
@@ -93,7 +87,6 @@
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
 		SetCapture(hwnd);
 		strokeCtrl.Begin(x, y, erasing ? RGB(255, 255, 255) : selectedColor);
-		///InvalidateRect(hwnd, nullptr, FALSE);
 	}
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
@@ -119,9 +112,6 @@
 				HDC hdc = GetDC(hwnd);
 				backBuffer->DrawDirtyBufferToScreen(hdc, dirty);
 				ReleaseDC(hwnd, hdc);
-				///if (store.IsRecording() && (flags & MK_LBUTTON)) {
-				///	store.Add(x, y);
-				///	InvalidateRect(hwnd, nullptr, FALSE);
 			}
 		}
 	}
@@ -136,15 +126,16 @@
 		}
 		// 전체 다시 그리기 예약
 		InvalidateRect(hwnd, nullptr, FALSE);
-
-		///if (!store.IsRecording()) return;
-		///store.Add(x, y);
-		///store.End();
-		///ReleaseCapture();
-		///InvalidateRect(hwnd, nullptr, FALSE);
 	}
 
 	void DrawWindow::ClearAll() {
 		strokeCtrl.Clear();
+
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		if (backBuffer) {
+			backBuffer->ClearBuffer(rc);
+		}
+
 		InvalidateRect(hwnd, nullptr, TRUE);
 	}

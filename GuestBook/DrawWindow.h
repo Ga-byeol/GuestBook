@@ -26,7 +26,6 @@ public:
     void setBuffer(BackBuffer& buffer) { backBuffer  = &buffer; }
     void setErasing(bool erase) { erasing = erase; }
     void ClearAll();
-    ///BackBuffer& buffer() { return *backBuffer;  }
 
 private:
     LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
