@@ -12,6 +12,7 @@
 class ToolWindow;
 class MainWindow;
 class BackBuffer;
+class Application;
 
 class DrawWindow
 {
@@ -25,6 +26,7 @@ public:
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
     void setBuffer(BackBuffer& buffer) { backBuffer  = &buffer; }
     void setErasing(bool erase) { erasing = erase; }
+    void SetApplication(Application* a) { app = a; }
     void ClearAll();
 
 private:
@@ -38,6 +40,7 @@ private:
 
     HWND hwnd = nullptr;
     HINSTANCE hInstance = nullptr;
+    Application* app = nullptr;
 
     ToolWindow* toolWindow = nullptr;
     MainWindow* mainWindow = nullptr;

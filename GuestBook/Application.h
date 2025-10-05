@@ -47,6 +47,8 @@ public:
     int Run();
     void DrawForReplay();
     StrokeStore& GetStrokes() { return drawWindow.GetStore(); }
+    bool IsReplaying() const { return replayController.IsReplaying(); };
+
 private:
     HINSTANCE hInstance = nullptr;
     MainWindow mainWindow;

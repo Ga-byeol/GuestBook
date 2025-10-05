@@ -2,6 +2,7 @@
 #include "ColorController.h"
 #include "BackBuffer.h"
 #include "MainWindow.h"
+#include "Application.h"
 
 		bool DrawWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
 		hInstance = hInst;
@@ -76,23 +77,42 @@
 
 	void DrawWindow::OnPaint(HDC hdc, const RECT & rcClient) {
 		if (!backBuffer) return;
-	///	backBuffer->ClearBuffer(rcClient);
+		backBuffer->ClearBuffer(rcClient);
 
+		const auto strokes = store.Strokes();
+		const auto current = store.Current();
+
+		bool replaying = app && app->IsReplaying();
+		if (replaying) {
+			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, current, penWidth, selectedColor);
+		}
+		else {
+			drawCtrl.DrawStrokes(backBuffer->dc(),
+				strokeCtrl.Strokes(),
+				strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(),
+				penWidth, selectedColor);
+		}
 		///drawController 사용해 전체 stroke 그리기
-		drawCtrl.DrawStrokes(backBuffer->dc(), strokeCtrl.Strokes(), strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(), penWidth, selectedColor);
+		///drawCtrl.DrawStrokes(backBuffer->dc(), strokeCtrl.Strokes(), strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(), penWidth, selectedColor);
 		
 		backBuffer->DrawBufferToScreen(hdc);
 	}
 
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
+		if (app && app->IsReplaying()) return;
 		SetCapture(hwnd);
-		strokeCtrl.Begin(x, y, erasing ? RGB(255, 255, 255) : selectedColor);
+		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
+		strokeCtrl.Begin(x, y, color);
+		store.Begin(x, y, color);
+		///strokeCtrl.Begin(x, y, erasing ? RGB(255, 255, 255) : selectedColor);
 	}
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
 		if (!backBuffer) return;
+		if (app && app->IsReplaying()) return;
 		if (flags & MK_LBUTTON) {
 			strokeCtrl.Add(x, y);
+			store.Add(x, y);
 
 			const Stroke* cur = strokeCtrl.Current();
 			if (cur && cur->points.size() >= 2) {
@@ -118,10 +138,14 @@
 
 	void DrawWindow::OnLButtonUp(int x, int y, WPARAM) {
 		if (!backBuffer) return;
-		if (strokeCtrl.IsRecording()) {
+		if (app && app->IsReplaying()) return;
 
+		if (strokeCtrl.IsRecording()) {
 			strokeCtrl.Add(x, y);
 			strokeCtrl.End();
+
+			store.Add(x, y);
+			store.End();
 			ReleaseCapture();
 		}
 		// 전체 다시 그리기 예약
