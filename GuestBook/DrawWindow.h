@@ -24,7 +24,6 @@ public:
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
     void setBuffer(BackBuffer& buffer) { backBuffer  = &buffer; }
-    void setErasing(bool erase) { erasing = erase; }
     void ClearAll();
 
 private:

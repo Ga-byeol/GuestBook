@@ -86,7 +86,7 @@
 
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
 		SetCapture(hwnd);
-		strokeCtrl.Begin(x, y, erasing ? RGB(255, 255, 255) : selectedColor);
+		strokeCtrl.Begin(x, y,selectedColor);
 	}
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
@@ -98,7 +98,7 @@
 			if (cur && cur->points.size() >= 2) {
 
 				/// 마지막 선만 버퍼에 덧그리기
-				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, penWidth, erasing ? RGB(255,255,255) : selectedColor);
+				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, penWidth, selectedColor);
 
 				/// dirty rect 계산 (두 점 사이 영역)
 				const Point& p1 = cur->points[cur->points.size() - 2];
