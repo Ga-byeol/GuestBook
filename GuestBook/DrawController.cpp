@@ -42,7 +42,6 @@ void DrawController::DrawStrokes(HDC hdc,
         DeleteObject(pen);
     }
 
-
 }
 
 void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidth, COLORREF color) {

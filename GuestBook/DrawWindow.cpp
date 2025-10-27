@@ -78,7 +78,7 @@
 	void DrawWindow::OnPaint(HDC hdc, const RECT & rcClient) {
 		if (!backBuffer) return;
 		backBuffer->ClearBuffer(rcClient);
-
+    
 		const auto strokes = store.Strokes();
 		const auto current = store.Current();
 
@@ -92,9 +92,6 @@
 				strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(),
 				penWidth, selectedColor);
 		}
-		///drawController »ç¿ëÇØ ÀüÃ¼ stroke ±×¸®±â
-		///drawCtrl.DrawStrokes(backBuffer->dc(), strokeCtrl.Strokes(), strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(), penWidth, selectedColor);
-		
 		backBuffer->DrawBufferToScreen(hdc);
 	}
 
@@ -105,7 +102,7 @@
 		strokeCtrl.Begin(x, y, color);
 		store.Begin(x, y, color);
 		///strokeCtrl.Begin(x, y, erasing ? RGB(255, 255, 255) : selectedColor);
-	}
+}
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
 		if (!backBuffer) return;
@@ -117,10 +114,10 @@
 			const Stroke* cur = strokeCtrl.Current();
 			if (cur && cur->points.size() >= 2) {
 
-				/// ¸¶Áö¸· ¼±¸¸ ¹öÆÛ¿¡ µ¡±×¸®±â
+				/// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½×¸ï¿½ï¿½ï¿½
 				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, penWidth, erasing ? RGB(255,255,255) : selectedColor);
 
-				/// dirty rect °è»ê (µÎ Á¡ »çÀÌ ¿µ¿ª)
+				/// dirty rect ï¿½ï¿½ï¿½ (ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½)
 				const Point& p1 = cur->points[cur->points.size() - 2];
 				const Point& p2 = cur->points.back();
 				RECT dirty = { min(p1.x, p2.x) - penWidth,
@@ -128,19 +125,19 @@
 							   max(p1.x, p2.x) + penWidth,
 							   max(p1.y, p2.y) + penWidth };
 
-				/// dirty ¿µ¿ª¸¸ È­¸é¿¡ º¹»çÇÏ±â
+				/// dirty ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ È­ï¿½é¿¡ ï¿½ï¿½ï¿½ï¿½ï¿½Ï±ï¿½
 				HDC hdc = GetDC(hwnd);
 				backBuffer->DrawDirtyBufferToScreen(hdc, dirty);
 				ReleaseDC(hwnd, hdc);
 			}
 		}
-	}
+  }
 
 	void DrawWindow::OnLButtonUp(int x, int y, WPARAM) {
 		if (!backBuffer) return;
 		if (app && app->IsReplaying()) return;
 
-		if (strokeCtrl.IsRecording()) {
+  	if (strokeCtrl.IsRecording()) {
 			strokeCtrl.Add(x, y);
 			strokeCtrl.End();
 
@@ -148,7 +145,7 @@
 			store.End();
 			ReleaseCapture();
 		}
-		// ÀüÃ¼ ´Ù½Ã ±×¸®±â ¿¹¾à
+		// ï¿½ï¿½Ã¼ ï¿½Ù½ï¿½ ï¿½×¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 		InvalidateRect(hwnd, nullptr, FALSE);
 	}
 
@@ -160,6 +157,6 @@
 		if (backBuffer) {
 			backBuffer->ClearBuffer(rc);
 		}
-
+    
 		InvalidateRect(hwnd, nullptr, TRUE);
 	}

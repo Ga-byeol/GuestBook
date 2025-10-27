@@ -12,7 +12,7 @@ public:
 	void CreateBuffer(HDC refDC, int w, int h);
 	void ClearBuffer(const RECT& rc) const;
 	void DrawBufferToScreen(HDC dst, int x = 0, int y = 0) const;
-	void DrawDirtyBufferToScreen(HDC dst, const RECT& dirty, int x = 0, int y = 0) const;
+  void DrawDirtyBufferToScreen(HDC dst, const RECT& dirty, int x = 0, int y = 0) const;
 	void ReleaseBuffer();
 
 	HDC dc() const { return memdc; }
@@ -20,10 +20,7 @@ public:
 	int Height() const { return height; }
 
 private:
-	HDC memdc = nullptr; // ∏ﬁ∏∏Æ DC
-	HBITMAP bmp = nullptr; // πÈπˆ∆€ ∫Ò∆Æ∏ 
-	HGDIOBJ old = nullptr; // Select ¿Ã¿¸ ∞¥√º
-
-	///int width = 0;
-	///int height = 0;
+	HDC memdc = nullptr; // Î©îÎ™®Î¶¨ DC
+	HBITMAP bmp = nullptr; // Î∞±Î≤ÑÌçº ÎπÑÌä∏Îßµ
+	HGDIOBJ old = nullptr; // Select Ïù¥Ï†Ñ Í∞ùÏ≤¥
 };
