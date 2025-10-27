@@ -29,7 +29,6 @@ public:
     void SetApplication(Application* a) { app = a; }
     void ClearAll();
 
-    void setSelectedColor(COLORREF color) { this->selectedColor = color; }
 private:
     LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
     void OnPaint(HDC hdc, const RECT& rc);
