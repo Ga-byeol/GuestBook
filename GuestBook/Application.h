@@ -27,7 +27,13 @@ public:
             MessageBox(nullptr, L"불러오기 버튼", L"TOOL창", MB_OK);
             });
         btnCtrl.RegisterHandler(REPLAY, [&]() {
-            replayController.StartReplay();
+            drawWindow.setReplaying(true);
+            HWND hwnd = drawWindow.GetHwnd();
+            HDC memdc = drawWindow.GetMemDc();
+            const auto& strokes = drawWindow.GetDrawnStrokes();
+
+        //    replayController.StartReplay();
+            drawWindow.setReplaying(false);
             });
         btnCtrl.RegisterHandler(CLEAR, [&]() {
         ///    MessageBox(nullptr, L"전체 지우기 버튼", L"TOOL창", MB_OK);
