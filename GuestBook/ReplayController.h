@@ -13,6 +13,7 @@ public:
 	ReplayController(Application* a, StrokeStore* s) : app(a), store(s) {};
 	~ReplayController() { StopReplay(); }
 	void StartReplay();
+	bool IsReplaying() const { return isReplaying; }
 
 private:
 	void PauseReplay();

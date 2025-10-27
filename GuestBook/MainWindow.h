@@ -1,8 +1,10 @@
 #pragma once
 #include <windows.h>
-#include "DrawWindow.h"
 #include "ToolWindow.h"
+#include "BackBuffer.h"
+#include "StrokeStore.h"
 
+class DrawWindow;
 class MainWindow
 {
 public:
@@ -24,5 +26,8 @@ private:
 
 	DrawWindow* drawWindow = nullptr;
 	ToolWindow* toolWindow = nullptr;
+
+	BackBuffer backBuffer;
+	StrokeStore strokeStore;
 };
 

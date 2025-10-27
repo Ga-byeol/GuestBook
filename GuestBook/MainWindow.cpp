@@ -1,5 +1,5 @@
 #include "MainWindow.h"
-#include "BackBufferManager.h"
+#include "DrawWindow.h"
 
 bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     hInstance = hInst;
@@ -40,18 +40,8 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
     }
 
     case WM_SIZE: {
-        if (pThis) {
-            RECT rc;
-            GetClientRect(hwnd, &rc);
-            int clientWidth = rc.right - rc.left;
-            int clientHeight = rc.bottom - rc.top;
-
-            HDC hdc = GetDC(hwnd);
-            BackBufferManager::Instance().ResizeBuffer(hdc, clientWidth, clientHeight);
-            ReleaseDC(hwnd, hdc); /// hdc ¹Ý³³
-
-            pThis->ResizeChildren();
-        }
+        if (pThis)
+            pThis->ResizeChildren();   
         return 0;
     }
 
@@ -78,4 +68,19 @@ void MainWindow::ResizeChildren() {
 
     if (drawWindow)
         MoveWindow(drawWindow->GetHwnd(), 0, 50, rcClient.right, rcClient.bottom - 50, TRUE);
+
+    int w = rcClient.right - rcClient.left;
+    int h = rcClient.bottom - rcClient.top;
+
+    if (w > 0 && h > 0) {
+        HDC hdc = GetDC(hwnd);
+        backBuffer.CreateBuffer(hdc, w, h);
+        ReleaseDC(hwnd, hdc); 
+
+        backBuffer.ClearBuffer(rcClient);
+
+        if (drawWindow)
+            drawWindow->setBuffer(backBuffer);
+    }
+    InvalidateRect(hwnd, nullptr, FALSE); 
 }

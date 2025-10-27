@@ -30,10 +30,12 @@ public:
             replayController.StartReplay();
             });
         btnCtrl.RegisterHandler(CLEAR, [&]() {
-            MessageBox(nullptr, L"전체 지우기 버튼", L"TOOL창", MB_OK);
+        ///    MessageBox(nullptr, L"전체 지우기 버튼", L"TOOL창", MB_OK);
+            drawWindow.ClearAll();
             });
         btnCtrl.RegisterHandler(ERASE, [&]() {
-            MessageBox(nullptr, L"지우기 버튼", L"TOOL창", MB_OK);
+        ///    MessageBox(nullptr, L"지우기 버튼", L"TOOL창", MB_OK);
+            drawWindow.setSelectedColor(RGB(255, 255, 255));
             });
         btnCtrl.RegisterHandler(BRUSH, [&]() {
             MessageBox(nullptr, L"브러쉬 버튼", L"TOOL창", MB_OK);
@@ -47,6 +49,8 @@ public:
     int Run();
     void DrawForReplay();
     StrokeStore& GetStrokes() { return drawWindow.GetStore(); }
+    bool IsReplaying() const { return replayController.IsReplaying(); };
+
 private:
     HINSTANCE hInstance = nullptr;
     MainWindow mainWindow;

@@ -5,7 +5,7 @@ BackBuffer::~BackBuffer() {
 }
 
 void BackBuffer::CreateBuffer(HDC refDC, int w, int h) {
-	if (memdc && bmp && width == w && height == h) return; // ¸ÂÀ¸¸é ±×´ë·Î
+	if (memdc && bmp && width == w && height == h && w > 0 && h > 0 ) return; // ë§ìœ¼ë©´ ê·¸ëŒ€ë¡œ
 
 	ReleaseBuffer();
 
@@ -27,13 +27,23 @@ void BackBuffer::CreateBuffer(HDC refDC, int w, int h) {
 
 void BackBuffer::ClearBuffer(const RECT& rc) const {
 	if (!memdc) return;
-	FillRect(memdc, &rc, (HBRUSH)(COLOR_WINDOW + 1)); // À©µµ¿ì ±âº» ¹è°æ
+	FillRect(memdc, &rc, (HBRUSH)(COLOR_WINDOW + 1)); // ìœˆë„ìš° ê¸°ë³¸ ë°°ê²½
 }
 
+/// ë¦¬í”Œë ˆì´ ì‹œ ì „ì²´ ë³µì‚¬
 void BackBuffer::DrawBufferToScreen(HDC dst, int x, int y) const {
 	if (!memdc || !dst || (width <= 0) || (height <= 0)) return;
 	BitBlt(dst, x, y, width, height, memdc, 0, 0, SRCCOPY);
 }
+
+/// ì‹¤ì‹œê°„ ê·¸ë¦¬ê¸°ìš© ë¶€ë¶„ ë³µì‚¬
+void BackBuffer::DrawDirtyBufferToScreen(HDC dst, const RECT& dirty, int x, int y) const {
+	if (!memdc || !dst || (width <= 0) || (height <= 0)) return;
+	int w = dirty.right - dirty.left;
+	int h = dirty.bottom - dirty.top; 
+	BitBlt(dst, dirty.left + x, dirty.top + y, w, h, memdc, dirty.left, dirty.top,SRCCOPY);
+}
+
 
 void BackBuffer::ReleaseBuffer() {
 	if (memdc) {

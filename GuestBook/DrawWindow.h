@@ -4,11 +4,15 @@
 #include <condition_variable>
 #include "Stroke.h"
 #include "DrawController.h"
+#include "StrokeController.h"
 #include "StrokeStore.h"
 
 #define WM_USER_REPLAY_UPDATE (WM_USER + 1)
 
 class ToolWindow;
+class MainWindow;
+class BackBuffer;
+class Application;
 
 class DrawWindow
 {
@@ -19,6 +23,11 @@ public:
 
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
+    void setSelectedColor(COLORREF color) { this->selectedColor = color; }
+    void setBuffer(BackBuffer& buffer) { backBuffer  = &buffer; }
+    void setErasing(bool erase) { erasing = erase; }
+    void SetApplication(Application* a) { app = a; }
+    void ClearAll();
 
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
 private:
@@ -32,10 +41,16 @@ private:
 
     HWND hwnd = nullptr;
     HINSTANCE hInstance = nullptr;
+    Application* app = nullptr;
 
     ToolWindow* toolWindow = nullptr;
+    MainWindow* mainWindow = nullptr;
 
-    DrawController controller;
+    BackBuffer* backBuffer = nullptr; 
+    DrawController drawCtrl;
+    StrokeController strokeCtrl;
     StrokeStore store;
-    COLORREF selectedColor;
+    COLORREF selectedColor = RGB(0, 0, 0);
+    int penWidth = 2;
+    bool erasing = false;
 };

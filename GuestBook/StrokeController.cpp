@@ -1,8 +1,9 @@
 #include "StrokeController.h"
 
-void StrokeController::Begin(int x, int y) {
+void StrokeController::Begin(int x, int y, COLORREF color) {
 	current.points.clear();
 	current.points.push_back(Point{ x, y, 0 });
+	current.color = color;
 	recording = true;
 }
 

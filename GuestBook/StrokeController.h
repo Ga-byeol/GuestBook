@@ -5,7 +5,7 @@
 
 class StrokeController {
 public:
-    void Begin(int x, int y);
+    void Begin(int x, int y, COLORREF color);
     void Add(int x, int y);
     void End();
     void Clear();
