@@ -1,22 +1,9 @@
 #include "ReplayController.h"
 #include "Application.h"
 
-void ReplayController::StartReplay() {
+void ReplayController::StartReplay(HWND drawWindowHwnd, vector<Stroke> copyStroke, OnReplayFinishedCallback onFinished) {
 	{
-		std::lock_guard<std::mutex> lock(mtx);
 		if (isReplaying) return;  // 이미 실행 중이면 무시
-
-		replayStrokes = store->Strokes();  // 전체 복사
-
-		store->Clear();
-
-		// 이전 스레드 정리
-		if (replayThread.joinable()) {
-			stopRequested = true;
-			isPaused = false;
-			cv.notify_one();
-			replayThread.join();
-		}
 
 		// 재생 상태 초기화
 		isReplaying = true;
@@ -24,59 +11,36 @@ void ReplayController::StartReplay() {
 		stopRequested = false;
 	}
 	// 새 스레드 생성 (이 안에서 mtx, cv를 사용해 일시정지/중단 관리)
-	replayThread = std::thread([this]() {
-		for (const auto& stroke : replayStrokes) {
+	replayThread = std::thread([=]() {
 
-			for (const auto& pt : stroke.points) {
-				{
-					std::unique_lock<std::mutex> lock(mtx);
-					cv.wait(lock, [this] { return !isPaused || stopRequested; });
-					if (stopRequested) return;
-				}
-				store->ReplaySetCurrentStyle(stroke.color, stroke.thickness);
-				store->ReplayCopyPointToCurrent(pt);
-
-				app->DrawForReplay();
-				Sleep(pt.timestamp);
+		HDC hdc = GetDC(drawWindowHwnd);
+		for (const auto& s : copyStroke) {
+			HPEN pen = CreatePen(PS_SOLID, s.thickness, s.color);
+			HPEN oldpen = (HPEN)SelectObject(hdc, pen);
+			for (size_t i = 1; i < s.points.size(); ++i) {
+				MoveToEx(hdc, s.points[i - 1].x, s.points[i - 1].y, nullptr);
+				LineTo(hdc, s.points[i].x, s.points[i].y);
+				Sleep(s.points[i].timestamp);
 			}
-			
-			store->ReplayCopyTempToStrokes();
-			store->ReplayClearCurrent();
+			DeleteObject(pen);
 			
 		}
-
-		{
-			std::lock_guard<std::mutex> lock(mtx);
-			isReplaying = false;
-		}
-	});
-		//StopReplay();
+		// 원본 선에 복사 선 넣기
+		// drawWindow의 isReplay = false
+		onFinished();
+		});
 }
 
 void ReplayController::PauseReplay() {
-	std::lock_guard<std::mutex> lock(mtx);
-	if (!isReplaying) return;
-	isPaused = true;
+	rStatus = ReplayStatus::Paused;
 }
 
 void ReplayController::ResumeReplay() {
-	{
-		std::lock_guard<std::mutex> lock(mtx);
-		if (!isReplaying) return;
-		isPaused = false;
-	}
-	cv.notify_one();
+	
+	rStatus = ReplayStatus::Running;
+	
 }
 
 void ReplayController::StopReplay() {
-
-	if (replayThread.joinable()) {
-		stopRequested = true;
-		isPaused = false;
-		cv.notify_one();
-		replayThread.join();
-	}
-	isReplaying = false;
-	replayStrokes.clear();
-	store->ReplayClearCurrent();
+	rStatus = ReplayStatus::stopped;
 }
