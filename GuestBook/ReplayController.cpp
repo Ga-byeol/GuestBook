@@ -3,6 +3,7 @@
 
 void ReplayController::StartReplay(HWND drawWindowHwnd, vector<Stroke> copyStroke, OnReplayFinishedCallback onFinished) {
 	{
+
 		if (isReplaying) return;  // 이미 실행 중이면 무시
 
 		// 재생 상태 초기화
@@ -27,8 +28,10 @@ void ReplayController::StartReplay(HWND drawWindowHwnd, vector<Stroke> copyStrok
 		}
 		// 원본 선에 복사 선 넣기
 		// drawWindow의 isReplay = false
-		onFinished();
+		onFinished(copyStroke);
+		StopReplay();
 		});
+	replayThread.detach();
 }
 
 void ReplayController::PauseReplay() {

@@ -8,7 +8,6 @@
 #include "StrokeStore.h"
 #include "BackBuffer.h"
 #include "BackBufferManager.h"
-
 #define WM_USER_REPLAY_UPDATE (WM_USER + 1)
 
 class ToolWindow;

@@ -15,7 +15,7 @@
 
 class Application {
 public:
-    Application() : replayController(this, &drawWindow.GetStore()){
+    Application() : replayController(){
         // ToolWindow 안의 ButtonController에 접근
         auto& btnCtrl = toolWindow.GetButtonController();
 
@@ -27,13 +27,30 @@ public:
             MessageBox(nullptr, L"불러오기 버튼", L"TOOL창", MB_OK);
             });
         btnCtrl.RegisterHandler(REPLAY, [&]() {
-            drawWindow.setReplaying(true);
-            HWND hwnd = drawWindow.GetHwnd();
-            HDC memdc = drawWindow.GetMemDc();
-            const auto& strokes = drawWindow.GetDrawnStrokes();
+            OutputDebugString(L"replay clicked\n");
 
-            replayController.StartReplay();
-           // drawWindow.setReplaying(false);
+            drawWindow.setReplaying(true);
+
+            HWND hDrawWnd = drawWindow.GetHwnd();
+            vector<Stroke> strokesCopy = drawWindow.GetDrawnStrokes();
+
+            drawWindow.ClearAll();
+
+            InvalidateRect(hDrawWnd, NULL, TRUE);
+            UpdateWindow(hDrawWnd);
+
+            auto onFinishCallback = [this, hDrawWnd](const vector<Stroke>& replayedData) {
+
+                // 이 코드는 나중에 Replay 스레드가 호출해 줄 것임
+                
+                // drawWindow.SetStrokes(replayedData);// 1. 원본 데이터 복원
+                
+                drawWindow.setReplaying(false);      // 2. 리플레이 모드 해제
+
+                InvalidateRect(hDrawWnd, NULL, FALSE); // 3. 화면 갱신
+                };
+
+                replayController.StartReplay(hDrawWnd, strokesCopy, onFinishCallback);
             });
         btnCtrl.RegisterHandler(CLEAR, [&]() {
         ///    MessageBox(nullptr, L"전체 지우기 버튼", L"TOOL창", MB_OK);
@@ -53,8 +70,7 @@ public:
     }
     bool Init(HINSTANCE hInstance, int nCmdShow);
     int Run();
-    void DrawForReplay();
-    StrokeStore& GetStrokes() { return drawWindow.GetStore(); }
+    
     bool IsReplaying() const { return replayController.IsReplaying(); };
 
 private:

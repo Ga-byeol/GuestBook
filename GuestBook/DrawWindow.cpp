@@ -20,7 +20,7 @@
 			WS_CHILD | WS_VISIBLE,
 			0, 50, 800, 600,
 			parentHwnd, NULL, hInst, this);
-
+		OutputDebugString(L"create drawWindow\n");
 		return hwnd != nullptr;
 	}
 
@@ -44,6 +44,7 @@
 	}
 
 	LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
+
 		switch (msg) {
 		case WM_PAINT: {
 			PAINTSTRUCT ps;
@@ -76,13 +77,15 @@
 
 
 	void DrawWindow::OnPaint(HDC hdc, const RECT & rcClient) {
+		OutputDebugString(L"called paint drawWindow\n");
+
 		if (!backBuffer) return;
 		backBuffer->ClearBuffer(rcClient);
     
 		const auto strokes = store.Strokes();
 		const auto current = store.Current();
 
-		if(bool replaying = app && app->IsReplaying()){
+		if(bool replaying = app && app->IsReplaying()) {
 		///if (isReplaying) {
 			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, current, penWidth, selectedColor);
 		}

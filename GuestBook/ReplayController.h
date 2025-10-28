@@ -2,9 +2,10 @@
 #include <vector>
 #include <WINDOWS.h>
 #include <thread>
-#include "Stroke.h"
+#include <functional>
+#include "Stroke.h";
 
-using OnReplayFinishedCallback = std::function<void(const vector<Stroke>&)>;
+using OnReplayFinishedCallback = std::function<void(const std::vector<Stroke>&)>;
 
 class Application;
 
@@ -17,11 +18,8 @@ enum class ReplayStatus {
 class ReplayController
 {
 public:
-	ReplayController() { rStatus = ReplayStatus::stopped; }
-	ReplayController(Application* a, StrokeStore* s) : app(a), store(s) {};
-	~ReplayController() { StopReplay(); }
-	void StartReplay(HWND drawWindowHwnd, vector<Stroke> copyStroke, OnReplayFinishedCallback onFinished);
-	
+	void StartReplay(HWND drawWindowHwnd, std::vector<Stroke> copyStroke, OnReplayFinishedCallback onFinished);
+	bool IsReplaying() const { return isReplaying; }
 
 private:
 
@@ -30,7 +28,6 @@ private:
 	void StopReplay();
 
 	Application* app;
-	StrokeStore* store = nullptr;
 	std::thread replayThread;
 	std::vector<Stroke> replayStrokes;
 
