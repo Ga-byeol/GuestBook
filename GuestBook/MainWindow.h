@@ -2,7 +2,6 @@
 #include <windows.h>
 #include "ToolWindow.h"
 #include "BackBuffer.h"
-#include "StrokeStore.h"
 
 class DrawWindow;
 class MainWindow
@@ -28,6 +27,5 @@ private:
 	ToolWindow* toolWindow = nullptr;
 
 	BackBuffer backBuffer;
-	StrokeStore strokeStore;
 };
 

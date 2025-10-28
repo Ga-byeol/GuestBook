@@ -43,7 +43,7 @@ public:
 
                 // 이 코드는 나중에 Replay 스레드가 호출해 줄 것임
                 
-                // drawWindow.SetStrokes(replayedData);// 1. 원본 데이터 복원
+                drawWindow.SetStrokes(replayedData);// 1. 원본 데이터 복원
                 
                 drawWindow.setReplaying(false);      // 2. 리플레이 모드 해제
 

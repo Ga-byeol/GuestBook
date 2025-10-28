@@ -5,7 +5,6 @@
 #include "Stroke.h"
 #include "DrawController.h"
 #include "StrokeController.h"
-#include "StrokeStore.h"
 #include "BackBuffer.h"
 #include "BackBufferManager.h"
 #define WM_USER_REPLAY_UPDATE (WM_USER + 1)
@@ -54,7 +53,6 @@ private:
     BackBuffer* backBuffer = nullptr; 
     DrawController drawCtrl;
     StrokeController strokeCtrl;
-    StrokeStore store;
     COLORREF selectedColor = RGB(0, 0, 0);
     int penWidth = 2;
     bool erasing = false;
