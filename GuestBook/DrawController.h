@@ -12,4 +12,6 @@ public:
       COLORREF color = RGB(30, 30, 30));
 
     void DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidth, COLORREF color);
+    
+
 };

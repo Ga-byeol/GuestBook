@@ -78,8 +78,9 @@
 	void DrawWindow::OnPaint(HDC hdc, const RECT & rcClient) {
 		if (!backBuffer) return;
 		backBuffer->ClearBuffer(rcClient);
-    
-		const auto strokes = store.Strokes();
+
+		const auto strokes = drawCtrl.Strokes();
+	///	const auto strokes = store.Strokes();
 		const auto current = store.Current();
 
 		if(bool replaying = app && app->IsReplaying()){
@@ -88,7 +89,8 @@
 		}
 		else {
 			drawCtrl.DrawStrokes(backBuffer->dc(),
-				strokeCtrl.Strokes(),
+				drawCtrl.Strokes(),
+				///	strokeCtrl.Strokes(),
 				strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(),
 				penWidth, selectedColor);
 		}
@@ -111,7 +113,7 @@
 		///if (isReplaying) return;
 		if (flags & MK_LBUTTON) {
 			strokeCtrl.Add(x, y);
-			store.Add(x, y);
+		///	store.Add(x, y);
 
 			const Stroke* cur = strokeCtrl.Current();
 			if (cur && cur->points.size() >= 2) {
@@ -143,8 +145,8 @@
 			strokeCtrl.Add(x, y);
 			strokeCtrl.End();
 
-			store.Add(x, y);
-			store.End();
+	///		store.Add(x, y);
+	///		store.End();
 			ReleaseCapture();
 		}
 		InvalidateRect(hwnd, nullptr, FALSE);
@@ -152,7 +154,7 @@
 
 	void DrawWindow::ClearAll() {
 		strokeCtrl.Clear();
-		store.Clear(); 
+	///	store.Clear(); 
 
 		RECT rc;
 		GetClientRect(hwnd, &rc);

@@ -129,14 +129,12 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="BackBuffer.h" />
-    
     <ClInclude Include="ButtonController.h" />
     <ClInclude Include="ColorController.h" />
     <ClInclude Include="ReplayController.h" />
     <ClInclude Include="Stroke.h" />
     <ClInclude Include="DrawController.h" />
     <ClInclude Include="StrokeController.h" />
-    <ClInclude Include="StrokeStore.h" />
     <ClInclude Include="DrawWindow.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GuestBook.h" />
@@ -153,7 +151,6 @@
     <ClCompile Include="DrawController.cpp" />
     <ClCompile Include="ReplayController.cpp" />
     <ClCompile Include="StrokeController.cpp" />
-    <ClCompile Include="StrokeStore.cpp" />
     <ClCompile Include="DrawWindow.cpp" />
     <ClCompile Include="GuestBook.cpp" />
     <ClCompile Include="MainWindow.cpp" />
