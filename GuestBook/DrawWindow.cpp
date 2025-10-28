@@ -82,8 +82,8 @@
 		const auto strokes = store.Strokes();
 		const auto current = store.Current();
 
-		//bool replaying = app && app->IsReplaying();
-		if (isReplaying) {
+		if(bool replaying = app && app->IsReplaying()){
+		///if (isReplaying) {
 			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, current, penWidth, selectedColor);
 		}
 		else {
@@ -96,8 +96,8 @@
 	}
 
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
-		//if (app && app->IsReplaying()) return;
-		if (isReplaying) return;
+		if (app && app->IsReplaying()) return;
+		///if (isReplaying) return;
 		SetCapture(hwnd);
 		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
 		strokeCtrl.Begin(x, y, color);
@@ -107,8 +107,8 @@
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
 		if (!backBuffer) return;
-		//if (app && app->IsReplaying()) return;
-		if (isReplaying) return;
+		if (app && app->IsReplaying()) return;
+		///if (isReplaying) return;
 		if (flags & MK_LBUTTON) {
 			strokeCtrl.Add(x, y);
 			store.Add(x, y);
@@ -136,8 +136,8 @@
 
 	void DrawWindow::OnLButtonUp(int x, int y, WPARAM) {
 		if (!backBuffer) return;
-		//if (app && app->IsReplaying()) return;
-		if (isReplaying) return;
+		if (app && app->IsReplaying()) return;
+		///if (isReplaying) return;
 
   	if (strokeCtrl.IsRecording()) {
 			strokeCtrl.Add(x, y);

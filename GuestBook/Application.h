@@ -32,8 +32,8 @@ public:
             HDC memdc = drawWindow.GetMemDc();
             const auto& strokes = drawWindow.GetDrawnStrokes();
 
-        //    replayController.StartReplay();
-            drawWindow.setReplaying(false);
+            replayController.StartReplay();
+           // drawWindow.setReplaying(false);
             });
         btnCtrl.RegisterHandler(CLEAR, [&]() {
         ///    MessageBox(nullptr, L"전체 지우기 버튼", L"TOOL창", MB_OK);
