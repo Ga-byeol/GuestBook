@@ -2,13 +2,15 @@
 
 void StrokeController::Begin(int x, int y, COLORREF color) {
 	current.points.clear();
-	current.points.push_back(Point{ x, y, 0 });
+	lastTime = GetTickCount64();
+	current.points.push_back(Point{ x, y});
 	current.color = color;
 	recording = true;
 }
 
 void StrokeController::Add(int x, int y) {
 	if (!recording) return;
+	DWORD now = GetTickCount64();
 
 	if (!current.points.empty()) {
 		const Point& last = current.points.back();
@@ -16,7 +18,8 @@ void StrokeController::Add(int x, int y) {
 			return;
 		}
 	}
-	current.points.push_back(Point{ x, y, 0 });
+	current.points.push_back(Point{ x, y, now - lastTime });
+	lastTime = now;
 }
 
 void StrokeController::End() {
@@ -27,6 +30,7 @@ void StrokeController::End() {
 }
 
 void StrokeController::Clear() {
+	std::lock_guard<std::mutex> lock(mtx);
 	strokes.clear();
 	current.points.clear();
 	recording = false;

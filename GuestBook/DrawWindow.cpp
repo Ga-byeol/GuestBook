@@ -20,7 +20,7 @@
 			WS_CHILD | WS_VISIBLE,
 			0, 50, 800, 600,
 			parentHwnd, NULL, hInst, this);
-
+		OutputDebugString(L"create drawWindow\n");
 		return hwnd != nullptr;
 	}
 
@@ -44,6 +44,7 @@
 	}
 
 	LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
+
 		switch (msg) {
 		case WM_PAINT: {
 			PAINTSTRUCT ps;
@@ -76,19 +77,22 @@
 
 
 	void DrawWindow::OnPaint(HDC hdc, const RECT & rcClient) {
+		OutputDebugString(L"called paint drawWindow\n");
+
 		if (!backBuffer) return;
 		backBuffer->ClearBuffer(rcClient);
-    
-		const auto strokes = store.Strokes();
-		const auto current = store.Current();
 
-		if(bool replaying = app && app->IsReplaying()){
+		const auto strokes = strokeCtrl.Strokes();
+		const auto current = strokeCtrl.Current();
+
+		if(bool replaying = app && app->IsReplaying()) {
 		///if (isReplaying) {
-			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, current, penWidth, selectedColor);
+			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, *current, penWidth, selectedColor);
 		}
 		else {
 			drawCtrl.DrawStrokes(backBuffer->dc(),
 				strokeCtrl.Strokes(),
+				///	strokeCtrl.Strokes(),
 				strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(),
 				penWidth, selectedColor);
 		}
@@ -101,7 +105,6 @@
 		SetCapture(hwnd);
 		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
 		strokeCtrl.Begin(x, y, color);
-		store.Begin(x, y, color);
 		///strokeCtrl.Begin(x, y, erasing ? RGB(255, 255, 255) : selectedColor);
 }
 
@@ -111,7 +114,7 @@
 		///if (isReplaying) return;
 		if (flags & MK_LBUTTON) {
 			strokeCtrl.Add(x, y);
-			store.Add(x, y);
+		///	store.Add(x, y);
 
 			const Stroke* cur = strokeCtrl.Current();
 			if (cur && cur->points.size() >= 2) {
@@ -143,8 +146,6 @@
 			strokeCtrl.Add(x, y);
 			strokeCtrl.End();
 
-			store.Add(x, y);
-			store.End();
 			ReleaseCapture();
 		}
 		InvalidateRect(hwnd, nullptr, FALSE);
@@ -152,7 +153,7 @@
 
 	void DrawWindow::ClearAll() {
 		strokeCtrl.Clear();
-		store.Clear(); 
+	///	store.Clear(); 
 
 		RECT rc;
 		GetClientRect(hwnd, &rc);
