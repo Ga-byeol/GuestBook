@@ -21,13 +21,15 @@ class DrawWindow
 public:
     bool Create(HWND parentHwnd, HINSTANCE hInstance);
     HWND GetHwnd() const { return hwnd; }
+    HDC GetMemDc() const;
     StrokeStore& GetStore() { return store; }
-
+    const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
     void setBuffer(BackBuffer& buffer) { backBuffer  = &buffer; }
     void setErasing(bool erase) { erasing = erase; }
+    void setReplaying(bool isReplaying) { this->isReplaying = isReplaying;  }
     void SetApplication(Application* a) { app = a; }
     void ClearAll();
 
@@ -54,4 +56,5 @@ private:
     COLORREF selectedColor = RGB(0, 0, 0);
     int penWidth = 2;
     bool erasing = false;
+    bool isReplaying = false;
 };
