@@ -22,51 +22,55 @@ public:
         // 버튼 ID에 맞는 동작 등록
         btnCtrl.RegisterHandler(SAVE, [&]() {
             MessageBox(nullptr, L"저장 버튼", L"TOOL창", MB_OK);
-            });
+        });
         btnCtrl.RegisterHandler(LOAD, [&]() {
             MessageBox(nullptr, L"불러오기 버튼", L"TOOL창", MB_OK);
-            });
+        });
         btnCtrl.RegisterHandler(REPLAY, [&]() {
-            OutputDebugString(L"replay clicked\n");
+            
+            ReplayState state = replayController.GetState();
 
-            drawWindow.setReplaying(true);
+            if (state == ReplayState::Stopped) {
+                // [새로 재생]
+                // (이전 코드: 데이터 복사, ClearAll, setReplaying(true), 화면 클리어...)
+                // (onFinish 콜백은 *필요 없음*. 어차피 무한 루프이므로)
 
-            HWND hDrawWnd = drawWindow.GetHwnd();
-            vector<Stroke> strokesCopy = drawWindow.GetDrawnStrokes();
+                HWND hDrawWnd = drawWindow.GetHwnd();
+                vector<Stroke> strokesCopy = drawWindow.GetDrawnStrokes();
 
-            drawWindow.ClearAll();
+                drawWindow.ClearAll();
 
-            InvalidateRect(hDrawWnd, NULL, TRUE);
-            UpdateWindow(hDrawWnd);
+                drawWindow.setReplaying(true);
 
-            auto onFinishCallback = [this, hDrawWnd](const vector<Stroke>& replayedData) {
+                InvalidateRect(hDrawWnd, NULL, TRUE);
+                UpdateWindow(hDrawWnd);
 
-                // 이 코드는 나중에 Replay 스레드가 호출해 줄 것임
-                
-                drawWindow.SetStrokes(replayedData);// 1. 원본 데이터 복원
-                
-                drawWindow.setReplaying(false);      // 2. 리플레이 모드 해제
+                // ★★★ 콜백(onFinished) 없이 스레드 시작 ★★★
+                replayController.StartReplay(hDrawWnd, strokesCopy);
 
-                InvalidateRect(hDrawWnd, NULL, FALSE); // 3. 화면 갱신
-                };
-
-                replayController.StartReplay(hDrawWnd, strokesCopy, onFinishCallback);
-            });
+            }
+            else {
+                // [일시정지/재개 토글]
+                replayController.ToggleReplay();
+            }
+        });
         btnCtrl.RegisterHandler(CLEAR, [&]() {
         ///    MessageBox(nullptr, L"전체 지우기 버튼", L"TOOL창", MB_OK);
+            drawWindow.setReplaying(false);
+            replayController.StopReplay();
             drawWindow.ClearAll();
-            });
+        });
         btnCtrl.RegisterHandler(ERASE, [&]() {
         ///    MessageBox(nullptr, L"지우기 버튼", L"TOOL창", MB_OK);
             drawWindow.setSelectedColor(RGB(255, 255, 255));
-            });
+        });
         btnCtrl.RegisterHandler(BRUSH, [&]() {
             MessageBox(nullptr, L"브러쉬 버튼", L"TOOL창", MB_OK);
-            });
+        });
         btnCtrl.RegisterHandler(COLOR, [&]() {
                 colorBox.Show();
                 drawWindow.setSelectedColor(colorBox.GetColor());
-            });
+        });
     }
     bool Init(HINSTANCE hInstance, int nCmdShow);
     int Run();
