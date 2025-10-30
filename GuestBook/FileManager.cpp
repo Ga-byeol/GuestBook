@@ -33,7 +33,7 @@ std::wstring FileManager::Dialog(HWND dialogParent, bool isSave)
 bool FileManager::Save(const std::wstring& path, const std::vector<Stroke>& strokes)
 {
     std::wofstream saveFile(path);
-    if (!saveFile.is_open()) return false;
+    if (!saveFile.is_open()) { return false; }
 
     saveFile << strokes.size() << L"\n";  /// Stroke의 개수가 먼저 저장
 
@@ -55,11 +55,11 @@ bool FileManager::Save(const std::wstring& path, const std::vector<Stroke>& stro
 bool FileManager::Load(const std::wstring& path, StrokeController* strokeCtrl)
 {
     std::wifstream loadFile(path);
-    if (!loadFile.is_open()) return false;
+    if (!loadFile.is_open()) { return false; }
 
-    std::vector<Stroke> loadStroke; /// 저장용 Stroke 벡터
+    std::vector<Stroke> loadStroke; /// 저장용 임시 Stroke 벡터
     size_t strokeCount; /// 선의 개수
-    loadFile >> strokeCount;
+    loadFile >> strokeCount; /// 개수 읽어오기
 
     for (size_t i = 0; i < strokeCount; ++i)
     {
@@ -77,7 +77,7 @@ bool FileManager::Load(const std::wstring& path, StrokeController* strokeCtrl)
         loadStroke.push_back(s);
     }
 
-    strokeCtrl->setStrokes(loadStroke);
+    strokeCtrl->setStrokes(loadStroke); /// 불러오기를 통해 가져온 데이터로 덮어 씌움
     loadFile.close();
     return true;
 }
