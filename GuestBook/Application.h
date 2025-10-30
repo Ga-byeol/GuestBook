@@ -5,6 +5,7 @@
 #include "ToolWindow.h"
 #include "ReplayController.h"
 #include "ColorController.h"
+#include "PenController.h"
 #define SAVE 101
 #define LOAD 102
 #define REPLAY 103
@@ -15,7 +16,7 @@
 
 class Application {
 public:
-    Application() : replayController(){
+    Application() : replayController(), penBox(hInstance, nullptr) {
         // ToolWindow 안의 ButtonController에 접근
         auto& btnCtrl = toolWindow.GetButtonController();
 
@@ -65,7 +66,8 @@ public:
             drawWindow.setSelectedColor(RGB(255, 255, 255));
         });
         btnCtrl.RegisterHandler(BRUSH, [&]() {
-            MessageBox(nullptr, L"브러쉬 버튼", L"TOOL창", MB_OK);
+            penBox.setDrawWindow(&drawWindow);
+            penBox.ShowDialog();
         });
         btnCtrl.RegisterHandler(COLOR, [&]() {
                 colorBox.Show();
@@ -84,5 +86,5 @@ private:
     ToolWindow toolWindow;
     ReplayController replayController; 
     ColorController colorBox;
-
+    PenController penBox;
 };

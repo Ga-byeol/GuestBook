@@ -53,14 +53,23 @@ void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
                         
                     HDC hdc = GetDC(hDrawWnd);
                     // ... (Pen, LineTo, SelectObject, ReleaseDC) ...
-                    HPEN pen = CreatePen(PS_SOLID, s.thickness, s.color);
-                    HPEN oldpen = (HPEN)SelectObject(hdc, pen);
+                    SetGraphicsMode(hdc, GM_ADVANCED); /// DASH, DOT 선 종류의 두께 1px이상 사용하기 위해 선언
+                    LOGBRUSH lb = {};
+                    lb.lbStyle = BS_SOLID;
+                    lb.lbColor = s.color;
+                    HPEN pen = ExtCreatePen(  /// 
+                        PS_GEOMETRIC | s.penStyle,
+                        s.penWidth,
+                        &lb,
+                        0, nullptr
+                    );
+
+                    HPEN oldPen = (HPEN)SelectObject(hdc, pen);
 
                     MoveToEx(hdc, s.points[i - 1].x, s.points[i - 1].y, nullptr);
                     LineTo(hdc, s.points[i].x, s.points[i].y);
 
-                    SelectObject(hdc, oldpen);
-
+                    SelectObject(hdc, oldPen);
                     DeleteObject(pen);
                     ReleaseDC(hDrawWnd, hdc);
                 }

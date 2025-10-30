@@ -104,7 +104,7 @@
 		///if (isReplaying) return;
 		SetCapture(hwnd);
 		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
-		strokeCtrl.Begin(x, y, color);
+		strokeCtrl.Begin(x, y, color,currentPenStyle,currentPenWidth); /// 시작할 좌표와 선의 색깔, 종류, 두께
 		///strokeCtrl.Begin(x, y, erasing ? RGB(255, 255, 255) : selectedColor);
 }
 
@@ -118,8 +118,8 @@
 
 			const Stroke* cur = strokeCtrl.Current();
 			if (cur && cur->points.size() >= 2) {
-
-				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, penWidth, erasing ? RGB(255,255,255) : selectedColor);
+				
+				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, currentPenWidth, erasing ? RGB(255,255,255) : selectedColor);
 
 				/// dirty rect
 				const Point& p1 = cur->points[cur->points.size() - 2];
@@ -165,3 +165,17 @@
 	}
 
 	HDC DrawWindow::GetMemDc() const { return backBuffer ? backBuffer->dc() : nullptr; }
+
+	void DrawWindow::SetPenStyle(int PenNum) { /// 다이얼로그 라디오 버튼 넘버별로 펜 지정
+   		switch (PenNum) {
+		case 0: currentPenStyle = PS_SOLID; break;
+		case 1: currentPenStyle = PS_DASH;  break;
+		case 2: currentPenStyle = PS_DOT;   break;
+		default: currentPenStyle = PS_SOLID; break;
+		}
+
+
+	}
+	void DrawWindow::SetPenWidth(int PenWidth) {
+		currentPenWidth = PenWidth;
+	}

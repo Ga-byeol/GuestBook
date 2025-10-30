@@ -19,12 +19,17 @@ void DrawController::DrawStrokes(HDC hdc,
     const std::vector<Stroke>& strokes,
     const Stroke current,
     int penWidth,
-    COLORREF color)
+    COLORREF color
+    )
 {
 
 
-    for (const auto& s : strokes) {
-        HPEN pen = CreatePen(PS_SOLID, penWidth, s.color);
+    for (const auto& s : strokes) { /// 다시 그릴 때 사용하는 역할
+        LOGBRUSH style = {};
+        style.lbStyle = BS_SOLID;
+        style.lbColor = s.color;
+        /// ExtCreatePen 사용
+        HPEN pen = ExtCreatePen(PS_GEOMETRIC | s.penStyle, s.penWidth, &style, 0, nullptr);
         HGDIOBJ oldPen = SelectObject(hdc, pen);
         HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
         DrawPointsLine(hdc, s.points);
@@ -32,8 +37,12 @@ void DrawController::DrawStrokes(HDC hdc,
         SelectObject(hdc, oldPen);
         DeleteObject(pen);
     }
-    if (!current.points.empty()) {
-        HPEN pen = CreatePen(PS_SOLID, penWidth, current.color);
+    if (!current.points.empty()) { ///현재 마우스를 눌러서 그리는 점의 정보
+        LOGBRUSH style = {};
+        style.lbStyle = BS_SOLID;
+        style.lbColor = current.color;
+
+        HPEN pen = ExtCreatePen(PS_GEOMETRIC | current.penStyle, current.penWidth, &style, 0, nullptr);
         HGDIOBJ oldPen = SelectObject(hdc, pen);
         HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
         DrawPointsLine(hdc, current.points);
@@ -44,10 +53,13 @@ void DrawController::DrawStrokes(HDC hdc,
 
 }
 
-void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidth, COLORREF color) {
+void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidth, COLORREF color) { /// 점과 점을 이어주는 역할
     if (stroke.points.size() < 2) return; 
 
-    HPEN pen = CreatePen(PS_SOLID, penWidth, stroke.color);
+    LOGBRUSH style = {};
+    style.lbStyle = BS_SOLID;
+    style.lbColor = stroke.color;
+    HPEN pen = ExtCreatePen(PS_GEOMETRIC | stroke.penStyle, stroke.penWidth,&style,0,nullptr);
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
 
