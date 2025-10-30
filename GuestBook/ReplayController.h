@@ -3,35 +3,37 @@
 #include <WINDOWS.h>
 #include <thread>
 #include <functional>
+#include <atomic>
 #include "Stroke.h";
 
 using OnReplayFinishedCallback = std::function<void(const std::vector<Stroke>&)>;
 
 class Application;
 
-enum class ReplayStatus {
-	Running,
-	Paused,
-	stopped
+enum class ReplayState {
+	Stopped,  // 완전 멈춤 (초기 상태)
+	Running,  // 재생 중
+	Paused,   // 일시정지
+	Stopping  // 중단 요청 (Clear 버튼)
 };
 
 class ReplayController
 {
 public:
-	void StartReplay(HWND drawWindowHwnd, std::vector<Stroke> copyStroke, OnReplayFinishedCallback onFinished);
+	void StartReplay(HWND drawWindowHwnd, std::vector<Stroke> copyStroke);
 	bool IsReplaying() const { return isReplaying; }
+	ReplayState GetState() const { return r_state; }
+	void ToggleReplay();
+	void StopReplay();
 
 private:
 
-	void PauseReplay();
-	void ResumeReplay();
-	void StopReplay();
 
 	Application* app;
 	std::thread replayThread;
 	std::vector<Stroke> replayStrokes;
 
-	ReplayStatus rStatus = ReplayStatus::stopped;
+	std::atomic<ReplayState> r_state = ReplayState::Stopped;
 	bool isPaused = false;
 	bool isReplaying = false;
 	bool stopRequested = false;
