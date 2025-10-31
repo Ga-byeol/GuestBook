@@ -85,14 +85,12 @@
 		const auto strokes = strokeCtrl.Strokes();
 		const auto current = strokeCtrl.Current();
 
-		if(bool replaying = app && app->IsReplaying()) {
-		///if (isReplaying) {
+		if (isReplaying) {
 			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, *current, penWidth, selectedColor);
 		}
 		else {
 			drawCtrl.DrawStrokes(backBuffer->dc(),
 				strokeCtrl.Strokes(),
-				///	strokeCtrl.Strokes(),
 				strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(),
 				penWidth, selectedColor);
 		}
@@ -100,21 +98,18 @@
 	}
 
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
-		if (app && app->IsReplaying()) return;
-		///if (isReplaying) return;
+		if (isReplaying) return;
 		SetCapture(hwnd);
 		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
-		strokeCtrl.Begin(x, y, color,currentPenStyle,currentPenWidth); /// ½ÃÀÛÇÒ ÁÂÇ¥¿Í ¼±ÀÇ »ö±ò, Á¾·ù, µÎ²²
-		///strokeCtrl.Begin(x, y, erasing ? RGB(255, 255, 255) : selectedColor);
+
+		strokeCtrl.Begin(x, y, color);
 }
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
 		if (!backBuffer) return;
-		if (app && app->IsReplaying()) return;
-		///if (isReplaying) return;
+		if (isReplaying) return;
 		if (flags & MK_LBUTTON) {
 			strokeCtrl.Add(x, y);
-		///	store.Add(x, y);
 
 			const Stroke* cur = strokeCtrl.Current();
 			if (cur && cur->points.size() >= 2) {
@@ -139,8 +134,7 @@
 
 	void DrawWindow::OnLButtonUp(int x, int y, WPARAM) {
 		if (!backBuffer) return;
-		if (app && app->IsReplaying()) return;
-		///if (isReplaying) return;
+		if (isReplaying) return;
 
   	if (strokeCtrl.IsRecording()) {
 			strokeCtrl.Add(x, y);
@@ -153,7 +147,6 @@
 
 	void DrawWindow::ClearAll() {
 		strokeCtrl.Clear();
-	///	store.Clear(); 
 
 		RECT rc;
 		GetClientRect(hwnd, &rc);
@@ -166,7 +159,7 @@
 
 	HDC DrawWindow::GetMemDc() const { return backBuffer ? backBuffer->dc() : nullptr; }
 
-	void DrawWindow::SetPenStyle(int PenNum) { /// ´ÙÀÌ¾ó·Î±× ¶óµð¿À ¹öÆ° ³Ñ¹öº°·Î Ææ ÁöÁ¤
+	void DrawWindow::SetPenStyle(int PenNum) { /// ï¿½ï¿½ï¿½Ì¾ï¿½Î±ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Æ° ï¿½Ñ¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
    		switch (PenNum) {
 		case 0: currentPenStyle = PS_SOLID; break;
 		case 1: currentPenStyle = PS_DASH;  break;
