@@ -1,59 +1,99 @@
 #include "ReplayController.h"
 #include "Application.h"
 
-void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke, OnReplayFinishedCallback onFinished) {
-	{
+void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
+    r_state = ReplayState::Running; // "재생 중"으로 상태 변경
 
-		if (isReplaying) return;  // 이미 실행 중이면 무시
+    replayThread = std::thread([=]() { // 'this' 캡처
 
-		// 재생 상태 초기화
-		isReplaying = true;
-		isPaused = false;
-		stopRequested = false;
-	}
-	// 새 스레드 생성 (이 안에서 mtx, cv를 사용해 일시정지/중단 관리)
-	replayThread = std::thread([=]() {
+        // ★★★ 1. 스레드 내부의 무한 루프 ★★★
+        while (true) {
 
-		for (const auto& s : copyStroke) {
-			for (size_t i = 1; i < s.points.size(); ++i) {
-				Sleep(s.points[i].timestamp);
+            // --- 2. 루프 시작 시 '중단' 확인 ---
+            if (r_state == ReplayState::Stopped) {
+                break; // 무한 루프 탈출
+            }
 
-				HDC hdc = GetDC(hDrawWnd);
-				HPEN pen = CreatePen(PS_SOLID, s.thickness, s.color);
-				HPEN oldpen = (HPEN)SelectObject(hdc, pen);
-				
-				MoveToEx(hdc, s.points[i - 1].x, s.points[i - 1].y, nullptr);
-				LineTo(hdc, s.points[i].x, s.points[i].y);
-				
-				SelectObject(hdc, oldpen);
+            // --- 3. '일시정지' 확인 (대기 루프) ---
+            while (r_state == ReplayState::Paused) {
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                // 일시정지 중에도 '중단' 요청은 확인해야 함
+                if (r_state == ReplayState::Stopped) {
+                    break;
+                }
+            }
+            if (r_state == ReplayState::Stopped) {
+                break; // 대기 루프 탈출 시 다시 확인
+            }
+            HDC hdc_clear = GetDC(hDrawWnd);
+            if (hdc_clear) {
+                RECT rc;
+                GetClientRect(hDrawWnd, &rc);
 
-				DeleteObject(pen);
-				ReleaseDC(hDrawWnd, hdc);
-			}
-		}
-		// 원본 선에 복사 선 넣기
-		// drawWindow의 isReplay = false
+                // (가장 간단한 방법: 윈도우 기본 배경색 브러시 사용)
+                HBRUSH hBgBrush = (HBRUSH)(COLOR_WINDOW + 1);
+                FillRect(hdc_clear, &rc, hBgBrush);
 
-		/*if (onFinished) {
-			onFinished(copyStroke);
-		}*/
+                ReleaseDC(hDrawWnd, hdc_clear);
+            }
+            // --- 4. 한 사이클 재생 (기존 로직) ---
+            for (const auto& s : copyStroke) {
+                for (size_t i = 1; i < s.points.size(); ++i) {
 
-		StopReplay();
-		});
+                    // ★ 5. 매 스텝마다 중단/일시정지 확인 (빠른 반응)
+                    if (r_state == ReplayState::Stopped) break;
+                    while (r_state == ReplayState::Paused) {
+                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                        if (r_state == ReplayState::Stopped) break;
+                    }
+                    if (r_state == ReplayState::Stopped) break;
 
-	replayThread.detach();
+                    // (기존 GDI 로직)
+                    Sleep(s.points[i].timestamp);
+                        
+                    HDC hdc = GetDC(hDrawWnd);
+                    // ... (Pen, LineTo, SelectObject, ReleaseDC) ...
+                    HPEN pen = CreatePen(PS_SOLID, s.thickness, s.color);
+                    HPEN oldpen = (HPEN)SelectObject(hdc, pen);
+
+                    MoveToEx(hdc, s.points[i - 1].x, s.points[i - 1].y, nullptr);
+                    LineTo(hdc, s.points[i].x, s.points[i].y);
+
+                    SelectObject(hdc, oldpen);
+
+                    DeleteObject(pen);
+                    ReleaseDC(hDrawWnd, hdc);
+                }
+                if (r_state == ReplayState::Stopped) break; // 바깥쪽 for 루프 탈출
+            }
+
+            // (한 사이클 재생 끝. 루프 처음으로 돌아감)
+        }
+
+        // --- 6. 무한 루프 탈출 (중단됨) ---
+        // (onFinished 콜백을 호출하지 않음 = 데이터 복원 안 함)
+        // (Clear 버튼이 이미 데이터를 지웠음)
+
+        // 스레드 최종 종료
+        r_state = ReplayState::Stopped;
+        });
+    replayThread.detach();
+
 }
 
-void ReplayController::PauseReplay() {
-	rStatus = ReplayStatus::Paused;
-}
-
-void ReplayController::ResumeReplay() {
+void ReplayController::ToggleReplay() {
 	
-	rStatus = ReplayStatus::Running;
+	if (r_state == ReplayState::Running) {
+		r_state = ReplayState::Paused;
+	}
+	else if (r_state == ReplayState::Paused) {
+		r_state = ReplayState::Running;
+	}
 	
 }
 
 void ReplayController::StopReplay() {
-	rStatus = ReplayStatus::stopped;
+	if (r_state != ReplayState::Stopped) {
+		r_state = ReplayState::Stopped;
+	}
 }
