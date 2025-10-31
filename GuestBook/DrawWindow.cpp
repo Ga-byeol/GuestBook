@@ -101,6 +101,7 @@
 		if (isReplaying) return;
 		SetCapture(hwnd);
 		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
+
 		strokeCtrl.Begin(x, y, color);
 }
 
@@ -112,8 +113,8 @@
 
 			const Stroke* cur = strokeCtrl.Current();
 			if (cur && cur->points.size() >= 2) {
-
-				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, penWidth, erasing ? RGB(255,255,255) : selectedColor);
+				
+				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, currentPenWidth, erasing ? RGB(255,255,255) : selectedColor);
 
 				/// dirty rect
 				const Point& p1 = cur->points[cur->points.size() - 2];
@@ -157,3 +158,17 @@
 	}
 
 	HDC DrawWindow::GetMemDc() const { return backBuffer ? backBuffer->dc() : nullptr; }
+
+	void DrawWindow::SetPenStyle(int PenNum) { /// ���̾�α� ���� ��ư �ѹ����� �� ����
+   		switch (PenNum) {
+		case 0: currentPenStyle = PS_SOLID; break;
+		case 1: currentPenStyle = PS_DASH;  break;
+		case 2: currentPenStyle = PS_DOT;   break;
+		default: currentPenStyle = PS_SOLID; break;
+		}
+
+
+	}
+	void DrawWindow::SetPenWidth(int PenWidth) {
+		currentPenWidth = PenWidth;
+	}

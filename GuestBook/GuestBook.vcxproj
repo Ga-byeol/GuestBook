@@ -131,6 +131,7 @@
     <ClInclude Include="BackBuffer.h" />
     <ClInclude Include="ButtonController.h" />
     <ClInclude Include="ColorController.h" />
+    <ClInclude Include="PenController.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="ReplayController.h" />
     <ClInclude Include="Stroke.h" />
@@ -150,6 +151,7 @@
     <ClCompile Include="ButtonController.cpp" />
     <ClCompile Include="ColorController.cpp" />
     <ClCompile Include="DrawController.cpp" />
+    <ClCompile Include="PenController.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="ReplayController.cpp" />
     <ClCompile Include="StrokeController.cpp" />

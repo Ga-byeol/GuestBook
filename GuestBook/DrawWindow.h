@@ -22,7 +22,8 @@ public:
     HDC GetMemDc() const; 
     const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
     void SetStrokes(std::vector<Stroke> strokes) { strokeCtrl.setStrokes(strokes); }
-
+    void SetPenStyle(int PenNum); /// 브러쉬 컨트롤러 다이얼로그에서 받은 넘버
+    void SetPenWidth(int PenWidth); /// 브러쉬 컨트롤러 다이얼로그에서 받은 두께
 /// const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
@@ -57,4 +58,6 @@ private:
     int penWidth = 2;
     bool erasing = false;
     bool isReplaying = false;
+    int currentPenStyle = PS_SOLID;
+    int currentPenWidth = 1;
 };

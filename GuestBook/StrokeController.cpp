@@ -1,10 +1,12 @@
 #include "StrokeController.h"
 
-void StrokeController::Begin(int x, int y, COLORREF color) {
+void StrokeController::Begin(int x, int y, COLORREF color,int penStyle, int penWidth) {
 	current.points.clear();
 	lastTime = GetTickCount64();
 	current.points.push_back(Point{ x, y});
 	current.color = color;
+	current.penStyle = penStyle;
+	current.penWidth = penWidth;
 	recording = true;
 }
 

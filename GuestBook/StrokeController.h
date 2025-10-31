@@ -6,7 +6,7 @@
 
 class StrokeController {
 public:
-    void Begin(int x, int y, COLORREF color);
+    void Begin(int x, int y, COLORREF color,int penStyle, int penWidth);
     void Add(int x, int y);
     void End();
     void Clear();
