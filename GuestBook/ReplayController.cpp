@@ -3,7 +3,7 @@
 
 void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
     r_state = ReplayState::Running; // "재생 중"으로 상태 변경
-
+    OutputDebugString(L"startrplay called\n");
     replayThread = std::thread([=]() { // 'this' 캡처
 
         // ★★★ 1. 스레드 내부의 무한 루프 ★★★

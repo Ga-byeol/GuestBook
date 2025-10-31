@@ -86,7 +86,7 @@
 		const auto current = strokeCtrl.Current();
 
 		if (isReplaying) {
-			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, *current, penWidth, selectedColor);
+			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, current ? *current : Stroke(), penWidth, selectedColor);
 		}
 		else {
 			drawCtrl.DrawStrokes(backBuffer->dc(),
@@ -102,7 +102,7 @@
 		SetCapture(hwnd);
 		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
 
-		strokeCtrl.Begin(x, y, color);
+		strokeCtrl.Begin(x, y, color, currentPenStyle, currentPenWidth);
 }
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
