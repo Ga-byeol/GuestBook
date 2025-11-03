@@ -52,19 +52,20 @@ bool FileManager::Save(const std::wstring& path, const std::vector<Stroke>& stro
     return true;
 }
 
-bool FileManager::Load(const std::wstring& path, StrokeController* strokeCtrl)
+bool FileManager::Load(const std::wstring& path, std::vector<Stroke>& outStrokes)
 {
     std::wifstream loadFile(path);
-    if (!loadFile.is_open()) { return false; }
+    if (!loadFile.is_open()) return false;
 
-    std::vector<Stroke> loadStroke; /// 저장용 임시 Stroke 벡터
-    size_t strokeCount; /// 선의 개수
-    loadFile >> strokeCount; /// 개수 읽어오기
+    outStrokes.clear(); /// 기존 데이터 초기화
+
+    size_t strokeCount;
+    loadFile >> strokeCount;
 
     for (size_t i = 0; i < strokeCount; ++i)
     {
         Stroke s;
-        size_t pointCount; /// 점의 개수
+        size_t pointCount;
         loadFile >> s.color >> s.thickness >> pointCount;
 
         for (size_t j = 0; j < pointCount; ++j)
@@ -74,10 +75,10 @@ bool FileManager::Load(const std::wstring& path, StrokeController* strokeCtrl)
             s.points.push_back(p);
         }
 
-        loadStroke.push_back(s);
+        /// 값 모두 전달
+        outStrokes.push_back(s);
     }
 
-    strokeCtrl->setStrokes(loadStroke); /// 불러오기를 통해 가져온 데이터로 덮어 씌움
     loadFile.close();
     return true;
 }
@@ -97,18 +98,14 @@ void FileManager::StartSave(HWND dialogParent, const std::vector<Stroke>& stroke
     }
 }
 
-void FileManager::StartLoad(HWND dialogParent, StrokeController* strokeCtrl, HWND drawHwnd)
+void FileManager::StartLoad(HWND dialogParent, std::vector<Stroke>& outStrokes, HWND drawHwnd)
 {
-    std::wstring path = Dialog(dialogParent, false); /// GetOpenFileName
-    if (path.empty()) { return; }
+    std::wstring path = Dialog(dialogParent, false); ///GetOpenFileName
+    if (path.empty()) return;
 
-    if (Load(path, strokeCtrl))
+    if (Load(path, outStrokes))
     {
         MessageBox(dialogParent, L"불러오기 완료!", L"파일 불러오기", MB_OK);
-
-        /// DrawWindow의 화면 새로고침
-        InvalidateRect(drawHwnd, nullptr, TRUE);
-        UpdateWindow(drawHwnd);
     }
     else
     {
