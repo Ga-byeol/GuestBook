@@ -21,7 +21,7 @@
 #define IDC_RADIO_DASH                  1002
 #define IDC_RADIO_DOT                   1003
 #define IDC_STATIC                      -1
-#define IDC_LOGO						110
+#define IDC_LOGO						111
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
