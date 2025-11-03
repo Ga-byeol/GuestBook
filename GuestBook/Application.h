@@ -6,6 +6,7 @@
 #include "ReplayController.h"
 #include "ColorController.h"
 #include "PenController.h"
+#include "FileManager.h"
 #define SAVE 101
 #define LOAD 102
 #define REPLAY 103
@@ -22,11 +23,23 @@ public:
 
         // 버튼 ID에 맞는 동작 등록
         btnCtrl.RegisterHandler(SAVE, [&]() {
-            MessageBox(nullptr, L"저장 버튼", L"TOOL창", MB_OK);
-        });
+            fileManager.StartSave(drawWindow.GetHwnd(), drawWindow.GetDrawnStrokes());
+            });
         btnCtrl.RegisterHandler(LOAD, [&]() {
-            MessageBox(nullptr, L"불러오기 버튼", L"TOOL창", MB_OK);
-        });
+            std::vector<Stroke> loadStrokes;
+
+            /// 파일에서 읽기
+            fileManager.StartLoad(drawWindow.GetHwnd(), loadStrokes, drawWindow.GetHwnd());
+
+            /// 파일이 정상적으로 불러와졌다면 DrawWindow에 전달
+            if (!loadStrokes.empty())
+            {
+                drawWindow.SetStrokes(loadStrokes);
+
+                InvalidateRect(drawWindow.GetHwnd(), nullptr, TRUE);
+                UpdateWindow(drawWindow.GetHwnd());
+            }
+            });
         btnCtrl.RegisterHandler(REPLAY, [&]() {
             
             ReplayState state = replayController.GetState();
@@ -87,4 +100,5 @@ private:
     ReplayController replayController; 
     ColorController colorBox;
     PenController penBox;
+    FileManager fileManager;
 };
