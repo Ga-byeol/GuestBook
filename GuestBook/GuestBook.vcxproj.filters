@@ -12,7 +12,8 @@
     <ClCompile Include="GuestBook.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="ToolWindow.cpp" />
-	<ClInclude Include="PenController.cpp"/>
+    <ClCompile Include="PenController.cpp" />
+    <ClCompile Include="FileManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -21,7 +22,7 @@
     <ClInclude Include="ColorController.h" />
     <ClInclude Include="ReplayController.h" />
     <ClInclude Include="Stroke.h" />
-	<ClInclude Include="PenController.h"/>
+    <ClInclude Include="PenController.h" />
     <ClInclude Include="DrawController.h" />
     <ClInclude Include="StrokeController.h" />
     <ClInclude Include="DrawWindow.h" />
@@ -31,6 +32,7 @@
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ToolWindow.h" />
+    <ClInclude Include="FileManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GuestBook.rc" />
@@ -83,9 +85,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="PenController.h">
-		<Filter>헤더 파일</Filter>
-	</ClInclude>
-    <ClInclude Include="FileManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -129,15 +128,10 @@
     <ClCompile Include="ToolWindow.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PenController.cpp">
-		<Filter>소스 파일</Filter>
-	</ClCompile>
-    <ClCompile Include="FileManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="GuestBook.ico" />
     <Image Include="small.ico" />
+    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\Logo.ico" />
   </ItemGroup>
 </Project>

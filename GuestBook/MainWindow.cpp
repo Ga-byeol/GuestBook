@@ -1,6 +1,6 @@
 #include "MainWindow.h"
 #include "DrawWindow.h"
-
+#include "resource.h"
 bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     hInstance = hInst;
 
@@ -9,6 +9,7 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     wc.hInstance = hInst;
     wc.lpszClassName = L"MainWindowClass";
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(110));
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 
     RegisterClass(&wc);
