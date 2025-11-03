@@ -9,7 +9,7 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     wc.hInstance = hInst;
     wc.lpszClassName = L"MainWindowClass";
     wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-    wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(111));
+    wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_LOGO));
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 
     RegisterClass(&wc);
