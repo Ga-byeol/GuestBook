@@ -86,12 +86,11 @@
 		const auto current = strokeCtrl.Current();
 
 		if (isReplaying) {
-			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, current ? *current : Stroke(), penWidth, selectedColor);
+			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, penWidth, selectedColor);
 		}
 		else {
 			drawCtrl.DrawStrokes(backBuffer->dc(),
 				strokeCtrl.Strokes(),
-				strokeCtrl.Current() ? *strokeCtrl.Current() : Stroke(),
 				penWidth, selectedColor);
 		}
 		backBuffer->DrawBufferToScreen(hdc);
