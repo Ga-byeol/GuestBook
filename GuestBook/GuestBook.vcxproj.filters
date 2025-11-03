@@ -132,6 +132,6 @@
   <ItemGroup>
     <Image Include="GuestBook.ico" />
     <Image Include="small.ico" />
-    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\Logo.ico" />
+    <Image Include="..\ImageResource\Logo.ico" />
   </ItemGroup>
 </Project>
