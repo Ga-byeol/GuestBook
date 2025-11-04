@@ -28,6 +28,12 @@ public:
         btnCtrl.RegisterHandler(LOAD, [&]() {
             std::vector<Stroke> loadStrokes;
 
+            /// 불러오기 때에는 리플레이 중지
+            replayController.StopReplay();
+
+            /// 기존에 그려져 있던 그림을 모두 제거
+            drawWindow.ClearAll();
+
             /// 파일에서 읽기
             fileManager.StartLoad(drawWindow.GetHwnd(), loadStrokes, drawWindow.GetHwnd());
 
@@ -39,6 +45,11 @@ public:
                 InvalidateRect(drawWindow.GetHwnd(), nullptr, TRUE);
                 UpdateWindow(drawWindow.GetHwnd());
             }
+
+            /// 불러와진 그림을 즉시 리플레이
+            /// 리플레이 중일 때에는 플래그 막아 펜 못 그리게 하기
+            drawWindow.setReplaying(true);
+            replayController.StartReplay(drawWindow.GetHwnd(), loadStrokes);
             });
         btnCtrl.RegisterHandler(REPLAY, [&]() {
             
