@@ -39,7 +39,7 @@ bool FileManager::Save(const std::wstring& path, const std::vector<Stroke>& stro
 
     for (const auto& s : strokes)
     {
-        saveFile << s.color << L' ' << s.thickness << L' ' << s.points.size() << L'\n';
+        saveFile << s.color << L' ' << s.thickness << L' ' << s.penStyle << L' ' << s.penWidth << L' ' << s.points.size() << L'\n';
 
         for (const auto& p : s.points)
         {
@@ -66,7 +66,7 @@ bool FileManager::Load(const std::wstring& path, std::vector<Stroke>& outStrokes
     {
         Stroke s;
         size_t pointCount;
-        loadFile >> s.color >> s.thickness >> pointCount;
+        loadFile >> s.color >> s.thickness >> s.penStyle >> s.penWidth >> pointCount;
 
         for (size_t j = 0; j < pointCount; ++j)
         {
