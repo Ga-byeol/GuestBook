@@ -74,6 +74,7 @@ void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
                     ReleaseDC(hDrawWnd, hdc);
                 }
                 if (r_state == ReplayState::Stopped) break; // 바깥쪽 for 루프 탈출
+                Sleep(2000);
             }
 
             // (한 사이클 재생 끝. 루프 처음으로 돌아감)
