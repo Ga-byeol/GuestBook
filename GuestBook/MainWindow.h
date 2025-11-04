@@ -2,7 +2,7 @@
 #include <windows.h>
 #include "ToolWindow.h"
 #include "BackBuffer.h"
-
+#include "Sidebar.h"
 class DrawWindow;
 class MainWindow
 {
@@ -25,7 +25,7 @@ private:
 
 	DrawWindow* drawWindow = nullptr;
 	ToolWindow* toolWindow = nullptr;
-
+	Sidebar sideBar;
 	BackBuffer backBuffer;
 };
 

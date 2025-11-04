@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "DrawWindow.h"
 #include "resource.h"
+#include "Sidebar.h"
 bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     hInstance = hInst;
 
@@ -8,7 +9,7 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     wc.lpfnWndProc = MainWindow::WndProc;
     wc.hInstance = hInst;
     wc.lpszClassName = L"MainWindowClass";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hbrBackground = (HBRUSH)(CreateSolidBrush(RGB(220,220,220)));
     wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_LOGO));
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 
@@ -39,7 +40,13 @@ LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
         pThis->hwnd = hwnd;
         return TRUE;
     }
+    case WM_CREATE: {
+        if (pThis) {
+            pThis->sideBar.SetSlider(pThis->hwnd, pThis->hInstance);
+        }
 
+
+    }
     case WM_SIZE: {
         if (pThis)
             pThis->ResizeChildren();   
@@ -68,7 +75,7 @@ void MainWindow::ResizeChildren() {
         MoveWindow(toolWindow->GetHwnd(), 0, 0, rcClient.right, 50, TRUE);
 
     if (drawWindow)
-        MoveWindow(drawWindow->GetHwnd(), 0, 50, rcClient.right, rcClient.bottom - 50, TRUE);
+        MoveWindow(drawWindow->GetHwnd(), 100, 60, rcClient.right-110, rcClient.bottom - 70, TRUE);
 
     int w = rcClient.right - rcClient.left;
     int h = rcClient.bottom - rcClient.top;

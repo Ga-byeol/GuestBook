@@ -18,7 +18,7 @@
 		hwnd = CreateWindowEx(
 			0, wc.lpszClassName, L"Guest Book",
 			WS_CHILD | WS_VISIBLE,
-			0, 50, 800, 600,
+			0, 50, 700, 600,
 			parentHwnd, NULL, hInst, this);
 		OutputDebugString(L"create drawWindow\n");
 		return hwnd != nullptr;
@@ -36,7 +36,7 @@
 			}
 			return TRUE;
 		}
-
+		
 		self = reinterpret_cast<DrawWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
 		if (self) return self->HandleMessage(msg, wParam, lParam);
 
