@@ -17,7 +17,6 @@ namespace {
 
 void DrawController::DrawStrokes(HDC hdc,
     const std::vector<Stroke>& strokes,
-    const Stroke current,
     int penWidth,
     COLORREF color
     )
@@ -37,20 +36,6 @@ void DrawController::DrawStrokes(HDC hdc,
         SelectObject(hdc, oldPen);
         DeleteObject(pen);
     }
-    if (!current.points.empty()) { ///현재 마우스를 눌러서 그리는 점의 정보
-        LOGBRUSH style = {};
-        style.lbStyle = BS_SOLID;
-        style.lbColor = current.color;
-
-        HPEN pen = ExtCreatePen(PS_GEOMETRIC | current.penStyle, current.penWidth, &style, 0, nullptr);
-        HGDIOBJ oldPen = SelectObject(hdc, pen);
-        HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
-        DrawPointsLine(hdc, current.points);
-        SelectObject(hdc, oldBrush);
-        SelectObject(hdc, oldPen);
-        DeleteObject(pen);
-    }
-
 }
 
 void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidth, COLORREF color) { /// 점과 점을 이어주는 역할
