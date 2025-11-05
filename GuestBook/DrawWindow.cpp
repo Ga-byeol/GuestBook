@@ -115,17 +115,8 @@
 				
 				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, currentPenWidth, erasing ? RGB(255,255,255) : selectedColor);
 
-				/// dirty rect
-				const Point& p1 = cur->points[cur->points.size() - 2];
-				const Point& p2 = cur->points.back();
-				RECT dirty = { min(p1.x, p2.x) - penWidth,
-							   min(p1.y, p2.y) - penWidth,
-							   max(p1.x, p2.x) + penWidth,
-							   max(p1.y, p2.y) + penWidth };
-
-				/// dirty 
 				HDC hdc = GetDC(hwnd);
-				backBuffer->DrawDirtyBufferToScreen(hdc, dirty);
+				backBuffer->DrawBufferToScreen(hdc);
 				ReleaseDC(hwnd, hdc);
 			}
 		}
