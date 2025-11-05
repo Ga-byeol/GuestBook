@@ -2,7 +2,7 @@
 #include <windows.h>
 #include "ToolWindow.h"
 #include "BackBuffer.h"
-
+#include "Sidebar.h"
 class DrawWindow;
 class MainWindow
 {
@@ -19,13 +19,13 @@ public:
 
 private:
 	static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	
+	LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
 	HWND hwnd = nullptr;
 	HINSTANCE hInstance = nullptr;
 
 	DrawWindow* drawWindow = nullptr;
 	ToolWindow* toolWindow = nullptr;
-
+	Sidebar sideBar;
 	BackBuffer backBuffer;
 };
 

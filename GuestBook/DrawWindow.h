@@ -6,7 +6,7 @@
 #include "DrawController.h"
 #include "StrokeController.h"
 #include "BackBuffer.h"
-
+#include "Sidebar.h"
 #define WM_USER_REPLAY_UPDATE (WM_USER + 1)
 
 class ToolWindow;

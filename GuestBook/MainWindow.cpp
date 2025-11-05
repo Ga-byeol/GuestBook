@@ -1,6 +1,7 @@
 #include "MainWindow.h"
 #include "DrawWindow.h"
 #include "resource.h"
+#include "Sidebar.h"
 bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     hInstance = hInst;
 
@@ -8,7 +9,7 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     wc.lpfnWndProc = MainWindow::WndProc;
     wc.hInstance = hInst;
     wc.lpszClassName = L"MainWindowClass";
-    wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wc.hbrBackground = (HBRUSH)(CreateSolidBrush(RGB(220,220,220)));
     wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_LOGO));
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 
@@ -29,29 +30,60 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
 }
 
 LRESULT CALLBACK MainWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    MainWindow* pThis = reinterpret_cast<MainWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+    MainWindow* pThis = nullptr;
    
     switch (msg) {
     case WM_NCCREATE: {
         CREATESTRUCT* cs = reinterpret_cast<CREATESTRUCT*>(lParam);
         pThis = static_cast<MainWindow*>(cs->lpCreateParams);
-        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pThis);
-        pThis->hwnd = hwnd;
-        return TRUE;
+        if (pThis) {
+
+            SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)pThis);
+            pThis->hwnd = hwnd;
+        }
+        return DefWindowProc(hwnd, msg, wParam, lParam);
+    }
     }
 
+    pThis = reinterpret_cast<MainWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+    if (pThis) return pThis->HandleMessage(msg, wParam, lParam);
+
+    return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+LRESULT MainWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
+
+    switch (msg) {
+        OutputDebugString(L"Main WM_CREATE called\n");
+    case WM_CREATE: {
+        sideBar.SetSlider(hwnd, hInstance);
+        return 0;
+
+    }
     case WM_SIZE: {
-        if (pThis)
-            pThis->ResizeChildren();   
+        ResizeChildren();
         return 0;
     }
+    case WM_VSCROLL: {
+        HWND hSlider = (HWND)lParam; // 메시지를 보낸 컨트롤(슬라이더)의 핸들
 
+        if (hSlider == sideBar.GetSliderHandle()) {
+
+            if (LOWORD(wParam) == TB_THUMBTRACK || LOWORD(wParam) == TB_ENDTRACK) {
+
+                int newPenWidth = SendMessage(hSlider, TBM_GETPOS, 0, 0);
+
+                drawWindow->SetPenWidth(newPenWidth);
+            }
+        }
+        return 0;
+    }
     case WM_DESTROY:
         PostQuitMessage(0);
         return 0;
-
+    
     }
     return DefWindowProc(hwnd, msg, wParam, lParam);
+
 }
 
 void MainWindow::Show(int nCmdShow) {
@@ -64,11 +96,26 @@ void MainWindow::ResizeChildren() {
     RECT rcClient;
     GetClientRect(hwnd, &rcClient);
 
-    if (toolWindow)
-        MoveWindow(toolWindow->GetHwnd(), 0, 0, rcClient.right, 50, TRUE);
+    if (toolWindow){
+        MoveWindow(toolWindow->GetHwnd(),
+            rcClient.left, rcClient.top,
+            rcClient.right, 50,
+            TRUE);
+    }
 
-    if (drawWindow)
-        MoveWindow(drawWindow->GetHwnd(), 0, 50, rcClient.right, rcClient.bottom - 50, TRUE);
+    if (drawWindow) {
+        MoveWindow(drawWindow->GetHwnd(),
+            rcClient.left + 100, rcClient.top + 60,
+            rcClient.right-110, rcClient.bottom - 70,
+            TRUE);
+    }
+
+    if (sideBar.GetSliderHandle()) {
+        MoveWindow(sideBar.GetSliderHandle(),
+            25, rcClient.top + 120,     // X, Y
+            50, rcClient.bottom - 200, // 너비, 높이
+            TRUE);
+    }
 
     int w = rcClient.right - rcClient.left;
     int h = rcClient.bottom - rcClient.top;
@@ -76,7 +123,7 @@ void MainWindow::ResizeChildren() {
     if (w > 0 && h > 0) {
         HDC hdc = GetDC(hwnd);
         backBuffer.CreateBuffer(hdc, w, h);
-        ReleaseDC(hwnd, hdc); 
+        ReleaseDC(hwnd, hdc);
 
         backBuffer.ClearBuffer(rcClient);
 
