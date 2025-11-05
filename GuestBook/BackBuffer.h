@@ -12,7 +12,6 @@ public:
 	void CreateBuffer(HDC refDC, int w, int h);
 	void ClearBuffer(const RECT& rc) const;
 	void DrawBufferToScreen(HDC dst, int x = 0, int y = 0) const;
-  void DrawDirtyBufferToScreen(HDC dst, const RECT& dirty, int x = 0, int y = 0) const;
 	void ReleaseBuffer();
 
 	HDC dc() const { return memdc; }

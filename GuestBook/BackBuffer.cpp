@@ -36,15 +36,6 @@ void BackBuffer::DrawBufferToScreen(HDC dst, int x, int y) const {
 	BitBlt(dst, x, y, width, height, memdc, 0, 0, SRCCOPY);
 }
 
-/// 실시간 그리기용 부분 복사
-void BackBuffer::DrawDirtyBufferToScreen(HDC dst, const RECT& dirty, int x, int y) const {
-	if (!memdc || !dst || (width <= 0) || (height <= 0)) return;
-	int w = dirty.right - dirty.left;
-	int h = dirty.bottom - dirty.top; 
-	BitBlt(dst, dirty.left + x, dirty.top + y, w, h, memdc, dirty.left, dirty.top,SRCCOPY);
-}
-
-
 void BackBuffer::ReleaseBuffer() {
 	if (memdc) {
 		if (old) {
