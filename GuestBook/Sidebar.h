@@ -11,10 +11,10 @@ public:
 	bool OnScroll(WPARAM wParam, LPARAM lParam); /// Ææ ±½±â °ª º¯°æ
 	void SetStroke(int s); /// Ææ ±½±â ¼³Á¤
 	int GetStroke() const { return PenStroke; } /// Ææ ±½±â ¾ò´Â °ª
-	
+	HWND GetSliderHandle() { return hSlider; }
 private:
 	int SlideX, SlideTop, SlideY,SlideBottom;
-	HWND Slider;
+	HWND hSlider;
 	int PenStroke; /// µÎ²² ¼³Á¤
 	INITCOMMONCONTROLSEX icc;
 };

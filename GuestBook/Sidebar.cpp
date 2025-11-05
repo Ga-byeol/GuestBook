@@ -2,10 +2,10 @@
 
 Sidebar::Sidebar() 
 {
-	SlideX = 8;
+	SlideX = 15;
 	SlideTop = 150;
-	SlideY = 50;
-	SlideBottom = 50 * 5;
+	SlideY = 40;
+	SlideBottom = 300;
 	
 	PenStroke = 1;
 	
@@ -18,21 +18,22 @@ Sidebar::Sidebar()
 
 void Sidebar::SetSlider(HWND hWnd, HINSTANCE hInstance) 
 {
-	Slider = CreateWindowExW(0, TRACKBAR_CLASS,
+	hSlider = CreateWindowExW(0, TRACKBAR_CLASS,
 		L"", WS_CHILD | WS_VISIBLE | TBS_VERT | TBS_AUTOTICKS | TBS_TOOLTIPS,
 		SlideX, SlideTop, SlideY, SlideBottom,
 		hWnd, nullptr, hInstance, nullptr);
 
-	SendMessage(Slider, TBM_SETRANGE, TRUE, MAKELPARAM(1, 30));
-	SendMessage(Slider, TBM_SETPOS, TRUE, 1);
-	SetWindowPos(Slider, HWND_TOP, SlideX, SlideTop, SlideY, SlideBottom, SWP_SHOWWINDOW);
+	SetWindowPos(hSlider, HWND_TOP, SlideX, SlideTop, SlideY, SlideBottom, SWP_SHOWWINDOW);
+	SendMessage(hSlider, TBM_SETRANGE,
+		(WPARAM)TRUE,                   // (TRUE = Redraw)
+		(LPARAM)MAKELONG(1, 50));       // (MAKELONG(Min, Max))
 }
 
 void Sidebar::SetStroke(int s) {
 	if (s < 1) s = 1;	
 	if (s > 30) s = 30;
 	PenStroke = s;
-	if (Slider) {
-		SendMessage(Slider, TBM_SETPOS, TRUE, PenStroke);
+	if (hSlider) {
+		SendMessage(hSlider, TBM_SETPOS, TRUE, PenStroke);
 	}
 }

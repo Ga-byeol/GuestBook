@@ -22,7 +22,6 @@ void DrawController::DrawStrokes(HDC hdc,
     )
 {
 
-
     for (const auto& s : strokes) { /// 다시 그릴 때 사용하는 역할
         LOGBRUSH style = {};
         style.lbStyle = BS_SOLID;
