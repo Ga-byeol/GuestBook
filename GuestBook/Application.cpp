@@ -13,7 +13,6 @@ bool Application::Init(HINSTANCE hInst, int nCmdShow) {
     if (!toolWindow.Create(mainWindow.GetHwnd(), hInstance))
         return false;
 
-    drawWindow.SetApplication(this); 
 
     // 서로 연결
     mainWindow.SetDrawWindow(&drawWindow);
