@@ -15,6 +15,7 @@
     <ClCompile Include="PenController.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="Sidebar.cpp" />
+    <ClCompile Include="ScreensaverManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="ToolWindow.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Sidebar.h" />
+    <ClInclude Include="ScreensaverManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GuestBook.rc" />

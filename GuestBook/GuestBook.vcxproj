@@ -134,6 +134,7 @@
     <ClInclude Include="PenController.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="ReplayController.h" />
+    <ClInclude Include="ScreensaverManager.h" />
     <ClInclude Include="Sidebar.h" />
     <ClInclude Include="Stroke.h" />
     <ClInclude Include="DrawController.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="PenController.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="ReplayController.cpp" />
+    <ClCompile Include="ScreensaverManager.cpp" />
     <ClCompile Include="Sidebar.cpp" />
     <ClCompile Include="StrokeController.cpp" />
     <ClCompile Include="DrawWindow.cpp" />
