@@ -147,6 +147,16 @@
 		InvalidateRect(hwnd, nullptr, TRUE);
 	}
 
+	void DrawWindow::ClearScreenOnly() {
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		if (backBuffer) {
+			backBuffer->ClearBuffer(rc);
+		}
+
+		InvalidateRect(hwnd, nullptr, TRUE);
+	}
+
 	HDC DrawWindow::GetMemDc() const { return backBuffer ? backBuffer->dc() : nullptr; }
 
 	void DrawWindow::SetPenStyle(int PenNum) { /// ���̾�α� ���� ��ư �ѹ����� �� ����

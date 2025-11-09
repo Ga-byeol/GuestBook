@@ -63,7 +63,8 @@ public:
                 HWND hDrawWnd = drawWindow.GetHwnd();
                 vector<Stroke> strokesCopy = drawWindow.GetDrawnStrokes();
 
-                drawWindow.ClearAll();
+                //drawWindow.ClearAll();
+                drawWindow.ClearScreenOnly();
 
                 drawWindow.setReplaying(true);
 
@@ -90,10 +91,13 @@ public:
 
             if (drawWindow.GetErasing()) {
                 drawWindow.setSelectedColor(drawWindow.lastSelectedColor);
+                drawWindow.SetPenStyle(penBox.LastPenNum);
             }
             else {
                 drawWindow.lastSelectedColor = drawWindow.GetSelectedColor();
+                penBox.LastPenNum = penBox.PenNum;
                 drawWindow.setSelectedColor(RGB(255, 255, 255));
+                drawWindow.SetPenStyle(PS_SOLID);
             } 
             drawWindow.setErasing(); 
         });
