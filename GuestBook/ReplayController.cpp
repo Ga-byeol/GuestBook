@@ -2,6 +2,8 @@
 #include "Application.h"
 
 void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
+    /// 리플레이 시작 시, 기존 스레드 완전 종료
+    StopReplay();
     r_state = ReplayState::Running; // "재생 중"으로 상태 변경
     OutputDebugString(L"startrplay called\n");
     replayThread = std::thread([=]() { // 'this' 캡처
