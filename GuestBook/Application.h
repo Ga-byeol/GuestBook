@@ -87,7 +87,15 @@ public:
         });
         btnCtrl.RegisterHandler(ERASE, [&]() {
         ///    MessageBox(nullptr, L"지우기 버튼", L"TOOL창", MB_OK);
-            drawWindow.setSelectedColor(RGB(255, 255, 255));
+
+            if (drawWindow.GetErasing()) {
+                drawWindow.setSelectedColor(drawWindow.lastSelectedColor);
+            }
+            else {
+                drawWindow.lastSelectedColor = drawWindow.GetSelectedColor();
+                drawWindow.setSelectedColor(RGB(255, 255, 255));
+            } 
+            drawWindow.setErasing(); 
         });
         btnCtrl.RegisterHandler(BRUSH, [&]() {
             penBox.setDrawWindow(&drawWindow);

@@ -99,7 +99,7 @@
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
 		if (isReplaying) return;
 		SetCapture(hwnd);
-		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
+		COLORREF color = selectedColor;
 
 		strokeCtrl.Begin(x, y, color, currentPenStyle, currentPenWidth);
 }
@@ -113,7 +113,7 @@
 			const Stroke* cur = strokeCtrl.Current();
 			if (cur && cur->points.size() >= 2) {
 				
-				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, currentPenWidth, erasing ? RGB(255,255,255) : selectedColor);
+				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, currentPenWidth, selectedColor);
 
 				HDC hdc = GetDC(hwnd);
 				backBuffer->DrawBufferToScreen(hdc);
