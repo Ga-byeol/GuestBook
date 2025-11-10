@@ -27,5 +27,7 @@ private:
 	ToolWindow* toolWindow = nullptr;
 	Sidebar sideBar;
 	BackBuffer backBuffer;
+	BackBuffer cacheBuffer;
+
 };
 

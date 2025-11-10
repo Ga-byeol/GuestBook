@@ -95,40 +95,30 @@ void MainWindow::Show(int nCmdShow) {
 void MainWindow::ResizeChildren() {
     RECT rcClient;
     GetClientRect(hwnd, &rcClient);
+    int parentWidth = rcClient.right;
+    int parentHeight = rcClient.bottom;
 
-    if (toolWindow){
-        MoveWindow(toolWindow->GetHwnd(),
-            rcClient.left, rcClient.top,
-            rcClient.right, 50,
-            TRUE);
+    const int TOOLBAR_HEIGHT = 50;
+    const int SIDEBAR_WIDTH = 100;
+    const int SIDEBAR_Y_OFFSET = 60; // (MoveWindow에서 60을 사용하셨으므로)
+
+    if (toolWindow) {
+        MoveWindow(toolWindow->GetHwnd(), 0, 0, parentWidth, TOOLBAR_HEIGHT, TRUE);
+    }
+
+    // (사이드바 재배치 로직)
+    if (sideBar.GetSliderHandle()) {
+        int sliderY = TOOLBAR_HEIGHT + 70; // (예: 툴바 아래 70px)
+        int sliderHeight = parentHeight - sliderY - 20; // (예: 하단 20px 여백)
+        MoveWindow(sideBar.GetSliderHandle(), 25, sliderY, 50, sliderHeight, TRUE);
     }
 
     if (drawWindow) {
+        // (MoveWindow는 DrawWindow에 WM_SIZE를 자동으로 보냅니다)
         MoveWindow(drawWindow->GetHwnd(),
-            rcClient.left + 100, rcClient.top + 60,
-            rcClient.right-110, rcClient.bottom - 70,
+            SIDEBAR_WIDTH, TOOLBAR_HEIGHT,
+            parentWidth - SIDEBAR_WIDTH,
+            parentHeight - TOOLBAR_HEIGHT,
             TRUE);
     }
-
-    if (sideBar.GetSliderHandle()) {
-        MoveWindow(sideBar.GetSliderHandle(),
-            25, rcClient.top + 120,     // X, Y
-            50, rcClient.bottom - 200, // 너비, 높이
-            TRUE);
-    }
-
-    int w = rcClient.right - rcClient.left;
-    int h = rcClient.bottom - rcClient.top;
-
-    if (w > 0 && h > 0) {
-        HDC hdc = GetDC(hwnd);
-        backBuffer.CreateBuffer(hdc, w, h);
-        ReleaseDC(hwnd, hdc);
-
-        backBuffer.ClearBuffer(rcClient);
-
-        if (drawWindow)
-            drawWindow->setBuffer(backBuffer);
-    }
-    InvalidateRect(hwnd, nullptr, FALSE); 
 }

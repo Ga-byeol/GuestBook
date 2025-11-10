@@ -30,10 +30,9 @@ public:
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
-    void setBuffer(BackBuffer& buffer) { backBuffer  = &buffer; }
+    void setBuffer(BackBuffer& bBuffer, BackBuffer& cBuffer) { backBuffer = &bBuffer; backBuffer = &cBuffer; }
     void setErasing() { erasing = !erasing; }
-    void setReplaying(bool isReplaying) { this->isReplaying = isReplaying;  }
-    void SetApplication(Application* a) { app = a; }
+    void setReplaying(bool isReplaying) { this->isReplaying = isReplaying; }
     void ClearAll();
     void ClearScreenOnly();
 
@@ -46,19 +45,31 @@ private:
     void OnMouseMove(int x, int y, WPARAM flags);
     void OnLButtonUp(int x, int y, WPARAM flags);
 
+    void OnSize(int width, int height);
+
+
+    void HideSystemCursor(); // 커서 숨김 함수
+    void ShowSystemCursor(); // 커서 표시 함수
+
     static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
     HWND hwnd = nullptr;
     HINSTANCE hInstance = nullptr;
-    Application* app = nullptr;
 
     ToolWindow* toolWindow = nullptr;
     MainWindow* mainWindow = nullptr;
 
     BackBuffer* backBuffer = nullptr; 
+    BackBuffer* cacheBuffer = nullptr;
+
     DrawController drawCtrl;
     StrokeController strokeCtrl;
     COLORREF selectedColor = RGB(0, 0, 0);
+
+    POINT m_currentMousePos; // ★ 마우스의 현재 위치
+    bool m_isCursorHidden = false; // ★ 커서가 숨겨졌는지 여부
+    
+
     int penWidth = 2;
     bool erasing = false;
     bool isReplaying = false;

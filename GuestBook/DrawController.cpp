@@ -51,10 +51,45 @@ void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidt
     const Point& prevPoint = stroke.points[stroke.points.size() - 2];
     const Point& lastPoint = stroke.points.back();
 
-    MoveToEx(hdc, prevPoint.x, prevPoint.y, nullptr);
-    LineTo(hdc, lastPoint.x, lastPoint.y);
+    DrawPointsLine(hdc, stroke.points);
 
     SelectObject(hdc, oldBrush);
     SelectObject(hdc, oldPen);
     DeleteObject(pen);
+}
+
+// 점(dot)을 그리는 새 함수
+void DrawController::DrawCursorDot(HDC hdc, POINT pos, int penWidth, COLORREF color, bool isErasing) {
+
+    if (isErasing) {
+        HBRUSH hFillBrush = CreateSolidBrush(RGB(255, 255, 255));
+        HGDIOBJ hOldBrush = SelectObject(hdc, hFillBrush);
+
+        HPEN hBorderPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+        HGDIOBJ hOldPen = SelectObject(hdc, hBorderPen);
+
+        int radius = penWidth / 2;
+        if (radius < 2) radius = 2;
+
+        Ellipse(hdc, pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius);
+
+        SelectObject(hdc, hOldPen);
+        SelectObject(hdc, hOldBrush);
+        DeleteObject(hBorderPen);
+        DeleteObject(hFillBrush);
+    }
+    else {
+        HBRUSH hBrush = CreateSolidBrush(color);
+        HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
+        HPEN hPen = (HPEN)GetStockObject(NULL_PEN);
+        HGDIOBJ oldPen = SelectObject(hdc, hPen);
+
+        int radius = penWidth / 2;
+        if (radius < 2) radius = 2;
+
+        Ellipse(hdc, pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius);
+        SelectObject(hdc, oldPen);
+        SelectObject(hdc, oldBrush);
+        DeleteObject(hBrush);
+    }
 }
