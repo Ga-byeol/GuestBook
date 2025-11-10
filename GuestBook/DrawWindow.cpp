@@ -152,7 +152,7 @@
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
 		if (isReplaying) return;
 		SetCapture(hwnd);
-		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
+		COLORREF color = selectedColor;
 
 		strokeCtrl.Begin(x, y, color, currentPenStyle, currentPenWidth);
 }
@@ -172,12 +172,9 @@
 			strokeCtrl.Add(x, y);
 
 			const Stroke* cur = strokeCtrl.Current();
-			if (cur) {
-				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur,
-					cur->penWidth,
-					erasing ? RGB(255, 255, 255) : cur->color);
-			}
-		}
+			if (cur && cur->points.size() >= 2) {
+				
+				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, currentPenWidth, selectedColor);
 
 		drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
 			currentPenWidth,
@@ -228,8 +225,15 @@
 		if (backBuffer) {
 			backBuffer->ClearBuffer(rc);
 		}
-		if (cacheBuffer) {
-			cacheBuffer->ClearBuffer(rc);
+    
+		InvalidateRect(hwnd, nullptr, TRUE);
+	}
+
+	void DrawWindow::ClearScreenOnly() {
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		if (backBuffer) {
+			backBuffer->ClearBuffer(rc);
 		}
 
 		InvalidateRect(hwnd, nullptr, TRUE);

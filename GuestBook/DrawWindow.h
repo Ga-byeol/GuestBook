@@ -19,12 +19,14 @@ class DrawWindow
 public:
     bool Create(HWND parentHwnd, HINSTANCE hInstance);
     HWND GetHwnd() const { return hwnd; }
-    HDC GetMemDc() const;
+    HDC GetMemDc() const; 
+    BOOL GetErasing() const { return erasing;  }
+    COLORREF GetSelectedColor() const { return selectedColor; }
     const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
     void SetStrokes(std::vector<Stroke> strokes) { strokeCtrl.setStrokes(strokes); }
     void SetPenStyle(int PenNum); /// 브러쉬 컨트롤러 다이얼로그에서 받은 넘버
     void SetPenWidth(int PenWidth); /// 브러쉬 컨트롤러 다이얼로그에서 받은 두께
-    /// const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
+
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
@@ -32,7 +34,9 @@ public:
     void setErasing(bool erase) { erasing = erase; }
     void setReplaying(bool isReplaying) { this->isReplaying = isReplaying; }
     void ClearAll();
+    void ClearScreenOnly();
 
+    COLORREF lastSelectedColor = RGB(0, 0, 0);
 
 private:
     LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
@@ -70,5 +74,5 @@ private:
     bool erasing = false;
     bool isReplaying = false;
     int currentPenStyle = PS_SOLID;
-    int currentPenWidth = 1;
+    int currentPenWidth = 5;
 };
