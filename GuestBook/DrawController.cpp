@@ -51,8 +51,7 @@ void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidt
     const Point& prevPoint = stroke.points[stroke.points.size() - 2];
     const Point& lastPoint = stroke.points.back();
 
-    MoveToEx(hdc, prevPoint.x, prevPoint.y, nullptr);
-    LineTo(hdc, lastPoint.x, lastPoint.y);
+    DrawPointsLine(hdc, stroke.points);
 
     SelectObject(hdc, oldBrush);
     SelectObject(hdc, oldPen);
@@ -62,32 +61,33 @@ void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidt
 // 점(dot)을 그리는 새 함수
 void DrawController::DrawCursorDot(HDC hdc, POINT pos, int penWidth, COLORREF color, bool isErasing) {
 
-    // 지우개 모드일 때는 하얀 사각형으로 (예시)
     if (isErasing) {
-        HBRUSH hBrush = CreateSolidBrush(RGB(255, 255, 255));
+        HBRUSH hFillBrush = CreateSolidBrush(RGB(255, 255, 255));
+        HGDIOBJ hOldBrush = SelectObject(hdc, hFillBrush);
+
+        HPEN hBorderPen = CreatePen(PS_SOLID, 1, RGB(0, 0, 0));
+        HGDIOBJ hOldPen = SelectObject(hdc, hBorderPen);
+
+        int radius = penWidth / 2;
+        if (radius < 2) radius = 2;
+
+        Ellipse(hdc, pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius);
+
+        SelectObject(hdc, hOldPen);
+        SelectObject(hdc, hOldBrush);
+        DeleteObject(hBorderPen);
+        DeleteObject(hFillBrush);
+    }
+    else {
+        HBRUSH hBrush = CreateSolidBrush(color);
         HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
-        RECT rc = { pos.x - penWidth / 2, pos.y - penWidth / 2, pos.x + penWidth / 2, pos.y + penWidth / 2 };
-        Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
+        HPEN hPen = (HPEN)GetStockObject(NULL_PEN);
+        HGDIOBJ oldPen = SelectObject(hdc, hPen);
+        int radius = penWidth / 2;
+        if (radius < 2) radius = 2;
+        Ellipse(hdc, pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius);
+        SelectObject(hdc, oldPen);
         SelectObject(hdc, oldBrush);
         DeleteObject(hBrush);
-        return;
     }
-
-    // 펜 모드일 때는 색상과 굵기에 맞는 '원'
-    // (ExtCreatePen은 굵은 펜의 테두리만 그림. 속을 채워야 함)
-
-    HBRUSH hBrush = CreateSolidBrush(color); // 1. 펜 색상과 '같은' 브러시
-    HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
-    HPEN hPen = (HPEN)GetStockObject(NULL_PEN); // 2. 테두리(Pen)는 없음
-    HGDIOBJ oldPen = SelectObject(hdc, hPen);
-
-    int radius = penWidth / 2;
-    if (radius < 2) radius = 2; // (최소 크기 보장)
-
-    // 3. 원 그리기 (Ellipse)
-    Ellipse(hdc, pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius);
-
-    SelectObject(hdc, oldPen);
-    SelectObject(hdc, oldBrush);
-    DeleteObject(hBrush);
 }
