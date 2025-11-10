@@ -46,6 +46,16 @@
 	LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
 		switch (msg) {
+			
+		case WM_CREATE:
+		{
+			g_pSaverManager = new ScreensaverManager(hwnd);
+
+			SetTimer(hwnd, IDT_SAVER_TIMER, 1000, NULL);
+			
+			return 0;
+		}
+		
 		case WM_PAINT: {
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hwnd, &ps);
@@ -55,11 +65,39 @@
 			EndPaint(hwnd, &ps);
 			return 0;
 		}
+		case WM_TIMER:
+		{
+			if (wParam == IDT_SAVER_TIMER && g_pSaverManager) {
+			// 스크린세이버 매니저에게 무활동 검사 지시
+			if (isReplaying) {
+				g_pSaverManager->ResetActivityTimer();
+				return 0;
+			}
+				g_pSaverManager->CheckInactivity();
+		}
+			return 0;
+		}
 		case WM_LBUTTONDOWN:
+			if (g_pSaverManager) {
+				g_pSaverManager->ResetActivityTimer();
+			}
+			if (g_pSaverManager->IsSaverActive()) {
+				g_pSaverManager->StopSaver();
+				InvalidateRect(hwnd, nullptr, false);
+				return 0;
+			}
 			OnLButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
 			return 0;
 
 		case WM_MOUSEMOVE:
+			if (g_pSaverManager) {
+				g_pSaverManager->ResetActivityTimer();
+			}
+			if (g_pSaverManager->IsSaverActive()) {
+				g_pSaverManager->StopSaver();
+				InvalidateRect(hwnd, nullptr, false);
+				return 0;
+			}
 			OnMouseMove((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
 			return 0;
 
@@ -71,7 +109,19 @@
 			InvalidateRect(hwnd, NULL, false);
 			UpdateWindow(hwnd);
 			return 0;
+
+		case WM_DESTROY:
+		{
+			// 타이머 해제 및 매니저 삭제
+			KillTimer(hwnd, IDT_SAVER_TIMER);
+			if (g_pSaverManager) {
+				delete g_pSaverManager;
+				g_pSaverManager = nullptr;
+			}
+			PostQuitMessage(0);
 		}
+		}
+
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 

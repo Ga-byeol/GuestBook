@@ -7,7 +7,10 @@
 #include "StrokeController.h"
 #include "BackBuffer.h"
 #include "Sidebar.h"
+#include "ScreensaverManager.h"
 #define WM_USER_REPLAY_UPDATE (WM_USER + 1)
+#define IDT_SAVER_TIMER 1
+
 
 class ToolWindow;
 class MainWindow;
@@ -25,6 +28,7 @@ public:
     void SetPenStyle(int PenNum); /// 브러쉬 컨트롤러 다이얼로그에서 받은 넘버
     void SetPenWidth(int PenWidth); /// 브러쉬 컨트롤러 다이얼로그에서 받은 두께
 /// const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
+    ScreensaverManager* g_pSaverManager = nullptr;
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
