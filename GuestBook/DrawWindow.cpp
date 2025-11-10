@@ -11,7 +11,7 @@
 		wc.hInstance = hInst;
 		wc.lpszClassName = L"DrawWindowClass";
 		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+		wc.hCursor = LoadCursor(NULL, IDC_CROSS);
 
 		RegisterClass(&wc);
 
@@ -34,7 +34,7 @@
 				self->hwnd = hwnd;
 				SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)self);
 			}
-			return TRUE;
+			return DefWindowProc(hwnd, msg, wParam, lParam);
 		}
 		
 		self = reinterpret_cast<DrawWindow*>(GetWindowLongPtr(hwnd, GWLP_USERDATA));
@@ -45,17 +45,20 @@
 
 	LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
-		switch (msg) {
-			
-		case WM_CREATE:
-		{
+		switch (msg) {		
+		case WM_CREATE: {
+			TRACKMOUSEEVENT tme = { 0 };
+			tme.cbSize = sizeof(tme);
+			tme.dwFlags = TME_LEAVE;
+			tme.hwndTrack = hwnd;
+			TrackMouseEvent(&tme);
+			//화면보호기 추가 코드
 			g_pSaverManager = new ScreensaverManager(hwnd);
-
 			SetTimer(hwnd, IDT_SAVER_TIMER, 1000, NULL);
-			
+			return 0;
 			return 0;
 		}
-		
+
 		case WM_PAINT: {
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hwnd, &ps);
@@ -65,6 +68,7 @@
 			EndPaint(hwnd, &ps);
 			return 0;
 		}
+
 		case WM_TIMER:
 		{
 			if (wParam == IDT_SAVER_TIMER && g_pSaverManager) {
@@ -77,6 +81,7 @@
 		}
 			return 0;
 		}
+
 		case WM_LBUTTONDOWN:
 			if (g_pSaverManager) {
 				g_pSaverManager->ResetActivityTimer();
@@ -110,79 +115,152 @@
 			UpdateWindow(hwnd);
 			return 0;
 
-		case WM_DESTROY:
-		{
+		case WM_SIZE: {
+			int width = LOWORD(lParam);
+			int height = HIWORD(lParam);
+			OnSize(width, height);
+			return 0;
+		}
+		case WM_SETCURSOR: {
+			TRACKMOUSEEVENT tme = { 0 };
+			tme.cbSize = sizeof(tme);
+			tme.dwFlags = TME_LEAVE;
+			tme.hwndTrack = hwnd;
+			TrackMouseEvent(&tme);
+			
+			break;
+		}
+
+		case WM_MOUSELEAVE: {
+			m_currentMousePos = { -100, -100 };
+
+			if (!backBuffer || !cacheBuffer) return 0;
+			RECT rc; GetClientRect(hwnd, &rc);
+			BitBlt(backBuffer->dc(), 0, 0, rc.right - rc.left, rc.bottom - rc.top,
+				cacheBuffer->dc(), 0, 0, SRCCOPY);
+
+			HDC hdc = GetDC(hwnd);
+			backBuffer->DrawBufferToScreen(hdc);
+			ReleaseDC(hwnd, hdc);
+			return 0;
+		}
+		case WM_DESTROY: {
+			if (backBuffer) delete backBuffer;
+			if (cacheBuffer) delete cacheBuffer;
+
+			//화면보호기 추가 코드
 			// 타이머 해제 및 매니저 삭제
 			KillTimer(hwnd, IDT_SAVER_TIMER);
 			if (g_pSaverManager) {
 				delete g_pSaverManager;
 				g_pSaverManager = nullptr;
 			}
-			PostQuitMessage(0);
+
+			backBuffer = nullptr;
+			cacheBuffer = nullptr;
+			return 0;
 		}
+
 		}
 
 		return DefWindowProc(hwnd, msg, wParam, lParam);
 	}
 
 
-	void DrawWindow::OnPaint(HDC hdc, const RECT & rcClient) {
-		OutputDebugString(L"called paint drawWindow\n");
+	void DrawWindow::OnPaint(HDC hdc, const RECT& rcClient) {
+		if (!backBuffer || !cacheBuffer) return;
 
-		if (!backBuffer) return;
-		backBuffer->ClearBuffer(rcClient);
+		cacheBuffer->ClearBuffer(rcClient);
+		const auto& strokes = strokeCtrl.Strokes();
+		drawCtrl.DrawStrokes(cacheBuffer->dc(), strokes, penWidth, selectedColor);
 
-		const auto strokes = strokeCtrl.Strokes();
-		const auto current = strokeCtrl.Current();
+		BitBlt(backBuffer->dc(), 0, 0, rcClient.right, rcClient.bottom,
+			cacheBuffer->dc(), 0, 0, SRCCOPY);
 
-		if (isReplaying) {
-			drawCtrl.DrawStrokes(backBuffer->dc(), strokes, penWidth, selectedColor);
+		if (strokeCtrl.IsRecording()) {
+			const Stroke* cur = strokeCtrl.Current();
+			if (cur) {
+				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur,
+					cur->penWidth,
+					cur->color);
+			}
 		}
-		else {
-			drawCtrl.DrawStrokes(backBuffer->dc(),
-				strokeCtrl.Strokes(),
-				penWidth, selectedColor);
-		}
-		backBuffer->DrawBufferToScreen(hdc);
+
+		drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
+			currentPenWidth,
+			selectedColor,
+			erasing);
+			backBuffer->DrawBufferToScreen(hdc);
 	}
 
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
 		if (isReplaying) return;
 		SetCapture(hwnd);
-		COLORREF color = erasing ? RGB(255, 255, 255) : selectedColor;
+		COLORREF color = selectedColor;
 
 		strokeCtrl.Begin(x, y, color, currentPenStyle, currentPenWidth);
-}
+	}
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
-		if (!backBuffer) return;
-		if (isReplaying) return;
+		if (!backBuffer || !cacheBuffer || isReplaying) return;
+
+		m_currentMousePos.x = x;
+		m_currentMousePos.y = y;
+
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		BitBlt(backBuffer->dc(), 0, 0, rc.right - rc.left, rc.bottom - rc.top,
+			cacheBuffer->dc(), 0, 0, SRCCOPY);
+
 		if (flags & MK_LBUTTON) {
 			strokeCtrl.Add(x, y);
 
 			const Stroke* cur = strokeCtrl.Current();
-			if (cur && cur->points.size() >= 2) {
-				
-				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, currentPenWidth, erasing ? RGB(255,255,255) : selectedColor);
+			if (cur) {
 
+				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, currentPenWidth, selectedColor);
+
+			}
+		}
+				drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
+					currentPenWidth,
+					selectedColor,
+					erasing);
 				HDC hdc = GetDC(hwnd);
 				backBuffer->DrawBufferToScreen(hdc);
 				ReleaseDC(hwnd, hdc);
-			}
-		}
-  }
+	}
 
 	void DrawWindow::OnLButtonUp(int x, int y, WPARAM) {
-		if (!backBuffer) return;
-		if (isReplaying) return;
+		if (!backBuffer || !cacheBuffer || isReplaying) return;
 
-  	if (strokeCtrl.IsRecording()) {
+		if (strokeCtrl.IsRecording()) {
 			strokeCtrl.Add(x, y);
-			strokeCtrl.End();
+			const Stroke* finishedStroke = strokeCtrl.Current();
 
+			if (finishedStroke) {
+				drawCtrl.DrawLatestStroke(cacheBuffer->dc(), *finishedStroke,
+					finishedStroke->penWidth,
+					finishedStroke->color);
+			}
+
+			strokeCtrl.End();
 			ReleaseCapture();
+
+			RECT rc;
+			GetClientRect(hwnd, &rc);
+			BitBlt(backBuffer->dc(), 0, 0, rc.right - rc.left, rc.bottom - rc.top,
+				cacheBuffer->dc(), 0, 0, SRCCOPY);
+
+			drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
+				currentPenWidth,
+				selectedColor,
+				erasing);
+
+			HDC hdc = GetDC(hwnd);
+			backBuffer->DrawBufferToScreen(hdc);
+			ReleaseDC(hwnd, hdc);
 		}
-		InvalidateRect(hwnd, nullptr, FALSE);
 	}
 
 	void DrawWindow::ClearAll() {
@@ -197,9 +275,19 @@
 		InvalidateRect(hwnd, nullptr, TRUE);
 	}
 
+	void DrawWindow::ClearScreenOnly() {
+		RECT rc;
+		GetClientRect(hwnd, &rc);
+		if (backBuffer) {
+			backBuffer->ClearBuffer(rc);
+		}
+
+		InvalidateRect(hwnd, nullptr, TRUE);
+	}
+
 	HDC DrawWindow::GetMemDc() const { return backBuffer ? backBuffer->dc() : nullptr; }
 
-	void DrawWindow::SetPenStyle(int PenNum) { /// ���̾�α� ���� ��ư �ѹ����� �� ����
+	void DrawWindow::SetPenStyle(int PenNum) {
    		switch (PenNum) {
 		case 0: currentPenStyle = PS_SOLID; break;
 		case 1: currentPenStyle = PS_DASH;  break;
@@ -211,4 +299,36 @@
 	}
 	void DrawWindow::SetPenWidth(int PenWidth) {
 		currentPenWidth = PenWidth;
+	}
+
+	void DrawWindow::HideSystemCursor() {
+		if (!m_isCursorHidden) {
+			ShowCursor(FALSE);
+			m_isCursorHidden = true;
+		}
+	}
+
+	void DrawWindow::ShowSystemCursor() {
+		if (m_isCursorHidden) {
+			ShowCursor(TRUE);
+			m_isCursorHidden = false;
+		}
+	}
+	void DrawWindow::OnSize(int width, int height) {
+		if (backBuffer) delete backBuffer;
+		if (cacheBuffer) delete cacheBuffer;
+
+		if (width == 0 || height == 0) return;
+
+		HDC hdc = GetDC(hwnd);
+
+		backBuffer = new BackBuffer();
+		backBuffer->CreateBuffer(hdc, width, height);
+
+		cacheBuffer = new BackBuffer();
+		cacheBuffer->CreateBuffer(hdc, width, height);
+
+		ReleaseDC(hwnd, hdc);
+
+		InvalidateRect(hwnd, NULL, TRUE);
 	}
