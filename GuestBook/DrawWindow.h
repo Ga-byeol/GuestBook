@@ -35,6 +35,7 @@ public:
     void setReplaying(bool isReplaying) { this->isReplaying = isReplaying;  }
     void SetApplication(Application* a) { app = a; }
     void ClearAll();
+    void ClearScreenOnly();
 
     COLORREF lastSelectedColor = RGB(0, 0, 0);
 
