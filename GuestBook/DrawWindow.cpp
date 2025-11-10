@@ -53,7 +53,8 @@
 			tme.hwndTrack = hwnd;
 			TrackMouseEvent(&tme);
 			//화면보호기 추가 코드
-			g_pSaverManager = new ScreensaverManager(hwnd);
+			HWND hParent = GetParent(hwnd);
+			g_pSaverManager = new ScreensaverManager(hwnd, hParent);
 			SetTimer(hwnd, IDT_SAVER_TIMER, 1000, NULL);
 			return 0;
 			return 0;
@@ -87,10 +88,21 @@
 				g_pSaverManager->ResetActivityTimer();
 			}
 			if (g_pSaverManager->IsSaverActive()) {
-				g_pSaverManager->StopSaver();
-				InvalidateRect(hwnd, nullptr, false);
-				return 0;
+				if ((g_pSaverManager->Startsavertime())) {
+					g_pSaverManager->StopSaver();
+					HWND hParent = GetParent(hwnd);
+					if (hParent) {
+						RECT rcParent;
+						GetClientRect(hParent, &rcParent);
+						// 부모의 WM_SIZE 핸들러를 강제 실행 (ResizeChildren 호출 유도)
+						SendMessage(hParent, WM_SIZE, 0,
+							MAKELPARAM(rcParent.right, rcParent.bottom));
+					}
+					return 0;
+				}
+				else return 0;
 			}
+
 			OnLButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
 			return 0;
 
@@ -99,9 +111,19 @@
 				g_pSaverManager->ResetActivityTimer();
 			}
 			if (g_pSaverManager->IsSaverActive()) {
-				g_pSaverManager->StopSaver();
-				InvalidateRect(hwnd, nullptr, false);
-				return 0;
+				if ((g_pSaverManager->Startsavertime())) {
+					g_pSaverManager->StopSaver();
+					HWND hParent = GetParent(hwnd);
+					if (hParent) {
+						RECT rcParent;
+						GetClientRect(hParent, &rcParent);
+						// 부모의 WM_SIZE 핸들러를 강제 실행 (ResizeChildren 호출 유도)
+						SendMessage(hParent, WM_SIZE, 0,
+							MAKELPARAM(rcParent.right, rcParent.bottom));
+					}
+					return 0;
+				}
+				else return 0;
 			}
 			OnMouseMove((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
 			return 0;
