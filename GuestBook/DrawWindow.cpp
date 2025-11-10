@@ -87,11 +87,11 @@
 			return 0;
 		}
 		case WM_SETCURSOR: {
-				TRACKMOUSEEVENT tme = { 0 };
-				tme.cbSize = sizeof(tme);
-				tme.dwFlags = TME_LEAVE;
-				tme.hwndTrack = hwnd;
-				TrackMouseEvent(&tme);
+			TRACKMOUSEEVENT tme = { 0 };
+			tme.cbSize = sizeof(tme);
+			tme.dwFlags = TME_LEAVE;
+			tme.hwndTrack = hwnd;
+			TrackMouseEvent(&tme);
 			
 			break;
 		}
@@ -107,7 +107,6 @@
 			HDC hdc = GetDC(hwnd);
 			backBuffer->DrawBufferToScreen(hdc);
 			ReleaseDC(hwnd, hdc);
-
 			return 0;
 		}
 		case WM_DESTROY: {
@@ -138,15 +137,15 @@
 			if (cur) {
 				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur,
 					cur->penWidth,
-					erasing ? RGB(255, 255, 255) : cur->color);
+					cur->color);
 			}
 		}
 
 		drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
 			currentPenWidth,
-			erasing ? RGB(255, 255, 255) : selectedColor,
+			selectedColor,
 			erasing);
-		backBuffer->DrawBufferToScreen(hdc);
+			backBuffer->DrawBufferToScreen(hdc);
 	}
 
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
@@ -155,13 +154,13 @@
 		COLORREF color = selectedColor;
 
 		strokeCtrl.Begin(x, y, color, currentPenStyle, currentPenWidth);
-}
+	}
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
 		if (!backBuffer || !cacheBuffer || isReplaying) return;
 
-		 m_currentMousePos.x = x;
-		 m_currentMousePos.y = y;
+		m_currentMousePos.x = x;
+		m_currentMousePos.y = y;
 
 		RECT rc;
 		GetClientRect(hwnd, &rc);
@@ -172,17 +171,19 @@
 			strokeCtrl.Add(x, y);
 
 			const Stroke* cur = strokeCtrl.Current();
-			if (cur && cur->points.size() >= 2) {
-				
+			if (cur) {
+
 				drawCtrl.DrawLatestStroke(backBuffer->dc(), *cur, currentPenWidth, selectedColor);
 
-		drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
-			currentPenWidth,
-			erasing ? RGB(255, 255, 255) : selectedColor,
-			erasing);
-		HDC hdc = GetDC(hwnd);
-		backBuffer->DrawBufferToScreen(hdc);
-		ReleaseDC(hwnd, hdc);
+			}
+		}
+				drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
+					currentPenWidth,
+					selectedColor,
+					erasing);
+				HDC hdc = GetDC(hwnd);
+				backBuffer->DrawBufferToScreen(hdc);
+				ReleaseDC(hwnd, hdc);
 	}
 
 	void DrawWindow::OnLButtonUp(int x, int y, WPARAM) {
@@ -195,7 +196,7 @@
 			if (finishedStroke) {
 				drawCtrl.DrawLatestStroke(cacheBuffer->dc(), *finishedStroke,
 					finishedStroke->penWidth,
-					erasing ? RGB(255, 255, 255) : finishedStroke->color);
+					finishedStroke->color);
 			}
 
 			strokeCtrl.End();
@@ -208,7 +209,7 @@
 
 			drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
 				currentPenWidth,
-				erasing ? RGB(255, 255, 255) : selectedColor,
+				selectedColor,
 				erasing);
 
 			HDC hdc = GetDC(hwnd);

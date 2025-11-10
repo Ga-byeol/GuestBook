@@ -83,8 +83,10 @@ void DrawController::DrawCursorDot(HDC hdc, POINT pos, int penWidth, COLORREF co
         HGDIOBJ oldBrush = SelectObject(hdc, hBrush);
         HPEN hPen = (HPEN)GetStockObject(NULL_PEN);
         HGDIOBJ oldPen = SelectObject(hdc, hPen);
+
         int radius = penWidth / 2;
         if (radius < 2) radius = 2;
+
         Ellipse(hdc, pos.x - radius, pos.y - radius, pos.x + radius, pos.y + radius);
         SelectObject(hdc, oldPen);
         SelectObject(hdc, oldBrush);

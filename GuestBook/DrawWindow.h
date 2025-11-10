@@ -31,7 +31,7 @@ public:
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
     void setSelectedColor(COLORREF color) { this->selectedColor = color; }
     void setBuffer(BackBuffer& bBuffer, BackBuffer& cBuffer) { backBuffer = &bBuffer; backBuffer = &cBuffer; }
-    void setErasing(bool erase) { erasing = erase; }
+    void setErasing() { erasing = !erasing; }
     void setReplaying(bool isReplaying) { this->isReplaying = isReplaying; }
     void ClearAll();
     void ClearScreenOnly();
