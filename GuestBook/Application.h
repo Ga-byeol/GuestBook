@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <windows.h>
 #include "MainWindow.h"
 #include "DrawWindow.h"
@@ -7,6 +7,7 @@
 #include "ColorController.h"
 #include "PenController.h"
 #include "FileManager.h"
+#include "resource.h"
 #define SAVE 101
 #define LOAD 102
 #define REPLAY 103
@@ -14,30 +15,35 @@
 #define ERASE 105
 #define BRUSH 106
 #define COLOR 107
-
+#define STOP 108
+#define END 109
+#define BLACK 110
+#define RED 111
+#define BLUE 112
+#define GREEN 113
 class Application {
 public:
     Application() : replayController(), penBox(hInstance, nullptr) {
-        // ToolWindow ¾ÈÀÇ ButtonController¿¡ Á¢±Ù
+        // ToolWindow ì•ˆì˜ ButtonControllerì— ì ‘ê·¼
         auto& btnCtrl = toolWindow.GetButtonController();
 
-        // ¹öÆ° ID¿¡ ¸Â´Â µ¿ÀÛ µî·Ï
+        // ë²„íŠ¼ IDì— ë§ëŠ” ë™ì‘ ë“±ë¡
         btnCtrl.RegisterHandler(SAVE, [&]() {
             fileManager.StartSave(drawWindow.GetHwnd(), drawWindow.GetDrawnStrokes());
             });
         btnCtrl.RegisterHandler(LOAD, [&]() {
             std::vector<Stroke> loadStrokes;
 
-            /// ºÒ·¯¿À±â ¶§¿¡´Â ¸®ÇÃ·¹ÀÌ ÁßÁö
+            /// ë¶ˆëŸ¬ì˜¤ê¸° ë•Œì—ëŠ” ë¦¬í”Œë ˆì´ ì¤‘ì§€
             replayController.StopReplay();
 
-            /// ±âÁ¸¿¡ ±×·ÁÁ® ÀÖ´ø ±×¸²À» ¸ğµÎ Á¦°Å
+            /// ê¸°ì¡´ì— ê·¸ë ¤ì ¸ ìˆë˜ ê·¸ë¦¼ì„ ëª¨ë‘ ì œê±°
             drawWindow.ClearAll();
 
-            /// ÆÄÀÏ¿¡¼­ ÀĞ±â
+            /// íŒŒì¼ì—ì„œ ì½ê¸°
             fileManager.StartLoad(drawWindow.GetHwnd(), loadStrokes, drawWindow.GetHwnd());
 
-            /// ÆÄÀÏÀÌ Á¤»óÀûÀ¸·Î ºÒ·¯¿ÍÁ³´Ù¸é DrawWindow¿¡ Àü´Ş
+            /// íŒŒì¼ì´ ì •ìƒì ìœ¼ë¡œ ë¶ˆëŸ¬ì™€ì¡Œë‹¤ë©´ DrawWindowì— ì „ë‹¬
             if (!loadStrokes.empty())
             {
                 drawWindow.SetStrokes(loadStrokes);
@@ -46,19 +52,20 @@ public:
                 UpdateWindow(drawWindow.GetHwnd());
             }
 
-            /// ºÒ·¯¿ÍÁø ±×¸²À» Áï½Ã ¸®ÇÃ·¹ÀÌ
-            /// ¸®ÇÃ·¹ÀÌ ÁßÀÏ ¶§¿¡´Â ÇÃ·¡±× ¸·¾Æ Ææ ¸ø ±×¸®°Ô ÇÏ±â
+            /// ë¶ˆëŸ¬ì™€ì§„ ê·¸ë¦¼ì„ ì¦‰ì‹œ ë¦¬í”Œë ˆì´
+            /// ë¦¬í”Œë ˆì´ ì¤‘ì¼ ë•Œì—ëŠ” í”Œë˜ê·¸ ë§‰ì•„ íœ ëª» ê·¸ë¦¬ê²Œ í•˜ê¸°
             drawWindow.setReplaying(true);
             replayController.StartReplay(drawWindow.GetHwnd(), loadStrokes);
             });
         btnCtrl.RegisterHandler(REPLAY, [&]() {
             
             ReplayState state = replayController.GetState();
-
+            HWND hReplayBtn = toolWindow.GetReplayHwnd();
+            HICON hIcon = nullptr;
             if (state == ReplayState::Stopped) {
-                // [»õ·Î Àç»ı]
-                // (ÀÌÀü ÄÚµå: µ¥ÀÌÅÍ º¹»ç, ClearAll, setReplaying(true), È­¸é Å¬¸®¾î...)
-                // (onFinish Äİ¹éÀº *ÇÊ¿ä ¾øÀ½*. ¾îÂ÷ÇÇ ¹«ÇÑ ·çÇÁÀÌ¹Ç·Î)
+                // [ìƒˆë¡œ ì¬ìƒ]
+                // (ì´ì „ ì½”ë“œ: ë°ì´í„° ë³µì‚¬, ClearAll, setReplaying(true), í™”ë©´ í´ë¦¬ì–´...)
+                // (onFinish ì½œë°±ì€ *í•„ìš” ì—†ìŒ*. ì–´ì°¨í”¼ ë¬´í•œ ë£¨í”„ì´ë¯€ë¡œ)
 
                 HWND hDrawWnd = drawWindow.GetHwnd();
                 vector<Stroke> strokesCopy = drawWindow.GetDrawnStrokes();
@@ -71,23 +78,32 @@ public:
                 InvalidateRect(hDrawWnd, NULL, TRUE);
                 UpdateWindow(hDrawWnd);
 
-                // ¡Ú¡Ú¡Ú Äİ¹é(onFinished) ¾øÀÌ ½º·¹µå ½ÃÀÛ ¡Ú¡Ú¡Ú
+                // â˜…â˜…â˜… ì½œë°±(onFinished) ì—†ì´ ìŠ¤ë ˆë“œ ì‹œì‘ â˜…â˜…â˜…
                 replayController.StartReplay(hDrawWnd, strokesCopy);
-
+                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP));
+                SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
             }
-            else {
-                // [ÀÏ½ÃÁ¤Áö/Àç°³ Åä±Û]
+            else if (state == ReplayState::Running) {
+                /// ì¼ì‹œì •ì§€
                 replayController.ToggleReplay();
+                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_REPLAY));  /// ì¬ìƒ ì•„ì´ì½˜
+                SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+            }
+            else if (state == ReplayState::Paused) {
+                /// ì¬ê°œ
+                replayController.ToggleReplay();
+                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP)); /// ì¼ì‹œì •ì§€ ì•„ì´ì½˜
+                SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
             }
         });
         btnCtrl.RegisterHandler(CLEAR, [&]() {
-        ///    MessageBox(nullptr, L"ÀüÃ¼ Áö¿ì±â ¹öÆ°", L"TOOLÃ¢", MB_OK);
+        ///    MessageBox(nullptr, L"ì „ì²´ ì§€ìš°ê¸° ë²„íŠ¼", L"TOOLì°½", MB_OK);
             drawWindow.setReplaying(false);
             replayController.StopReplay();
             drawWindow.ClearAll();
         });
         btnCtrl.RegisterHandler(ERASE, [&]() {
-        ///    MessageBox(nullptr, L"Áö¿ì±â ¹öÆ°", L"TOOLÃ¢", MB_OK);
+        ///    MessageBox(nullptr, L"ì§€ìš°ê¸° ë²„íŠ¼", L"TOOLì°½", MB_OK);
 
             if (drawWindow.GetErasing()) {
                 drawWindow.setSelectedColor(drawWindow.lastSelectedColor);
@@ -109,6 +125,18 @@ public:
                 colorBox.Show();
                 drawWindow.setSelectedColor(colorBox.GetColor());
         });
+        btnCtrl.RegisterHandler(BLACK, [&]() {
+            drawWindow.setSelectedColor(RGB(0, 0, 0));
+        });
+        btnCtrl.RegisterHandler(RED, [&]() {
+            drawWindow.setSelectedColor(RGB(255, 0, 0));
+            });
+        btnCtrl.RegisterHandler(GREEN, [&]() {
+            drawWindow.setSelectedColor(RGB(153, 255, 51));
+            });
+        btnCtrl.RegisterHandler(BLUE, [&]() {
+            drawWindow.setSelectedColor(RGB(173, 216, 230));
+            });
     }
     bool Init(HINSTANCE hInstance, int nCmdShow);
     int Run();
