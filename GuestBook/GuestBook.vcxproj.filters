@@ -148,4 +148,9 @@
     <Image Include="ImageResource\Save.ico" />
     <Image Include="ImageResource\stop.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="imageresource\cursor1.cur" />
+    <None Include="ImageResource\eraser.cur" />
+    <None Include="ImageResource\pencil.cur" />
+  </ItemGroup>
 </Project>
