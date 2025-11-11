@@ -182,6 +182,11 @@
     <Image Include="ImageResource\stop.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="imageresource\cursor1.cur" />
+    <None Include="ImageResource\eraser.cur" />
+    <None Include="ImageResource\pencil.cur" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
