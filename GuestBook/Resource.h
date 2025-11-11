@@ -32,7 +32,10 @@
 #define IDI_GREEN                       144
 #define IDI_ICON6                       145
 #define IDI_ICON3                       146
-#define IDI_RED                         146
+#define IDI_RED                         147
+#define IDC_CURSOR1                     148
+#define IDC_ERASER                      149
+#define IDC_PENCIL                      150
 #define IDC_RADIO_SOLID                 1000
 #define IDC_COMBOX_PENWIDTH             1001
 #define IDC_RADIO_DASH                  1002

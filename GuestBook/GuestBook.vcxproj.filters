@@ -153,4 +153,9 @@
     <Image Include="ImageResource\red.ico" />
     <Image Include="ImageResource\red1.ico" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="imageresource\cursor1.cur" />
+    <None Include="ImageResource\eraser.cur" />
+    <None Include="ImageResource\pencil.cur" />
+  </ItemGroup>
 </Project>
