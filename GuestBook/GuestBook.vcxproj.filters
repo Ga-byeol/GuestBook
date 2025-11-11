@@ -147,6 +147,11 @@
     <Image Include="ImageResource\Replay.ico" />
     <Image Include="ImageResource\Save.ico" />
     <Image Include="ImageResource\stop.ico" />
+    <Image Include="ImageResource\black.ico" />
+    <Image Include="ImageResource\blue.ico" />
+    <Image Include="ImageResource\green.ico" />
+    <Image Include="ImageResource\red.ico" />
+    <Image Include="ImageResource\red1.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imageresource\cursor1.cur" />

@@ -27,9 +27,15 @@
 #define IDI_REPLAY                      139
 #define IDI_SAVE                        140
 #define IDI_STOP                        141
-#define IDC_CURSOR1                     142
-#define IDC_ERASER                      143
-#define IDC_PENCIL                      144
+#define IDI_BLACK                       142
+#define IDI_BLUE                        143
+#define IDI_GREEN                       144
+#define IDI_ICON6                       145
+#define IDI_ICON3                       146
+#define IDI_RED                         147
+#define IDC_CURSOR1                     148
+#define IDC_ERASER                      149
+#define IDC_PENCIL                      150
 #define IDC_RADIO_SOLID                 1000
 #define IDC_COMBOX_PENWIDTH             1001
 #define IDC_RADIO_DASH                  1002
@@ -41,7 +47,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        145
+#define _APS_NEXT_RESOURCE_VALUE        147
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1004
 #define _APS_NEXT_SYMED_VALUE           110
