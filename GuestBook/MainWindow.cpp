@@ -16,7 +16,7 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     RegisterClass(&wc);
 
     hwnd = CreateWindowEx(
-        0, wc.lpszClassName, L"Guest Book", WS_OVERLAPPEDWINDOW,
+        0, wc.lpszClassName, L"2025_졸업작품 방명록", WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 
         900, 700,
         NULL, NULL, hInst, this);
