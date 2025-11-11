@@ -21,6 +21,8 @@ public:
         auto& btnCtrl = toolWindow.GetButtonController();
         /// 저장
         btnCtrl.RegisterHandler(SAVE, [&]() {
+            replayController.StopReplay();
+
             fileManager.StartSave(drawWindow.GetHwnd(), drawWindow.GetDrawnStrokes());
             });
         /// 불러오기
