@@ -15,6 +15,7 @@
     <ClCompile Include="PenController.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="Sidebar.cpp" />
+    <ClCompile Include="ScreensaverManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
@@ -35,6 +36,7 @@
     <ClInclude Include="ToolWindow.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Sidebar.h" />
+    <ClInclude Include="ScreensaverManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="GuestBook.rc" />
@@ -135,5 +137,15 @@
     <Image Include="GuestBook.ico" />
     <Image Include="small.ico" />
     <Image Include="..\ImageResource\Logo.ico" />
+    <Image Include="ImageResource\Logo.ico" />
+    <Image Include="ImageResource\Color.ico" />
+    <Image Include="ImageResource\Delete.ico" />
+    <Image Include="ImageResource\end.ico" />
+    <Image Include="ImageResource\Eraser.ico" />
+    <Image Include="ImageResource\Open.ico" />
+    <Image Include="ImageResource\Pen.ico" />
+    <Image Include="ImageResource\Replay.ico" />
+    <Image Include="ImageResource\Save.ico" />
+    <Image Include="ImageResource\stop.ico" />
   </ItemGroup>
 </Project>

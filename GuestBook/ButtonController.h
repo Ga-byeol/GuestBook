@@ -14,6 +14,7 @@ public:
 		hParent = parent;
 		hInstance = instance;
 	}
+	void SetImage(int resourceId);
 	void RegisterHandler(int id, function<void()> fn);
 private:
 

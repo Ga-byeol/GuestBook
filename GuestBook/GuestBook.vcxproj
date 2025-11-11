@@ -134,6 +134,7 @@
     <ClInclude Include="PenController.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="ReplayController.h" />
+    <ClInclude Include="ScreensaverManager.h" />
     <ClInclude Include="Sidebar.h" />
     <ClInclude Include="Stroke.h" />
     <ClInclude Include="DrawController.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="PenController.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="ReplayController.cpp" />
+    <ClCompile Include="ScreensaverManager.cpp" />
     <ClCompile Include="Sidebar.cpp" />
     <ClCompile Include="StrokeController.cpp" />
     <ClCompile Include="DrawWindow.cpp" />
@@ -168,6 +170,16 @@
   <ItemGroup>
     <Image Include="..\ImageResource\Logo.ico" />
     <Image Include="GuestBook.ico" />
+    <Image Include="ImageResource\Color.ico" />
+    <Image Include="ImageResource\Delete.ico" />
+    <Image Include="ImageResource\end.ico" />
+    <Image Include="ImageResource\Eraser.ico" />
+    <Image Include="ImageResource\Logo.ico" />
+    <Image Include="ImageResource\Open.ico" />
+    <Image Include="ImageResource\Pen.ico" />
+    <Image Include="ImageResource\Replay.ico" />
+    <Image Include="ImageResource\Save.ico" />
+    <Image Include="ImageResource\stop.ico" />
     <Image Include="small.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

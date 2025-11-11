@@ -45,16 +45,21 @@
 
 	LRESULT DrawWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
-		switch (msg) {
+		switch (msg) {		
 		case WM_CREATE: {
 			TRACKMOUSEEVENT tme = { 0 };
 			tme.cbSize = sizeof(tme);
 			tme.dwFlags = TME_LEAVE;
 			tme.hwndTrack = hwnd;
 			TrackMouseEvent(&tme);
+			//화면보호기 추가 코드
+			HWND hParent = GetParent(hwnd);
+			g_pSaverManager = new ScreensaverManager(hwnd, hParent);
+			SetTimer(hwnd, IDT_SAVER_TIMER, 1000, NULL);
 			return 0;
 			return 0;
 		}
+
 		case WM_PAINT: {
 			PAINTSTRUCT ps;
 			HDC hdc = BeginPaint(hwnd, &ps);
@@ -64,11 +69,62 @@
 			EndPaint(hwnd, &ps);
 			return 0;
 		}
+
+		case WM_TIMER:
+		{
+			if (wParam == IDT_SAVER_TIMER && g_pSaverManager) {
+			// 스크린세이버 매니저에게 무활동 검사 지시
+			if (isReplaying) {
+				g_pSaverManager->ResetActivityTimer();
+				return 0;
+			}
+				g_pSaverManager->CheckInactivity();
+		}
+			return 0;
+		}
+
 		case WM_LBUTTONDOWN:
+			if (g_pSaverManager) {
+				g_pSaverManager->ResetActivityTimer();
+			}
+			if (g_pSaverManager->IsSaverActive()) {
+				if ((g_pSaverManager->Startsavertime())) {
+					g_pSaverManager->StopSaver();
+					HWND hParent = GetParent(hwnd);
+					if (hParent) {
+						RECT rcParent;
+						GetClientRect(hParent, &rcParent);
+						// 부모의 WM_SIZE 핸들러를 강제 실행 (ResizeChildren 호출 유도)
+						SendMessage(hParent, WM_SIZE, 0,
+							MAKELPARAM(rcParent.right, rcParent.bottom));
+					}
+					return 0;
+				}
+				else return 0;
+			}
+
 			OnLButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
 			return 0;
 
 		case WM_MOUSEMOVE:
+			if (g_pSaverManager) {
+				g_pSaverManager->ResetActivityTimer();
+			}
+			if (g_pSaverManager->IsSaverActive()) {
+				if ((g_pSaverManager->Startsavertime())) {
+					g_pSaverManager->StopSaver();
+					HWND hParent = GetParent(hwnd);
+					if (hParent) {
+						RECT rcParent;
+						GetClientRect(hParent, &rcParent);
+						// 부모의 WM_SIZE 핸들러를 강제 실행 (ResizeChildren 호출 유도)
+						SendMessage(hParent, WM_SIZE, 0,
+							MAKELPARAM(rcParent.right, rcParent.bottom));
+					}
+					return 0;
+				}
+				else return 0;
+			}
 			OnMouseMove((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
 			return 0;
 
@@ -80,6 +136,7 @@
 			InvalidateRect(hwnd, NULL, false);
 			UpdateWindow(hwnd);
 			return 0;
+
 		case WM_SIZE: {
 			int width = LOWORD(lParam);
 			int height = HIWORD(lParam);
@@ -112,10 +169,20 @@
 		case WM_DESTROY: {
 			if (backBuffer) delete backBuffer;
 			if (cacheBuffer) delete cacheBuffer;
+
+			//화면보호기 추가 코드
+			// 타이머 해제 및 매니저 삭제
+			KillTimer(hwnd, IDT_SAVER_TIMER);
+			if (g_pSaverManager) {
+				delete g_pSaverManager;
+				g_pSaverManager = nullptr;
+			}
+
 			backBuffer = nullptr;
 			cacheBuffer = nullptr;
 			return 0;
 		}
+
 		}
 
 		return DefWindowProc(hwnd, msg, wParam, lParam);
