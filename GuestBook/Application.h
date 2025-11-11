@@ -1,4 +1,4 @@
-癤#pragma once
+#pragma once
 #include <windows.h>
 #include "MainWindow.h"
 #include "DrawWindow.h"
@@ -76,7 +76,7 @@ public:
             }
             else {
                 replayController.ToggleReplay();
-                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP)); /// 쇱�吏 댁
+                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP));
                 SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
             }
         });

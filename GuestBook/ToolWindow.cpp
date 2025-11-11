@@ -81,13 +81,13 @@ void ToolWindow::CreateButton() {
     buttonController.SetImage(138);
     buttonController.Create(hwnd, L"»ö»ó", COLOR, 430, 10, 50, 30);
     buttonController.SetImage(133);
-    buttonController.Create(hwnd, L"", BLACK, 490, 10, 50, 30);
+    buttonController.Create(hwnd, L"BLACK", BLACK, 490, 10, 50, 30);
     buttonController.SetImage(142);
-    buttonController.Create(hwnd, L"", RED, 550, 10, 50, 30);
-    buttonController.SetImage(146);
-    buttonController.Create(hwnd, L"", GREEN, 610, 10, 50, 30);
+    buttonController.Create(hwnd, L"RED", RED, 550, 10, 50, 30);
+    buttonController.SetImage(147);
+    buttonController.Create(hwnd, L"GREEN", GREEN, 610, 10, 50, 30);
     buttonController.SetImage(144);
-    buttonController.Create(hwnd, L"", BLUE, 670, 10, 50, 30);
+    buttonController.Create(hwnd, L"BLUE", BLUE, 670, 10, 50, 30);
     buttonController.SetImage(143);
 };
 
