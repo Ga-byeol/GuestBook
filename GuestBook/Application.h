@@ -18,26 +18,21 @@
 class Application {
 public:
     Application() : replayController(), penBox(hInstance, nullptr) {
-        // ToolWindow 안의 ButtonController에 접근
         auto& btnCtrl = toolWindow.GetButtonController();
-
-        // 버튼 ID에 맞는 동작 등록
+        /// 저장
         btnCtrl.RegisterHandler(SAVE, [&]() {
             fileManager.StartSave(drawWindow.GetHwnd(), drawWindow.GetDrawnStrokes());
             });
+        /// 불러오기
         btnCtrl.RegisterHandler(LOAD, [&]() {
             std::vector<Stroke> loadStrokes;
 
-            /// 불러오기 때에는 리플레이 중지
             replayController.StopReplay();
 
-            /// 기존에 그려져 있던 그림을 모두 제거
             drawWindow.ClearAll();
 
-            /// 파일에서 읽기
             fileManager.StartLoad(drawWindow.GetHwnd(), loadStrokes, drawWindow.GetHwnd());
 
-            /// 파일이 정상적으로 불러와졌다면 DrawWindow에 전달
             if (!loadStrokes.empty())
             {
                 drawWindow.SetStrokes(loadStrokes);
@@ -46,24 +41,19 @@ public:
                 UpdateWindow(drawWindow.GetHwnd());
             }
 
-            /// 불러와진 그림을 즉시 리플레이
-            /// 리플레이 중일 때에는 플래그 막아 펜 못 그리게 하기
             drawWindow.setReplaying(true);
             replayController.StartReplay(drawWindow.GetHwnd(), loadStrokes);
             });
+        /// 재생
         btnCtrl.RegisterHandler(REPLAY, [&]() {
             
             ReplayState state = replayController.GetState();
 
             if (state == ReplayState::Stopped) {
-                // [새로 재생]
-                // (이전 코드: 데이터 복사, ClearAll, setReplaying(true), 화면 클리어...)
-                // (onFinish 콜백은 *필요 없음*. 어차피 무한 루프이므로)
 
                 HWND hDrawWnd = drawWindow.GetHwnd();
                 vector<Stroke> strokesCopy = drawWindow.GetDrawnStrokes();
 
-                //drawWindow.ClearAll();
                 drawWindow.ClearScreenOnly();
 
                 drawWindow.setReplaying(true);
@@ -71,23 +61,21 @@ public:
                 InvalidateRect(hDrawWnd, NULL, TRUE);
                 UpdateWindow(hDrawWnd);
 
-                // ★★★ 콜백(onFinished) 없이 스레드 시작 ★★★
                 replayController.StartReplay(hDrawWnd, strokesCopy);
 
             }
             else {
-                // [일시정지/재개 토글]
                 replayController.ToggleReplay();
             }
         });
+        /// 화면 초기화
         btnCtrl.RegisterHandler(CLEAR, [&]() {
-        ///    MessageBox(nullptr, L"전체 지우기 버튼", L"TOOL창", MB_OK);
             drawWindow.setReplaying(false);
             replayController.StopReplay();
             drawWindow.ClearAll();
         });
+        /// 지우기
         btnCtrl.RegisterHandler(ERASE, [&]() {
-        ///    MessageBox(nullptr, L"지우기 버튼", L"TOOL창", MB_OK);
 
             if (drawWindow.GetErasing()) {
                 drawWindow.setSelectedColor(drawWindow.lastSelectedColor);
@@ -101,10 +89,12 @@ public:
             } 
             drawWindow.setErasing(); 
         });
+        /// 펜
         btnCtrl.RegisterHandler(BRUSH, [&]() {
             penBox.setDrawWindow(&drawWindow);
             penBox.ShowDialog();
         });
+        /// 색상
         btnCtrl.RegisterHandler(COLOR, [&]() {
                 colorBox.Show();
                 drawWindow.setSelectedColor(colorBox.GetColor());

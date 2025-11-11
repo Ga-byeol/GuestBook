@@ -156,7 +156,7 @@
 		case WM_MOUSELEAVE: {
 			m_currentMousePos = { -100, -100 };
 
-			if (!backBuffer || !cacheBuffer) return 0;
+			if (!backBuffer || !cacheBuffer || isReplaying) return 0;
 			RECT rc; GetClientRect(hwnd, &rc);
 			BitBlt(backBuffer->dc(), 0, 0, rc.right - rc.left, rc.bottom - rc.top,
 				cacheBuffer->dc(), 0, 0, SRCCOPY);
