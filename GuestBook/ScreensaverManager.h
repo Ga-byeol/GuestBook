@@ -1,16 +1,27 @@
 #pragma once
 #include <windows.h>
-#include <thread>
 #include <atomic>
+#define INACTIVITY_THRESHOLD 5000 //세이버 시간
 
+#define SAVER_WND_CLASS_NAME L"IndependentSaverWindow"
 
-#define INACTIVITY_THRESHOLD 3000
+LRESULT CALLBACK GlobalSaverWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 class ScreensaverManager {
 public:
 
-    ScreensaverManager(HWND hWnd, HWND hParent);
+    ScreensaverManager(HWND hWnd, HINSTANCE hInst);
     ~ScreensaverManager();
+
+    void RegisterSaverWndClass(); // 세이버 윈도우 클래스 등록
+    void ShowSaverWindow();       // 세이버 윈도우 생성
+
+    // GlobalSaverWndProc에서 호출할 실제 메시지 핸들러
+    LRESULT HandleSaverMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+    // GlobalSaverWndProc이 pThis를 얻을 수 있도록 friend 선언
+    friend LRESULT CALLBACK GlobalSaverWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
 
     // 무활동 검사 함수
     void CheckInactivity();
@@ -20,28 +31,14 @@ public:
 
     // 스크린세이버 활성화 상태인지 확인
     bool IsSaverActive() const;
-    
-    void StopSaver();
-
-    void RestoreWindow(HWND m_parentHwnd);
-
-    bool Startsavertime();
 
 
 private:
-
-    void StartSaver();
-
-    void SetFullscreen();
-
-    void DrawingThreadFunction();
-
-    HWND m_hParentWnd;
+    ULONGLONG m_saverStartTime;
     HWND m_hMainWnd;
+    HWND m_hSaverWnd;       // (새로운 세이버 윈도우 핸들)
+    HINSTANCE m_hInstance;
     ULONGLONG m_lastActivityTime; // 마지막 활동 시간 (GetTickCount64)
-    ULONG m_saverStartTime; //세이버 시작 시간
-
-    std::thread m_drawingThread; 
     std::atomic<bool> m_isSaverActive; // 스크린세이버 활성화 플래그
 
 };

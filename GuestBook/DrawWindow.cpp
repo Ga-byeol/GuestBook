@@ -20,6 +20,7 @@
 			WS_CHILD | WS_VISIBLE,
 			0, 50, 700, 600,
 			parentHwnd, NULL, hInst, this);
+		g_pSaverManager = new ScreensaverManager(hwnd, hInst);
 		OutputDebugString(L"create drawWindow\n");
 		return hwnd != nullptr;
 	}
@@ -53,8 +54,6 @@
 			tme.hwndTrack = hwnd;
 			TrackMouseEvent(&tme);
 			//화면보호기 추가 코드
-			HWND hParent = GetParent(hwnd);
-			g_pSaverManager = new ScreensaverManager(hwnd, hParent);
 			SetTimer(hwnd, IDT_SAVER_TIMER, 1000, NULL);
 			return 0;
 			return 0;
@@ -84,47 +83,10 @@
 		}
 
 		case WM_LBUTTONDOWN:
-			if (g_pSaverManager) {
-				g_pSaverManager->ResetActivityTimer();
-			}
-			if (g_pSaverManager->IsSaverActive()) {
-				if ((g_pSaverManager->Startsavertime())) {
-					g_pSaverManager->StopSaver();
-					HWND hParent = GetParent(hwnd);
-					if (hParent) {
-						RECT rcParent;
-						GetClientRect(hParent, &rcParent);
-						// 부모의 WM_SIZE 핸들러를 강제 실행 (ResizeChildren 호출 유도)
-						SendMessage(hParent, WM_SIZE, 0,
-							MAKELPARAM(rcParent.right, rcParent.bottom));
-					}
-					return 0;
-				}
-				else return 0;
-			}
-
 			OnLButtonDown((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
 			return 0;
 
 		case WM_MOUSEMOVE:
-			if (g_pSaverManager) {
-				g_pSaverManager->ResetActivityTimer();
-			}
-			if (g_pSaverManager->IsSaverActive()) {
-				if ((g_pSaverManager->Startsavertime())) {
-					g_pSaverManager->StopSaver();
-					HWND hParent = GetParent(hwnd);
-					if (hParent) {
-						RECT rcParent;
-						GetClientRect(hParent, &rcParent);
-						// 부모의 WM_SIZE 핸들러를 강제 실행 (ResizeChildren 호출 유도)
-						SendMessage(hParent, WM_SIZE, 0,
-							MAKELPARAM(rcParent.right, rcParent.bottom));
-					}
-					return 0;
-				}
-				else return 0;
-			}
 			OnMouseMove((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam), wParam);
 			return 0;
 
