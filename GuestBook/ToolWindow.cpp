@@ -8,6 +8,10 @@
 #define COLOR 107
 #define STOP 108
 #define END 109
+#define BLACK 110
+#define RED 111
+#define BLUE 112
+#define GREEN 113
 bool ToolWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
     hInstance = hInst;
 
@@ -66,18 +70,25 @@ void ToolWindow::CreateButton() {
     buttonController.SetImage(137);
     buttonController.Create(hwnd, L"리플레이", REPLAY, 130, 10, 50, 30);
     buttonController.SetImage(139);
-    buttonController.Create(hwnd, L"일시정지", STOP, 190, 10, 50, 30);
-    buttonController.SetImage(141);
-    buttonController.Create(hwnd, L"중단", END, 260, 10, 50, 30);
+    replayHwnd = buttonController.GetHwnd();
+    buttonController.Create(hwnd, L"중단", END, 190, 10, 50, 30);
     buttonController.SetImage(135);
-    buttonController.Create(hwnd, L"전체지우기", CLEAR, 320, 10, 50, 30);
+    buttonController.Create(hwnd, L"전체지우기", CLEAR, 250, 10, 50, 30);
     buttonController.SetImage(134);
-    buttonController.Create(hwnd, L"지우기", ERASE, 380, 10, 50, 30);
+    buttonController.Create(hwnd, L"지우기", ERASE, 310, 10, 50, 30);
     buttonController.SetImage(136);
-    buttonController.Create(hwnd, L"브러쉬", BRUSH, 440, 10, 50, 30);
+    buttonController.Create(hwnd, L"브러쉬", BRUSH, 370, 10, 50, 30);
     buttonController.SetImage(138);
-    buttonController.Create(hwnd, L"색상", COLOR, 500, 10, 50, 30);
+    buttonController.Create(hwnd, L"색상", COLOR, 430, 10, 50, 30);
     buttonController.SetImage(133);
+    buttonController.Create(hwnd, L"BLACK", BLACK, 490, 10, 50, 30);
+    buttonController.SetImage(142);
+    buttonController.Create(hwnd, L"RED", RED, 550, 10, 50, 30);
+    buttonController.SetImage(147);
+    buttonController.Create(hwnd, L"GREEN", GREEN, 610, 10, 50, 30);
+    buttonController.SetImage(144);
+    buttonController.Create(hwnd, L"BLUE", BLUE, 670, 10, 50, 30);
+    buttonController.SetImage(143);
 };
 
 

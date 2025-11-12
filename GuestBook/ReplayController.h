@@ -4,7 +4,7 @@
 #include <thread>
 #include <functional>
 #include <atomic>
-#include "Stroke.h";
+#include "Stroke.h"
 
 using OnReplayFinishedCallback = std::function<void(const std::vector<Stroke>&)>;
 

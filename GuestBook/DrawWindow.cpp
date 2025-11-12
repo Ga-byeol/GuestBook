@@ -11,7 +11,7 @@
 		wc.hInstance = hInst;
 		wc.lpszClassName = L"DrawWindowClass";
 		wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-		wc.hCursor = LoadCursor(NULL, IDC_CROSS);
+		wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 
 		RegisterClass(&wc);
 
@@ -56,7 +56,9 @@
 			HWND hParent = GetParent(hwnd);
 			g_pSaverManager = new ScreensaverManager(hwnd, hParent);
 			SetTimer(hwnd, IDT_SAVER_TIMER, 1000, NULL);
-			return 0;
+
+			m_hPenCursor = LoadCursor(hInstance, MAKEINTRESOURCE(IDC_PENCIL));
+			m_hEraserCursor = LoadCursor(hInstance, MAKEINTRESOURCE(IDC_ERASER));
 			return 0;
 		}
 
@@ -149,14 +151,21 @@
 			tme.dwFlags = TME_LEAVE;
 			tme.hwndTrack = hwnd;
 			TrackMouseEvent(&tme);
-			
+			if (LOWORD(lParam) == HTCLIENT) {
+
+				HCURSOR hCurrent = erasing ? m_hEraserCursor : m_hPenCursor;
+
+				SetCursor(hCurrent);
+
+				return TRUE;
+			}
 			break;
 		}
 
 		case WM_MOUSELEAVE: {
 			m_currentMousePos = { -100, -100 };
 
-			if (!backBuffer || !cacheBuffer) return 0;
+			if (!backBuffer || !cacheBuffer || isReplaying) return 0;
 			RECT rc; GetClientRect(hwnd, &rc);
 			BitBlt(backBuffer->dc(), 0, 0, rc.right - rc.left, rc.bottom - rc.top,
 				cacheBuffer->dc(), 0, 0, SRCCOPY);
@@ -199,6 +208,12 @@
 		BitBlt(backBuffer->dc(), 0, 0, rcClient.right, rcClient.bottom,
 			cacheBuffer->dc(), 0, 0, SRCCOPY);
 
+		drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
+			currentPenWidth,
+			selectedColor,
+			erasing);
+		backBuffer->DrawBufferToScreen(hdc);
+
 		if (strokeCtrl.IsRecording()) {
 			const Stroke* cur = strokeCtrl.Current();
 			if (cur) {
@@ -208,11 +223,7 @@
 			}
 		}
 
-		drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
-			currentPenWidth,
-			selectedColor,
-			erasing);
-			backBuffer->DrawBufferToScreen(hdc);
+
 	}
 
 	void DrawWindow::OnLButtonDown(int x, int y, WPARAM) {
@@ -221,6 +232,8 @@
 		COLORREF color = selectedColor;
 
 		strokeCtrl.Begin(x, y, color, currentPenStyle, currentPenWidth);
+
+
 	}
 
 	void DrawWindow::OnMouseMove(int x, int y, WPARAM flags) {
@@ -234,6 +247,11 @@
 		BitBlt(backBuffer->dc(), 0, 0, rc.right - rc.left, rc.bottom - rc.top,
 			cacheBuffer->dc(), 0, 0, SRCCOPY);
 
+		drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
+			currentPenWidth,
+			selectedColor,
+			erasing);
+
 		if (flags & MK_LBUTTON) {
 			strokeCtrl.Add(x, y);
 
@@ -244,10 +262,7 @@
 
 			}
 		}
-				drawCtrl.DrawCursorDot(backBuffer->dc(), m_currentMousePos,
-					currentPenWidth,
-					selectedColor,
-					erasing);
+
 				HDC hdc = GetDC(hwnd);
 				backBuffer->DrawBufferToScreen(hdc);
 				ReleaseDC(hwnd, hdc);
