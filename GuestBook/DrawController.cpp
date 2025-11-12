@@ -47,10 +47,6 @@ void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidt
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
 
-    
-    const Point& prevPoint = stroke.points[stroke.points.size() - 2];
-    const Point& lastPoint = stroke.points.back();
-
     DrawPointsLine(hdc, stroke.points);
 
     SelectObject(hdc, oldBrush);
