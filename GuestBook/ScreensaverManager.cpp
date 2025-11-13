@@ -119,7 +119,7 @@ void ScreensaverManager::SetFullscreen() {
 
     SetParent(m_hMainWnd, NULL);
 
-    SetWindowPos(m_hMainWnd, HWND_TOPMOST, 0, 0, screenWidth, screenHeight,
+     SetWindowPos(m_hMainWnd, HWND_TOPMOST, 0, 0, screenWidth, screenHeight,
         SWP_SHOWWINDOW | SWP_FRAMECHANGED);
 
     ShowWindow(m_hMainWnd, SW_SHOW);

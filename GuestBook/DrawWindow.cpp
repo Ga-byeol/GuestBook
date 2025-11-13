@@ -352,8 +352,14 @@
 		}
 	}
 	void DrawWindow::OnSize(int width, int height) {
-		if (backBuffer) delete backBuffer;
-		if (cacheBuffer) delete cacheBuffer;
+		if (backBuffer) {
+			delete backBuffer;
+			backBuffer = nullptr; // ★★★ 1. 해제 후 즉시 nullptr로 설정
+		}
+		if (cacheBuffer) {
+			delete cacheBuffer;
+			cacheBuffer = nullptr; // ★★★ 2. 여기도 nullptr로 설정
+		}
 
 		if (width == 0 || height == 0) return;
 
