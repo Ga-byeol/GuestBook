@@ -120,7 +120,7 @@ LRESULT ScreensaverManager::HandleSaverMessage(HWND hWnd, UINT message, WPARAM w
 
     case WM_PAINT:
     {
-        // ? 추가: 배경색 칠하기를 강제합니다. ?
+        // 배경색 칠하기를 강제합니다.
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
@@ -130,6 +130,13 @@ LRESULT ScreensaverManager::HandleSaverMessage(HWND hWnd, UINT message, WPARAM w
         // 검은색 브러시를 가져와 클라이언트 영역을 채웁니다.
         HBRUSH hBlackBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
         FillRect(hdc, &clientRect, hBlackBrush);
+        SetTextColor(hdc, RGB(255, 255, 255));
+
+        SetBkMode(hdc, TRANSPARENT);
+
+        LPCWSTR text = L"유한대학교";
+
+        DrawText(hdc, text, -1, &clientRect, DT_CENTER | DT_VCENTER | DT_SINGLELINE);
 
         EndPaint(hWnd, &ps);
         return 0; // WM_PAINT 처리 완료
@@ -149,6 +156,13 @@ LRESULT ScreensaverManager::HandleSaverMessage(HWND hWnd, UINT message, WPARAM w
 
 //무활동 검사 (WM_TIMER에서 호출)
 void ScreensaverManager::CheckInactivity() {
+    if (IsIconic(m_hMainWnd)) {
+        // 최소화된 상태에서는 세이버를 실행하지 않고, 타이머를 리셋하여 
+        // 잦은 재시도를 방지합니다.
+        ResetActivityTimer();
+        return;
+    }
+
     // 이미 활성화 상태면 검사 안 함
     if (m_isSaverActive.load()) {
         return;
