@@ -26,6 +26,7 @@ public:
     HDC GetMemDc() const; 
     BOOL GetErasing() const { return erasing;  }
     COLORREF GetSelectedColor() const { return selectedColor; }
+    int GetCurrentPenWidth() const { return currentPenWidth; }
     const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
     void SetStrokes(std::vector<Stroke> strokes) { strokeCtrl.setStrokes(strokes); }
     void SetPenStyle(int PenNum); /// 브러쉬 컨트롤러 다이얼로그에서 받은 넘버

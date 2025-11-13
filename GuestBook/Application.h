@@ -105,23 +105,44 @@ public:
         /// 펜
         btnCtrl.RegisterHandler(BRUSH, [&]() {
             penBox.setDrawWindow(&drawWindow);
+            penBox.PenWidth = drawWindow.GetCurrentPenWidth();
             penBox.ShowDialog();
         });
         /// 색상
         btnCtrl.RegisterHandler(COLOR, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
                 colorBox.Show();
                 drawWindow.setSelectedColor(colorBox.GetColor());
         });
         btnCtrl.RegisterHandler(BLACK, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
             drawWindow.setSelectedColor(RGB(0, 0, 0));
         });
         btnCtrl.RegisterHandler(RED, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
             drawWindow.setSelectedColor(RGB(255, 0, 0));
             });
         btnCtrl.RegisterHandler(GREEN, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
             drawWindow.setSelectedColor(RGB(153, 255, 51));
             });
         btnCtrl.RegisterHandler(BLUE, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
             drawWindow.setSelectedColor(RGB(173, 216, 230));
             });
     }
