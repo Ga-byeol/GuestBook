@@ -101,7 +101,7 @@ void MainWindow::ResizeChildren() {
     const int TOOLBAR_HEIGHT = 50;
     const int SIDEBAR_WIDTH = 100;
     const int SIDEBAR_Y_OFFSET = 60; // (MoveWindow에서 60을 사용하셨으므로)
-
+    
     if (toolWindow) {
         MoveWindow(toolWindow->GetHwnd(), 0, 0, parentWidth, TOOLBAR_HEIGHT, TRUE);
     }

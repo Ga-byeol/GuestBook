@@ -10,7 +10,7 @@ public:
     ToolWindow() = default;
     bool Create(HWND parentHwnd, HINSTANCE hInstance);
     HWND GetHwnd() const { return hwnd; }
-
+    HWND GetReplayHwnd() const { return replayHwnd; }
     void SetDrawWindow(DrawWindow* draw) { drawWindow = draw; }
 
     ButtonController& GetButtonController() { return buttonController; }

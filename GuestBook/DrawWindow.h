@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <vector>
 #include <condition_variable>
+#include "resource.h"
 #include "Stroke.h"
 #include "DrawController.h"
 #include "StrokeController.h"
@@ -75,6 +76,9 @@ private:
     POINT m_currentMousePos; // ★ 마우스의 현재 위치
     bool m_isCursorHidden = false; // ★ 커서가 숨겨졌는지 여부
     
+    HCURSOR m_hPenCursor;    // ★ 펜 모드 커서 (IDC_CROSS)
+    HCURSOR m_hEraserCursor; // ★ 지우개 모드 커서
+
 
     int penWidth = 2;
     bool erasing = false;

@@ -170,17 +170,27 @@
   <ItemGroup>
     <Image Include="..\ImageResource\Logo.ico" />
     <Image Include="GuestBook.ico" />
+    <Image Include="ImageResource\black.ico" />
+    <Image Include="ImageResource\blue.ico" />
     <Image Include="ImageResource\Color.ico" />
     <Image Include="ImageResource\Delete.ico" />
     <Image Include="ImageResource\end.ico" />
     <Image Include="ImageResource\Eraser.ico" />
+    <Image Include="ImageResource\green.ico" />
     <Image Include="ImageResource\Logo.ico" />
     <Image Include="ImageResource\Open.ico" />
     <Image Include="ImageResource\Pen.ico" />
+    <Image Include="ImageResource\red.ico" />
+    <Image Include="ImageResource\red1.ico" />
     <Image Include="ImageResource\Replay.ico" />
     <Image Include="ImageResource\Save.ico" />
     <Image Include="ImageResource\stop.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imageresource\cursor1.cur" />
+    <None Include="ImageResource\eraser.cur" />
+    <None Include="ImageResource\pencil.cur" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
