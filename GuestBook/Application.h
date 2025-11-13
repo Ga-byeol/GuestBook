@@ -7,6 +7,7 @@
 #include "ColorController.h"
 #include "PenController.h"
 #include "FileManager.h"
+#include "Sidebar.h"
 #include "resource.h"
 #define SAVE 101
 #define LOAD 102
@@ -138,4 +139,5 @@ private:
     ColorController colorBox;
     PenController penBox;
     FileManager fileManager;
+    Sidebar sideBar;
 };

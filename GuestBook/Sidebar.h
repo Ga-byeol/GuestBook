@@ -3,6 +3,7 @@
 #include <functional>
 #include <commctrl.h>
 #pragma comment(lib,"comctl32.lib")
+#define INITIAL_VALUE 5
 class Sidebar
 {
 public:
