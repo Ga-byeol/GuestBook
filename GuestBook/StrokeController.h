@@ -13,7 +13,6 @@ public:
     void AddPoint(Point p);
     void AddStroke();
 
-    //const std::vector<Stroke>& Strokes() const { return strokes; }
     const Stroke* Current() const { return recording ? &current : nullptr; }
     bool IsRecording() const { return recording; }
 
