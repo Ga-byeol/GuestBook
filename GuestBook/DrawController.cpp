@@ -38,7 +38,6 @@ void DrawController::DrawStrokes(HDC hdc,
 }
 
 void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidth, COLORREF color) { /// 점과 점을 이어주는 역할
-    if (stroke.points.size() < 2) return; 
 
     LOGBRUSH style = {};
     style.lbStyle = BS_SOLID;
