@@ -92,7 +92,7 @@ public:
             });
         /// 화면 초기화
         btnCtrl.RegisterHandler(CLEAR, [&]() {
-            if (!replayController.IsReplaying()) return 0;
+            if (replayController.IsReplaying()) return 0;
             drawWindow.ClearAll();
         });
         /// 지우기
