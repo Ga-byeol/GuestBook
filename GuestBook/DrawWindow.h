@@ -26,6 +26,7 @@ public:
     HDC GetMemDc() const; 
     BOOL GetErasing() const { return erasing;  }
     COLORREF GetSelectedColor() const { return selectedColor; }
+    int GetCurrentPenWidth() const { return currentPenWidth; }
     const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
     void SetStrokes(std::vector<Stroke> strokes) { strokeCtrl.setStrokes(strokes); }
     void SetPenStyle(int PenNum); /// 브러쉬 컨트롤러 다이얼로그에서 받은 넘버
@@ -54,7 +55,6 @@ private:
 
     void OnSize(int width, int height);
 
-
     void HideSystemCursor(); // 커서 숨김 함수
     void ShowSystemCursor(); // 커서 표시 함수
 
@@ -80,7 +80,7 @@ private:
     HCURSOR m_hEraserCursor; // ★ 지우개 모드 커서
 
 
-    int penWidth = 2;
+    int penWidth = 5;
     bool erasing = false;
     bool isReplaying = false;
     int currentPenStyle = PS_SOLID;
