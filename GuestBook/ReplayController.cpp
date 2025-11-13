@@ -4,10 +4,10 @@
 void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
     /// 리플레이 시작 시, 기존 스레드 완전 종료
     StopReplay();
-    r_state = ReplayState::Running; // "재생 중"으로 상태 변경
-    OutputDebugString(L"startrplay called\n");
-    replayThread = std::thread([=]() { // 'this' 캡처
 
+    r_state = ReplayState::Running; // "재생 중"으로 상태 변경
+
+    std::thread tempThread([=]() { // 'this' 캡처
         // ★★★ 1. 스레드 내부의 무한 루프 ★★★
         while (true) {
 
@@ -54,7 +54,6 @@ void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
                     Sleep(s.points[i].timestamp);
                         
                     HDC hdc = GetDC(hDrawWnd);
-                    // ... (Pen, LineTo, SelectObject, ReleaseDC) ...
                     SetGraphicsMode(hdc, GM_ADVANCED); /// DASH, DOT 선 종류의 두께 1px이상 사용하기 위해 선언
                     LOGBRUSH lb = {};
                     lb.lbStyle = BS_SOLID;
@@ -77,19 +76,18 @@ void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
                 }
                 if (r_state == ReplayState::Stopped) break; // 바깥쪽 for 루프 탈출
             }
+            if (r_state == ReplayState::Stopped) break;
             Sleep(2000);
 
-            // (한 사이클 재생 끝. 루프 처음으로 돌아감)
+            // (한 사이클 재생 끝)
         }
 
         // --- 6. 무한 루프 탈출 (중단됨) ---
-        // (onFinished 콜백을 호출하지 않음 = 데이터 복원 안 함)
-        // (Clear 버튼이 이미 데이터를 지웠음)
 
         // 스레드 최종 종료
         r_state = ReplayState::Stopped;
         });
-    replayThread.detach();
+    replayThread = std::move(tempThread);
 
 }
 
@@ -105,7 +103,18 @@ void ReplayController::ToggleReplay() {
 }
 
 void ReplayController::StopReplay() {
-	if (r_state != ReplayState::Stopped) {
-		r_state = ReplayState::Stopped;
-	}
+    // 1. (수정) Stopped가 아니면 스레드를 종료시킴
+    if (r_state != ReplayState::Stopped) {
+        r_state = ReplayState::Stopped; // 2. 스레드에 '중단' 신호 전송
+    }
+
+    // 3. ★ 스레드가 유효하고, 조인 가능(실행 중)한지 확인
+    if (replayThread.joinable()) {
+        // 4. ★ 스레드가 완전히 종료될 때까지 UI 스레드가 여기서 '대기' (Blocking)
+        replayThread.join();
+    }
+
+    // (join()이 끝나면 스레드는 100% 종료된 상태)
+    r_state = ReplayState::Stopped; // (확인차 상태 변경)
+    // (isReplaying = false; 제거됨)
 }

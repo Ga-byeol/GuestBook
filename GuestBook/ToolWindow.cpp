@@ -71,7 +71,7 @@ void ToolWindow::CreateButton() {
     buttonController.Create(hwnd, L"리플레이", REPLAY, 130, 10, 50, 30);
     buttonController.SetImage(139);
     replayHwnd = buttonController.GetHwnd();
-    buttonController.Create(hwnd, L"중단", END, 190, 10, 50, 30);
+    buttonController.Create(hwnd, L"중단", STOP, 190, 10, 50, 30);
     buttonController.SetImage(135);
     buttonController.Create(hwnd, L"전체지우기", CLEAR, 250, 10, 50, 30);
     buttonController.SetImage(134);
