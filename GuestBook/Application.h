@@ -54,11 +54,12 @@ public:
             });
         /// 재생
         btnCtrl.RegisterHandler(REPLAY, [&]() {
+            if (drawWindow.GetDrawnStrokes().empty()) return 0;
             
             ReplayState state = replayController.GetState();
             HWND hReplayBtn = toolWindow.GetReplayHwnd();
             HICON hIcon = nullptr;
-            if (state == ReplayState::Stopped) {
+            if (state == ReplayState::Stopped ) {
 
                 HWND hDrawWnd = drawWindow.GetHwnd();
                 vector<Stroke> strokesCopy = drawWindow.GetDrawnStrokes();
@@ -80,10 +81,18 @@ public:
                 SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
             }
         });
+        /// 재생 중단
+        btnCtrl.RegisterHandler(STOP, [&]() {
+            if (!replayController.IsReplaying()) return 0;
+            replayController.StopReplay();
+            drawWindow.ClearAll();
+
+            drawWindow.setReplaying(false);
+            
+            });
         /// 화면 초기화
         btnCtrl.RegisterHandler(CLEAR, [&]() {
-            drawWindow.setReplaying(false);
-            replayController.StopReplay();
+            if (!replayController.IsReplaying()) return 0;
             drawWindow.ClearAll();
         });
         /// 지우기

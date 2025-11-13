@@ -20,8 +20,11 @@ enum class ReplayState {
 class ReplayController
 {
 public:
+	  ~ReplayController() {
+		  StopReplay();
+	  }
 	void StartReplay(HWND drawWindowHwnd, std::vector<Stroke> copyStroke);
-	bool IsReplaying() const { return isReplaying; }
+	bool IsReplaying() const { return r_state != ReplayState::Stopped;}
 	ReplayState GetState() const { return r_state; }
 	void ToggleReplay();
 	void StopReplay();
@@ -35,6 +38,5 @@ private:
 
 	std::atomic<ReplayState> r_state = ReplayState::Stopped;
 	bool isPaused = false;
-	bool isReplaying = false;
 	bool stopRequested = false;
 };

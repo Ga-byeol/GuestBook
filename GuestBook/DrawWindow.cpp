@@ -301,14 +301,16 @@
 	}
 
 	void DrawWindow::ClearAll() {
-		strokeCtrl.Clear();
+		if(!isReplaying)strokeCtrl.Clear();
 
 		RECT rc;
 		GetClientRect(hwnd, &rc);
 		if (backBuffer) {
 			backBuffer->ClearBuffer(rc);
 		}
-    
+		if (cacheBuffer) {
+			cacheBuffer->ClearBuffer(rc);
+		}
 		InvalidateRect(hwnd, nullptr, TRUE);
 	}
 
@@ -354,11 +356,11 @@
 	void DrawWindow::OnSize(int width, int height) {
 		if (backBuffer) {
 			delete backBuffer;
-			backBuffer = nullptr; // ★★★ 1. 해제 후 즉시 nullptr로 설정
+			backBuffer = nullptr;
 		}
 		if (cacheBuffer) {
 			delete cacheBuffer;
-			cacheBuffer = nullptr; // ★★★ 2. 여기도 nullptr로 설정
+			cacheBuffer = nullptr;
 		}
 
 		if (width == 0 || height == 0) return;
