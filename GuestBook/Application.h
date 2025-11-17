@@ -37,17 +37,18 @@ public:
 
             replayController.StopReplay();
 
-            drawWindow.ClearAll();
-
             fileManager.StartLoad(drawWindow.GetHwnd(), loadStrokes, drawWindow.GetHwnd());
 
-            if (!loadStrokes.empty())
+            if (loadStrokes.empty())
             {
-                drawWindow.SetStrokes(loadStrokes);
-
-                InvalidateRect(drawWindow.GetHwnd(), nullptr, TRUE);
-                UpdateWindow(drawWindow.GetHwnd());
+                return 0;
             }
+
+            drawWindow.ClearAll();
+            drawWindow.SetStrokes(loadStrokes);
+
+            InvalidateRect(drawWindow.GetHwnd(), nullptr, TRUE);
+            UpdateWindow(drawWindow.GetHwnd());
 
             drawWindow.setReplaying(true);
             replayController.StartReplay(drawWindow.GetHwnd(), loadStrokes);
