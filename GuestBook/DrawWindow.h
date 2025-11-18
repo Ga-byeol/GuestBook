@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <windows.h>
 #include <vector>
 #include <condition_variable>
@@ -29,11 +29,11 @@ public:
     int GetCurrentPenWidth() const { return currentPenWidth; }
     const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
     void SetStrokes(std::vector<Stroke> strokes) { strokeCtrl.setStrokes(strokes); }
-    void SetPenStyle(int PenNum); /// ºê·¯½¬ ÄÁÆ®·Ñ·¯ ´ÙÀÌ¾ó·Î±×¿¡¼­ ¹ŞÀº ³Ñ¹ö
-    void SetPenWidth(int PenWidth); /// ºê·¯½¬ ÄÁÆ®·Ñ·¯ ´ÙÀÌ¾ó·Î±×¿¡¼­ ¹ŞÀº µÎ²²
+    void SetPenStyle(int PenNum); /// ë¸ŒëŸ¬ì‰¬ ì»¨íŠ¸ë¡¤ëŸ¬ ë‹¤ì´ì–¼ë¡œê·¸ì—ì„œ ë°›ì€ ë„˜ë²„
+    void SetPenWidth(int PenWidth); /// ë¸ŒëŸ¬ì‰¬ ì»¨íŠ¸ë¡¤ëŸ¬ ë‹¤ì´ì–¼ë¡œê·¸ì—ì„œ ë°›ì€ ë‘ê»˜
 
 /// const std::vector<Stroke>& GetDrawnStrokes() const { return strokeCtrl.Strokes(); }
-    //È­¸éº¸È£±â Ãß°¡ ÄÚµå
+    //í™”ë©´ë³´í˜¸ê¸° ì¶”ê°€ ì½”ë“œ
     ScreensaverManager* g_pSaverManager = nullptr;
 
     void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
@@ -46,6 +46,8 @@ public:
 
     COLORREF lastSelectedColor = RGB(0, 0, 0);
 
+    void Reset();   /// ì´ˆê¸°ê°’ ì„¸íŒ…
+
 private:
     LRESULT HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam);
     void OnPaint(HDC hdc, const RECT& rc);
@@ -55,8 +57,8 @@ private:
 
     void OnSize(int width, int height);
 
-    void HideSystemCursor(); // Ä¿¼­ ¼û±è ÇÔ¼ö
-    void ShowSystemCursor(); // Ä¿¼­ Ç¥½Ã ÇÔ¼ö
+    void HideSystemCursor(); // ì»¤ì„œ ìˆ¨ê¹€ í•¨ìˆ˜
+    void ShowSystemCursor(); // ì»¤ì„œ í‘œì‹œ í•¨ìˆ˜
 
     static LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -73,11 +75,11 @@ private:
     StrokeController strokeCtrl;
     COLORREF selectedColor = RGB(0, 0, 0);
 
-    POINT m_currentMousePos = { 0,0 }; // ¡Ú ¸¶¿ì½ºÀÇ ÇöÀç À§Ä¡
-    bool m_isCursorHidden = false; // ¡Ú Ä¿¼­°¡ ¼û°ÜÁ³´ÂÁö ¿©ºÎ
+    POINT m_currentMousePos = { 0,0 }; // â˜… ë§ˆìš°ìŠ¤ì˜ í˜„ì¬ ìœ„ì¹˜
+    bool m_isCursorHidden = false; // â˜… ì»¤ì„œê°€ ìˆ¨ê²¨ì¡ŒëŠ”ì§€ ì—¬ë¶€
     
-    HCURSOR m_hPenCursor = 0;    // ¡Ú Ææ ¸ğµå Ä¿¼­ (IDC_CROSS)
-    HCURSOR m_hEraserCursor = 0; // ¡Ú Áö¿ì°³ ¸ğµå Ä¿¼­
+    HCURSOR m_hPenCursor = 0;    // â˜… íœ ëª¨ë“œ ì»¤ì„œ (IDC_CROSS)
+    HCURSOR m_hEraserCursor = 0; // â˜… ì§€ìš°ê°œ ëª¨ë“œ ì»¤ì„œ
 
 
     int penWidth = 5;

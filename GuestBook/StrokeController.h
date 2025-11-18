@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <vector>
 #include <windows.h>
 #include <mutex>
@@ -18,6 +18,8 @@ public:
 
     void setStrokes(const std::vector<Stroke> strokes) { this->strokes = strokes; }
     const std::vector<Stroke>& Strokes() const { return strokes; }
+
+    void Reset();
 private:
     std::mutex mtx;
     DWORD lastTime{};

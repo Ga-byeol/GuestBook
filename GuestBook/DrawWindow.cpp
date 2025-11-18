@@ -339,3 +339,12 @@
 
 		InvalidateRect(hwnd, NULL, TRUE);
 	}
+	    
+	void DrawWindow::Reset() {
+		strokeCtrl.Reset();
+		currentPenWidth = 5;
+		selectedColor = RGB(0, 0, 0); 
+		currentPenStyle = PS_SOLID;
+		erasing = false;
+		isReplaying = false;
+	}
