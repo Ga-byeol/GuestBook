@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <atomic>
-#define INACTIVITY_THRESHOLD 5000 //세이버 시간
+#define INACTIVITY_THRESHOLD 60000 //세이버 시간
 
 #define SAVER_WND_CLASS_NAME L"IndependentSaverWindow"
 
