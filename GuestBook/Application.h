@@ -27,8 +27,7 @@ public:
     Application() : replayController(), penBox(hInstance, nullptr) {
         auto& btnCtrl = toolWindow.GetButtonController();
         /// 새파일
-        btnCtrl.RegisterHandler(SAVE, [&]() {
-            drawWindow.SetPenStyle(BS_SOLID);
+        btnCtrl.RegisterHandler(NEW, [&]() {
             });
         /// 저장
         btnCtrl.RegisterHandler(SAVE, [&]() {
