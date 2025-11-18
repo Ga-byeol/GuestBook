@@ -73,11 +73,11 @@ private:
     StrokeController strokeCtrl;
     COLORREF selectedColor = RGB(0, 0, 0);
 
-    POINT m_currentMousePos; // ★ 마우스의 현재 위치
+    POINT m_currentMousePos = { 0,0 }; // ★ 마우스의 현재 위치
     bool m_isCursorHidden = false; // ★ 커서가 숨겨졌는지 여부
     
-    HCURSOR m_hPenCursor;    // ★ 펜 모드 커서 (IDC_CROSS)
-    HCURSOR m_hEraserCursor; // ★ 지우개 모드 커서
+    HCURSOR m_hPenCursor = 0;    // ★ 펜 모드 커서 (IDC_CROSS)
+    HCURSOR m_hEraserCursor = 0; // ★ 지우개 모드 커서
 
 
     int penWidth = 5;

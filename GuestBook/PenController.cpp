@@ -1,12 +1,14 @@
 #include "PenController.h"
 #include "DrawWindow.h"
-#include "resource.h";
+#include "resource.h"
 #include <string>
 
 PenController::PenController(HINSTANCE hInst, HWND parent)
 {
     hInstance = hInst;
     parentHwnd = parent;
+    LastPenNum = 0;
+    LastPenWidth = 0;
 
 }
 

@@ -20,7 +20,7 @@ public:
     const std::vector<Stroke>& Strokes() const { return strokes; }
 private:
     std::mutex mtx;
-    DWORD lastTime;
+    DWORD lastTime{};
     std::vector<Stroke> strokes;
     Stroke current;
     bool recording = false;
