@@ -1,4 +1,4 @@
-#include "StrokeController.h"
+﻿#include "StrokeController.h"
 
 void StrokeController::Begin(int x, int y, COLORREF color,int penStyle, int penWidth) {
 	current.points.clear();
@@ -45,4 +45,14 @@ void StrokeController::AddPoint(Point p) {
 void StrokeController::AddStroke() {
 	strokes.push_back(current);
 	current.points.clear();
+}
+
+void StrokeController::Reset() {
+	strokes.clear();
+	current.points.clear();
+	current.penStyle = PS_SOLID;
+	current.penWidth = 5;
+	current.color = RGB(0, 0, 0);
+	recording = false;
+	lastTime = 0; 
 }
