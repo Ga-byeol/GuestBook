@@ -169,6 +169,10 @@
     <ResourceCompile Include="GuestBook.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\34.ico" />
+    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\5.ico" />
+    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\Save1.ico" />
+    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\stop.ico" />
     <Image Include="..\ImageResource\Logo.ico" />
     <Image Include="GuestBook.ico" />
     <Image Include="ImageResource\black.ico" />
@@ -178,7 +182,9 @@
     <Image Include="ImageResource\end.ico" />
     <Image Include="ImageResource\Eraser.ico" />
     <Image Include="ImageResource\green.ico" />
+    <Image Include="ImageResource\Load.ico" />
     <Image Include="ImageResource\Logo.ico" />
+    <Image Include="ImageResource\New.ico" />
     <Image Include="ImageResource\Open.ico" />
     <Image Include="ImageResource\Pen.ico" />
     <Image Include="ImageResource\red.ico" />

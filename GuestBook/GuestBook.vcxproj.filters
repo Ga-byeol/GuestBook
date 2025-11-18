@@ -152,6 +152,12 @@
     <Image Include="ImageResource\green.ico" />
     <Image Include="ImageResource\red.ico" />
     <Image Include="ImageResource\red1.ico" />
+    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\Save1.ico" />
+    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\stop.ico" />
+    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\5.ico" />
+    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\34.ico" />
+    <Image Include="ImageResource\Load.ico" />
+    <Image Include="ImageResource\New.ico" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imageresource\cursor1.cur" />

@@ -8,6 +8,7 @@
 #include "PenController.h"
 #include "FileManager.h"
 #include "resource.h"
+#define NEW 100
 #define SAVE 101
 #define LOAD 102
 #define REPLAY 103
@@ -25,6 +26,10 @@ class Application {
 public:
     Application() : replayController(), penBox(hInstance, nullptr) {
         auto& btnCtrl = toolWindow.GetButtonController();
+        /// 새파일
+        btnCtrl.RegisterHandler(SAVE, [&]() {
+            drawWindow.SetPenStyle(BS_SOLID);
+            });
         /// 저장
         btnCtrl.RegisterHandler(SAVE, [&]() {
             setReplayingStop();
@@ -126,7 +131,6 @@ public:
         /// 펜
         btnCtrl.RegisterHandler(BRUSH, [&]() {
             penBox.setDrawWindow(&drawWindow);
-            penBox.PenWidth = drawWindow.GetCurrentPenWidth();
             penBox.ShowDialog();
         });
         /// 색상

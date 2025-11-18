@@ -1,4 +1,4 @@
-#include "MainWindow.h"
+ï»¿#include "MainWindow.h"
 #include "DrawWindow.h"
 #include "resource.h"
 #include "Sidebar.h"
@@ -16,7 +16,7 @@ bool MainWindow::Create(HINSTANCE hInst, int nCmdShow) {
     RegisterClass(&wc);
 
     hwnd = CreateWindowEx(
-        0, wc.lpszClassName, L"2025_Á¹¾÷ÀÛÇ° ¹æ¸í·Ï", WS_OVERLAPPEDWINDOW,
+        0, wc.lpszClassName, L"2025_ì¡¸ì—…ìž‘í’ˆ ë°©ëª…ë¡", WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 
         900, 700,
         NULL, NULL, hInst, this);
@@ -64,7 +64,7 @@ LRESULT MainWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
         return 0;
     }
     case WM_VSCROLL: {
-        HWND hSlider = (HWND)lParam; // ¸Þ½ÃÁö¸¦ º¸³½ ÄÁÆ®·Ñ(½½¶óÀÌ´õ)ÀÇ ÇÚµé
+        HWND hSlider = (HWND)lParam; // ë©”ì‹œì§€ë¥¼ ë³´ë‚¸ ì»¨íŠ¸ë¡¤(ìŠ¬ë¼ì´ë”)ì˜ í•¸ë“¤
 
         if (hSlider == sideBar.GetSliderHandle()) {
 
@@ -100,21 +100,21 @@ void MainWindow::ResizeChildren() {
 
     const int TOOLBAR_HEIGHT = 50;
     const int SIDEBAR_WIDTH = 100;
-    const int SIDEBAR_Y_OFFSET = 60; // (MoveWindow¿¡¼­ 60À» »ç¿ëÇÏ¼ÌÀ¸¹Ç·Î)
+    const int SIDEBAR_Y_OFFSET = 60; // (MoveWindowì—ì„œ 60ì„ ì‚¬ìš©í•˜ì…¨ìœ¼ë¯€ë¡œ)
     
     if (toolWindow) {
         MoveWindow(toolWindow->GetHwnd(), 0, 0, parentWidth, TOOLBAR_HEIGHT, TRUE);
     }
 
-    // (»çÀÌµå¹Ù Àç¹èÄ¡ ·ÎÁ÷)
+    // (ì‚¬ì´ë“œë°” ìž¬ë°°ì¹˜ ë¡œì§)
     if (sideBar.GetSliderHandle()) {
-        int sliderY = TOOLBAR_HEIGHT + 70; // (¿¹: Åø¹Ù ¾Æ·¡ 70px)
-        int sliderHeight = parentHeight - sliderY - 20; // (¿¹: ÇÏ´Ü 20px ¿©¹é)
+        int sliderY = TOOLBAR_HEIGHT + 70; // (ì˜ˆ: íˆ´ë°” ì•„ëž˜ 70px)
+        int sliderHeight = parentHeight - sliderY - 20; // (ì˜ˆ: í•˜ë‹¨ 20px ì—¬ë°±)
         MoveWindow(sideBar.GetSliderHandle(), 25, sliderY, 50, sliderHeight, TRUE);
     }
 
     if (drawWindow) {
-        // (MoveWindow´Â DrawWindow¿¡ WM_SIZE¸¦ ÀÚµ¿À¸·Î º¸³À´Ï´Ù)
+        // (MoveWindowëŠ” DrawWindowì— WM_SIZEë¥¼ ìžë™ìœ¼ë¡œ ë³´ëƒ…ë‹ˆë‹¤)
         MoveWindow(drawWindow->GetHwnd(),
             SIDEBAR_WIDTH, TOOLBAR_HEIGHT,
             parentWidth - SIDEBAR_WIDTH,
