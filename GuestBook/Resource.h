@@ -22,7 +22,6 @@
 #define IDI_DELETE                      134
 #define IDI_END                         135
 #define IDI_ERASER                      136
-#define IDI_LOAD                        137
 #define IDI_PEN                         138
 #define IDI_REPLAY                      139
 #define IDI_SAVE                        140
@@ -30,13 +29,12 @@
 #define IDI_BLACK                       142
 #define IDI_BLUE                        143
 #define IDI_GREEN                       144
-#define IDI_ICON6                       145
-#define IDI_ICON3                       146
 #define IDI_RED                         147
 #define IDC_CURSOR1                     148
 #define IDC_ERASER                      149
 #define IDC_PENCIL                      150
-#define IDI_ICON8                       150
+#define IDI_LOAD                        155
+#define IDI_NEW                         156
 #define IDC_RADIO_SOLID                 1000
 #define IDC_COMBOX_PENWIDTH             1001
 #define IDC_RADIO_DASH                  1002
@@ -48,7 +46,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        151
+#define _APS_NEXT_RESOURCE_VALUE        158
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         1004
 #define _APS_NEXT_SYMED_VALUE           110

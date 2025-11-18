@@ -1,4 +1,5 @@
-#include "ToolWindow.h"
+Ôªø#include "ToolWindow.h"
+#define NEW 100
 #define SAVE 101
 #define LOAD 102
 #define REPLAY 103
@@ -28,7 +29,7 @@ bool ToolWindow::Create(HWND parentHwnd, HINSTANCE hInst) {
         0, wc.lpszClassName, NULL,
         WS_CHILD | WS_VISIBLE,
         0, 0,
-        200, 50,  // ≥ ∫Ò 200¿∏∑Œ ¡Ÿ¿”, « ø‰«œ∏È ¡∂¡§
+        200, 50,  // ÎÑàÎπÑ 200ÏúºÎ°ú Ï§ÑÏûÑ, ÌïÑÏöîÌïòÎ©¥ Ï°∞Ï†ï
         parentHwnd, nullptr, hInstance, this);
 
     if (!hwnd) return false;
@@ -64,30 +65,32 @@ LRESULT CALLBACK ToolWindow::WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM 
 
 
 void ToolWindow::CreateButton() {
-    buttonController.Create(hwnd, L"¿˙¿Â", SAVE, 15, 10, 70, 50);
+    buttonController.Create(hwnd, L"ÏÉàÌååÏùº", NEW, 15, 10, 50, 50);
+    buttonController.SetImage(156);
+    buttonController.Create(hwnd, L"Ï†ÄÏû•", SAVE, 70, 10, 70, 50);
     buttonController.SetImage(140);
-    buttonController.Create(hwnd, L"∫“∑Øø¿±‚", LOAD, 70, 10, 50, 30);
-    buttonController.SetImage(137);
-    buttonController.Create(hwnd, L"∏Æ«√∑π¿Ã", REPLAY, 130, 10, 50, 30);
+    buttonController.Create(hwnd, L"Î∂àÎü¨Ïò§Í∏∞", LOAD, 130, 10, 50, 30);
+    buttonController.SetImage(155);
+    buttonController.Create(hwnd, L"Î¶¨ÌîåÎ†àÏù¥", REPLAY, 190, 10, 50, 30);
     buttonController.SetImage(139);
     replayHwnd = buttonController.GetHwnd();
-    buttonController.Create(hwnd, L"¡ﬂ¥‹", STOP, 190, 10, 50, 30);
+    buttonController.Create(hwnd, L"Ï§ëÎã®", STOP, 250, 10, 50, 30);
     buttonController.SetImage(135);
-    buttonController.Create(hwnd, L"¿¸√º¡ˆøÏ±‚", CLEAR, 250, 10, 50, 30);
+    buttonController.Create(hwnd, L"Ï†ÑÏ≤¥ÏßÄÏö∞Í∏∞", CLEAR, 310, 10, 50, 30);
     buttonController.SetImage(134);
-    buttonController.Create(hwnd, L"¡ˆøÏ±‚", ERASE, 310, 10, 50, 30);
+    buttonController.Create(hwnd, L"ÏßÄÏö∞Í∏∞", ERASE, 370, 10, 50, 30);
     buttonController.SetImage(136);
-    buttonController.Create(hwnd, L"∫Í∑ØΩ¨", BRUSH, 370, 10, 50, 30);
+    buttonController.Create(hwnd, L"Î∏åÎü¨Ïâ¨", BRUSH, 430, 10, 50, 30);
     buttonController.SetImage(138);
-    buttonController.Create(hwnd, L"ªˆªÛ", COLOR, 430, 10, 50, 30);
+    buttonController.Create(hwnd, L"ÏÉâÏÉÅ", COLOR, 490, 10, 50, 30);
     buttonController.SetImage(133);
-    buttonController.Create(hwnd, L"BLACK", BLACK, 490, 10, 50, 30);
+    buttonController.Create(hwnd, L"BLACK", BLACK, 550, 10, 50, 30);
     buttonController.SetImage(142);
-    buttonController.Create(hwnd, L"RED", RED, 550, 10, 50, 30);
+    buttonController.Create(hwnd, L"RED", RED, 610, 10, 50, 30);
     buttonController.SetImage(147);
-    buttonController.Create(hwnd, L"GREEN", GREEN, 610, 10, 50, 30);
+    buttonController.Create(hwnd, L"GREEN", GREEN, 670, 10, 50, 30);
     buttonController.SetImage(144);
-    buttonController.Create(hwnd, L"BLUE", BLUE, 670, 10, 50, 30);
+    buttonController.Create(hwnd, L"BLUE", BLUE, 730, 10, 50, 30);
     buttonController.SetImage(143);
 };
 

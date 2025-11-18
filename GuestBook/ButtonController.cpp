@@ -1,4 +1,4 @@
-#include "ButtonController.h"
+ï»¿#include "ButtonController.h"
 
 using namespace std;
 
@@ -11,17 +11,17 @@ void ButtonController::Create(HWND parents, LPCWSTR text, int id, int x, int y, 
 		x, y,
 		w, h,
 		parents,
-		(HMENU)id,
+		(HMENU)(UINT_PTR)id,
 		(HINSTANCE)GetWindowLongPtr(parents, GWLP_HINSTANCE),
 		nullptr
 	);
 }
 
 void ButtonController::HandleCommand(WPARAM wParam) {
-	int id = LOWORD(wParam); /// ¹öÆ° ID½Äº°
-	int UserContact = HIWORD(wParam); /// ¾Ë¸² ÄÚµå È®ÀÎ
+	int id = LOWORD(wParam); /// ë²„íŠ¼ IDì‹ë³„
+	int UserContact = HIWORD(wParam); /// ì•Œë¦¼ ì½”ë“œ í™•ì¸
 
-	/// STATIC ÄÁÆ®·ÑÀÇ Å¬¸¯ ¾Ë¸²(STN_CLICKED)ÀÏ ¶§¸¸ Ã³¸®ÇÕ´Ï´Ù.
+	/// STATIC ì»¨íŠ¸ë¡¤ì˜ í´ë¦­ ì•Œë¦¼(STN_CLICKED)ì¼ ë•Œë§Œ ì²˜ë¦¬í•©ë‹ˆë‹¤.
 	if (UserContact == STN_CLICKED) {
 		if (ButtonMessage.count(id)) {
 			ButtonMessage[id]();

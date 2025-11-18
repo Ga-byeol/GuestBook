@@ -16,6 +16,19 @@ Sidebar::Sidebar()
 	InitCommonControlsEx(&icc); 
 }
 
+void Sidebar::Reset() 
+{
+	PenStroke = INITIAL_VALUE;
+
+	if (hSlider) {
+		SendMessage(hSlider, TBM_SETPOS, TRUE, INITIAL_VALUE);
+
+		SendMessage(hSlider, TBM_SETRANGE, TRUE, MAKELONG(1, 50));
+		
+	}
+
+}
+
 void Sidebar::SetSlider(HWND hWnd, HINSTANCE hInstance) 
 {
 	hSlider = CreateWindowExW(0, TRACKBAR_CLASS,

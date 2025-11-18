@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #pragma code_page(65001)
 
@@ -46,8 +46,6 @@ IDI_END                 ICON                    "ImageResource\\end.ico"
 
 IDI_ERASER              ICON                    "ImageResource\\Eraser.ico"
 
-IDI_LOAD                ICON                    "ImageResource\\Open.ico"
-
 IDI_PEN                 ICON                    "ImageResource\\Pen.ico"
 
 IDI_REPLAY              ICON                    "ImageResource\\Replay.ico"
@@ -63,6 +61,10 @@ IDI_BLUE                ICON                    "ImageResource\\blue.ico"
 IDI_GREEN               ICON                    "ImageResource\\green.ico"
 
 IDI_RED                 ICON                    "ImageResource\\red.ico"
+
+IDI_LOAD                ICON                    "ImageResource\\Load.ico"
+
+IDI_NEW                 ICON                    "ImageResource\\New.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////

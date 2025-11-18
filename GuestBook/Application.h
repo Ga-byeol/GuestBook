@@ -8,6 +8,7 @@
 #include "PenController.h"
 #include "FileManager.h"
 #include "resource.h"
+#define NEW 100
 #define SAVE 101
 #define LOAD 102
 #define REPLAY 103
@@ -25,6 +26,13 @@ class Application {
 public:
     Application() : replayController(), penBox(hInstance, nullptr) {
         auto& btnCtrl = toolWindow.GetButtonController();
+        /// 새파일
+        btnCtrl.RegisterHandler(NEW, [&]() {
+            drawWindow.Reset();
+            mainWindow.ResetSideBar();
+            setReplayingStop();
+
+            });
         /// 저장
         btnCtrl.RegisterHandler(SAVE, [&]() {
             setReplayingStop();
@@ -105,7 +113,7 @@ public:
             });
         /// 화면 초기화
         btnCtrl.RegisterHandler(CLEAR, [&]() {
-            if (replayController.IsReplaying()) return;
+            if (replayController.IsReplaying()) setReplayingStop();
             drawWindow.ClearAll();
         });
         /// 지우기
@@ -125,8 +133,13 @@ public:
         });
         /// 펜
         btnCtrl.RegisterHandler(BRUSH, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing(); 
+                drawWindow.setSelectedColor(drawWindow.lastSelectedColor);
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+
+            }
             penBox.setDrawWindow(&drawWindow);
-            penBox.PenWidth = drawWindow.GetCurrentPenWidth();
             penBox.ShowDialog();
         });
         /// 색상

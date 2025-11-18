@@ -8,10 +8,12 @@ class Sidebar
 {
 public:
 	Sidebar();
+
 	void SetSlider(HWND hWnd, HINSTANCE hInstance);
 	void SetStroke(int s); /// 펜 굵기 설정
 	int GetStroke() const { return PenStroke; } /// 펜 굵기 얻는 값
 	HWND GetSliderHandle() { return hSlider; }
+	void Reset();
 private:
 	int SlideX, SlideTop, SlideY,SlideBottom;
 	HWND hSlider = NULL;

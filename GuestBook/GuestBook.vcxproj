@@ -118,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -177,7 +178,9 @@
     <Image Include="ImageResource\end.ico" />
     <Image Include="ImageResource\Eraser.ico" />
     <Image Include="ImageResource\green.ico" />
+    <Image Include="ImageResource\Load.ico" />
     <Image Include="ImageResource\Logo.ico" />
+    <Image Include="ImageResource\New.ico" />
     <Image Include="ImageResource\Open.ico" />
     <Image Include="ImageResource\Pen.ico" />
     <Image Include="ImageResource\red.ico" />
