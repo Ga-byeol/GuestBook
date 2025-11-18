@@ -1,7 +1,7 @@
-#pragma once
+ï»¿#pragma once
 #include <windows.h>
 #include <atomic>
-#define INACTIVITY_THRESHOLD 60000 //¼¼ÀÌ¹ö ½Ã°£
+#define INACTIVITY_THRESHOLD 5000 //ì„¸ì´ë²„ ì‹œê°„
 
 #define SAVER_WND_CLASS_NAME L"IndependentSaverWindow"
 
@@ -13,32 +13,32 @@ public:
     ScreensaverManager(HWND hWnd, HINSTANCE hInst);
     ~ScreensaverManager();
 
-    void RegisterSaverWndClass(); // ¼¼ÀÌ¹ö À©µµ¿ì Å¬·¡½º µî·Ï
-    void ShowSaverWindow();       // ¼¼ÀÌ¹ö À©µµ¿ì »ı¼º
+    void RegisterSaverWndClass(); // ì„¸ì´ë²„ ìœˆë„ìš° í´ë˜ìŠ¤ ë“±ë¡
+    void ShowSaverWindow();       // ì„¸ì´ë²„ ìœˆë„ìš° ìƒì„±
 
-    // GlobalSaverWndProc¿¡¼­ È£ÃâÇÒ ½ÇÁ¦ ¸Ş½ÃÁö ÇÚµé·¯
+    // GlobalSaverWndProcì—ì„œ í˜¸ì¶œí•  ì‹¤ì œ ë©”ì‹œì§€ í•¸ë“¤ëŸ¬
     LRESULT HandleSaverMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-    // GlobalSaverWndProcÀÌ pThis¸¦ ¾òÀ» ¼ö ÀÖµµ·Ï friend ¼±¾ğ
+    // GlobalSaverWndProcì´ pThisë¥¼ ì–»ì„ ìˆ˜ ìˆë„ë¡ friend ì„ ì–¸
     friend LRESULT CALLBACK GlobalSaverWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 
-    // ¹«È°µ¿ °Ë»ç ÇÔ¼ö
+    // ë¬´í™œë™ ê²€ì‚¬ í•¨ìˆ˜
     void CheckInactivity();
 
-    // È°µ¿ °¨Áö ½Ã È£ÃâµÉ ÇÔ¼ö
+    // í™œë™ ê°ì§€ ì‹œ í˜¸ì¶œë  í•¨ìˆ˜
     void ResetActivityTimer();
 
-    // ½ºÅ©¸°¼¼ÀÌ¹ö È°¼ºÈ­ »óÅÂÀÎÁö È®ÀÎ
+    // ìŠ¤í¬ë¦°ì„¸ì´ë²„ í™œì„±í™” ìƒíƒœì¸ì§€ í™•ì¸
     bool IsSaverActive() const;
 
 
 private:
     ULONGLONG m_saverStartTime;
     HWND m_hMainWnd;
-    HWND m_hSaverWnd;       // (»õ·Î¿î ¼¼ÀÌ¹ö À©µµ¿ì ÇÚµé)
+    HWND m_hSaverWnd;       // (ìƒˆë¡œìš´ ì„¸ì´ë²„ ìœˆë„ìš° í•¸ë“¤)
     HINSTANCE m_hInstance;
-    ULONGLONG m_lastActivityTime; // ¸¶Áö¸· È°µ¿ ½Ã°£ (GetTickCount64)
-    std::atomic<bool> m_isSaverActive; // ½ºÅ©¸°¼¼ÀÌ¹ö È°¼ºÈ­ ÇÃ·¡±×
+    ULONGLONG m_lastActivityTime; // ë§ˆì§€ë§‰ í™œë™ ì‹œê°„ (GetTickCount64)
+    std::atomic<bool> m_isSaverActive; // ìŠ¤í¬ë¦°ì„¸ì´ë²„ í™œì„±í™” í”Œë˜ê·¸
 
 };

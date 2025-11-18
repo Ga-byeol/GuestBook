@@ -1,4 +1,4 @@
-#include "ScreensaverManager.h"
+﻿#include "ScreensaverManager.h"
 #include <iostream>
 
 ScreensaverManager::ScreensaverManager(HWND hWnd, HINSTANCE hInst)
@@ -158,7 +158,7 @@ void ScreensaverManager::CheckInactivity() {
     lii.cbSize = sizeof(LASTINPUTINFO);
     DWORD dwSystemIdleTime = 0;
     if (GetLastInputInfo(&lii)) {
-        dwSystemIdleTime = GetTickCount64() - lii.dwTime;
+        dwSystemIdleTime = (DWORD)(GetTickCount64() - lii.dwTime);
     }
     else {
         dwSystemIdleTime = (DWORD)(GetTickCount64() - m_lastActivityTime);

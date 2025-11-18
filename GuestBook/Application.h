@@ -27,7 +27,10 @@ public:
         auto& btnCtrl = toolWindow.GetButtonController();
         /// 저장
         btnCtrl.RegisterHandler(SAVE, [&]() {
-            replayController.StopReplay();
+            setReplayingStop();
+
+            InvalidateRect(drawWindow.GetHwnd(), nullptr, TRUE);
+            UpdateWindow(drawWindow.GetHwnd());
 
             fileManager.StartSave(drawWindow.GetHwnd(), drawWindow.GetDrawnStrokes());
             });
@@ -35,27 +38,32 @@ public:
         btnCtrl.RegisterHandler(LOAD, [&]() {
             std::vector<Stroke> loadStrokes;
 
-            replayController.StopReplay();
+            setReplayingStop();
+            
+            InvalidateRect(drawWindow.GetHwnd(), nullptr, TRUE);
+            UpdateWindow(drawWindow.GetHwnd());
 
             fileManager.StartLoad(drawWindow.GetHwnd(), loadStrokes, drawWindow.GetHwnd());
 
             if (loadStrokes.empty())
             {
-                return 0;
+                return;
             }
 
-            drawWindow.ClearAll();
             drawWindow.SetStrokes(loadStrokes);
 
-            InvalidateRect(drawWindow.GetHwnd(), nullptr, TRUE);
-            UpdateWindow(drawWindow.GetHwnd());
-
             drawWindow.setReplaying(true);
+
             replayController.StartReplay(drawWindow.GetHwnd(), loadStrokes);
+
+            HWND hReplayBtn = toolWindow.GetReplayHwnd();
+            HICON hIcon = nullptr;
+            hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP));
+            SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
             });
         /// 재생
         btnCtrl.RegisterHandler(REPLAY, [&]() {
-            if (drawWindow.GetDrawnStrokes().empty()) return 0;
+            if (drawWindow.GetDrawnStrokes().empty()) return;
             
             ReplayState state = replayController.GetState();
             HWND hReplayBtn = toolWindow.GetReplayHwnd();
@@ -91,16 +99,13 @@ public:
         });
         /// 재생 중단
         btnCtrl.RegisterHandler(STOP, [&]() {
-            if (!replayController.IsReplaying()) return 0;
-            replayController.StopReplay();
+            if (!replayController.IsReplaying()) return;
             drawWindow.ClearAll();
-
-            drawWindow.setReplaying(false);
-            
+            setReplayingStop();
             });
         /// 화면 초기화
         btnCtrl.RegisterHandler(CLEAR, [&]() {
-            if (replayController.IsReplaying()) return 0;
+            if (replayController.IsReplaying()) return;
             drawWindow.ClearAll();
         });
         /// 지우기
@@ -168,6 +173,16 @@ public:
     bool IsReplaying() const { return replayController.IsReplaying(); };
 
 private:
+    void setReplayingStop() {
+        HICON hIcon = nullptr;
+        HWND hReplayBtn = toolWindow.GetReplayHwnd();
+        hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_REPLAY));  /// 재생 아이콘
+        SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+        replayController.StopReplay();
+        drawWindow.setReplaying(false);
+
+    }
+
     HINSTANCE hInstance = nullptr;
     MainWindow mainWindow;
     DrawWindow drawWindow;

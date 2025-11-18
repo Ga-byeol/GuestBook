@@ -1,4 +1,4 @@
-#include "Sidebar.h"
+Ôªø#include "Sidebar.h"
 
 Sidebar::Sidebar() 
 {
@@ -8,9 +8,9 @@ Sidebar::Sidebar()
 	SlideBottom = 300;
 	
 	PenStroke = 1;
-	
+	hSlider = NULL;
 
-	///∞¯øÎ ≈¨∑°Ω∫ √ ±‚»≠ 
+	///Í≥µÏö© ÌÅ¥ÎûòÏä§ Ï¥àÍ∏∞Ìôî 
 	icc.dwSize = sizeof(icc);  
 	icc.dwICC = ICC_BAR_CLASSES;
 	InitCommonControlsEx(&icc); 
@@ -30,6 +30,9 @@ void Sidebar::SetSlider(HWND hWnd, HINSTANCE hInstance)
 	SendMessage(hSlider, TBM_SETPOS,
 		(WPARAM)TRUE,
 		(LPARAM)INITIAL_VALUE);
+	SendMessage(hSlider, TBM_SETPAGESIZE,
+		(WPARAM)0,
+		(LPARAM)1);
 }
 
 void Sidebar::SetStroke(int s) {

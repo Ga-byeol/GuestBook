@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <Windows.h>
 #include <functional>
 #include <commctrl.h>
@@ -9,14 +9,13 @@ class Sidebar
 public:
 	Sidebar();
 	void SetSlider(HWND hWnd, HINSTANCE hInstance);
-	bool OnScroll(WPARAM wParam, LPARAM lParam); /// Ææ ±½±â °ª º¯°æ
-	void SetStroke(int s); /// Ææ ±½±â ¼³Á¤
-	int GetStroke() const { return PenStroke; } /// Ææ ±½±â ¾ò´Â °ª
+	void SetStroke(int s); /// íœ êµµê¸° ì„¤ì •
+	int GetStroke() const { return PenStroke; } /// íœ êµµê¸° ì–»ëŠ” ê°’
 	HWND GetSliderHandle() { return hSlider; }
 private:
 	int SlideX, SlideTop, SlideY,SlideBottom;
-	HWND hSlider;
-	int PenStroke; /// µÎ²² ¼³Á¤
+	HWND hSlider = NULL;
+	int PenStroke; /// ë‘ê»˜ ì„¤ì •
 	INITCOMMONCONTROLSEX icc;
 };
 
