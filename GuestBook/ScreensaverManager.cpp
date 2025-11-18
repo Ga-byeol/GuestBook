@@ -1,19 +1,23 @@
 ﻿#include "ScreensaverManager.h"
-#include <iostream>
+#include <fstream> // 파일 읽기용
+#include <string>
+
+// C++14에서는 <filesystem> 대신 WinAPI 사용
 
 ScreensaverManager::ScreensaverManager(HWND hWnd, HINSTANCE hInst)
     : m_hMainWnd(hWnd),
-    m_hInstance(hInst),      // 인스턴스 저장
-    m_hSaverWnd(NULL),       // 세이버 핸들 초기화
-    m_isSaverActive(false)
+    m_hInstance(hInst),
+    m_hSaverWnd(NULL),
+    m_isSaverActive(false),
+    m_stopThread(false)
 {
     ResetActivityTimer();
-    RegisterSaverWndClass(); // 생성 시 세이버 윈도우 클래스 등록
+    RegisterSaverWndClass();
 }
 
 ScreensaverManager::~ScreensaverManager() {
+    StopSaverThread();
     if (m_hSaverWnd) {
-        // 매니저가 소멸할 때 세이버 윈도우도 닫음
         DestroyWindow(m_hSaverWnd);
     }
 }
@@ -23,52 +27,176 @@ void ScreensaverManager::RegisterSaverWndClass()
     WNDCLASSEX wc = { 0 };
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = GlobalSaverWndProc; // C-style 함수 연결
+    wc.lpfnWndProc = GlobalSaverWndProc;
     wc.hInstance = m_hInstance;
-    wc.hCursor = NULL; // 커서 숨김
-    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // 검은색 배경
-    wc.lpszClassName = SAVER_WND_CLASS_NAME; // #define으로 정의된 이름
+    wc.hCursor = NULL;
+    wc.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
+    wc.lpszClassName = SAVER_WND_CLASS_NAME;
 
     RegisterClassEx(&wc);
 }
 
 void ScreensaverManager::ShowSaverWindow()
 {
-    if (m_hSaverWnd != NULL) {
-        return; // 이미 켜져 있음
-    }
+    if (m_hSaverWnd != NULL) return;
 
     m_isSaverActive = true;
-    ShowCursor(FALSE); // 마우스 커서 숨기기
-
+    ShowCursor(FALSE);
     m_saverStartTime = GetTickCount64();
 
     int cxScreen = GetSystemMetrics(SM_CXSCREEN);
     int cyScreen = GetSystemMetrics(SM_CYSCREEN);
 
     m_hSaverWnd = CreateWindowEx(
-        WS_EX_TOPMOST | WS_EX_TOOLWINDOW,            // 항상 최상위
-        SAVER_WND_CLASS_NAME,     // 등록한 클래스 이름
+        WS_EX_TOPMOST | WS_EX_TOOLWINDOW,
+        SAVER_WND_CLASS_NAME,
         L"Saver Mode",
-        WS_POPUP | WS_VISIBLE,    // 팝업 스타일
-        0, 0, cxScreen, cyScreen, // 전체 화면 크기
-        NULL,                     // 부모 없음 (독립 윈도우)
-        NULL,
-        m_hInstance,
-        this                      // [중요] lpParam에 'this' 포인터 전달
+        WS_POPUP | WS_VISIBLE,
+        0, 0, cxScreen, cyScreen,
+        NULL, NULL, m_hInstance, this
     );
-    if (m_hSaverWnd != NULL) {
-        OutputDebugString(L"ERROR: Saver Window creation success\n");
-    }
-    if (m_hSaverWnd) {
-        SetWindowPos(m_hSaverWnd, HWND_TOPMOST,
-            0, 0, cxScreen, cyScreen,
-            SWP_SHOWWINDOW);
-        SetForegroundWindow(m_hSaverWnd);
-    }
 
+    if (m_hSaverWnd) {
+        SetWindowPos(m_hSaverWnd, HWND_TOPMOST, 0, 0, cxScreen, cyScreen, SWP_SHOWWINDOW);
+        SetForegroundWindow(m_hSaverWnd);
+        StartSaverThread(); // 스레드 시작
+    }
 }
 
+// --- [WinAPI] 파일 목록 가져오기 (C++14 호환) ---
+std::vector<std::wstring> ScreensaverManager::GetFileList(const std::wstring& directory) {
+    std::vector<std::wstring> files;
+    std::wstring searchPath = directory + L"*.dat"; // 검색 패턴
+    WIN32_FIND_DATA fd;
+    HANDLE hFind = ::FindFirstFile(searchPath.c_str(), &fd);
+
+    if (hFind != INVALID_HANDLE_VALUE) {
+        do {
+            // 디렉토리가 아닌 파일인 경우만 추가
+            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) {
+                files.push_back(directory + fd.cFileName);
+            }
+        } while (::FindNextFile(hFind, &fd));
+        ::FindClose(hFind);
+    }
+    return files;
+}
+
+void ScreensaverManager::StartSaverThread() {
+    StopSaverThread();
+    m_stopThread = false;
+    m_saverThread = std::thread(&ScreensaverManager::SaverLoop, this);
+}
+
+void ScreensaverManager::StopSaverThread() {
+    m_stopThread = true;
+    if (m_saverThread.joinable()) {
+        m_saverThread.join();
+    }
+}
+
+// --- 메인 로직: 파일 직접 읽기 및 그리기 ---
+void ScreensaverManager::SaverLoop() {
+
+    std::wstring dirPath = L"..\\file\\"; // 파일 경로
+
+    while (!m_stopThread) {
+        // 1. WinAPI로 파일 목록 가져오기
+        std::vector<std::wstring> files = GetFileList(dirPath);
+
+        // 파일이 없으면 잠시 대기
+        if (files.empty()) {
+            for (int i = 0; i < 20; i++) {
+                if (m_stopThread) return;
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+            continue;
+        }
+
+        // 2. 파일 순회
+        for (const auto& filePath : files) {
+            if (m_stopThread) return;
+
+            // 화면 지우기 (새 그림 시작 전)
+            HDC hdc_clear = GetDC(m_hSaverWnd);
+            if (hdc_clear) {
+                RECT rc;
+                GetClientRect(m_hSaverWnd, &rc);
+                FillRect(hdc_clear, &rc, (HBRUSH)GetStockObject(WHITE_BRUSH));
+                ReleaseDC(m_hSaverWnd, hdc_clear);
+            }
+
+            // -----------------------------------------------------------
+            // ★ 파일 직접 열기 및 파싱 (FileManager::Load 로직 이식)
+            // -----------------------------------------------------------
+            std::vector<Stroke> outStrokes;
+            std::wifstream loadFile(filePath);
+
+            if (loadFile.is_open()) {
+                size_t strokeCount;
+                loadFile >> strokeCount; // 스트로크 개수 읽기
+
+                for (size_t i = 0; i < strokeCount; ++i) {
+                    Stroke s;
+                    size_t pointCount;
+                    // FileManager와 동일한 순서로 데이터 읽기
+                    loadFile >> s.color >> s.thickness >> s.penStyle >> s.penWidth >> pointCount;
+
+                    for (size_t j = 0; j < pointCount; ++j) {
+                        Point p;
+                        loadFile >> p.x >> p.y >> p.timestamp;
+                        s.points.push_back(p);
+                    }
+                    outStrokes.push_back(s);
+                }
+                loadFile.close();
+            }
+            else {
+                continue; // 파일 열기 실패 시 다음 파일로
+            }
+            // -----------------------------------------------------------
+
+            // 3. 읽어온 데이터로 그리기 (Replay)
+            for (const auto& s : outStrokes) {
+                if (m_stopThread) break;
+
+                for (size_t i = 1; i < s.points.size(); ++i) {
+                    if (m_stopThread) break;
+
+                    Sleep(s.points[i].timestamp); // 타임스탬프 대기
+
+                    HDC hdc = GetDC(m_hSaverWnd);
+                    if (hdc) {
+                        SetGraphicsMode(hdc, GM_ADVANCED);
+                        LOGBRUSH lb = {};
+                        lb.lbStyle = BS_SOLID;
+                        lb.lbColor = s.color;
+
+                        HPEN pen = ExtCreatePen(
+                            PS_GEOMETRIC | s.penStyle,
+                            s.penWidth,
+                            &lb, 0, nullptr
+                        );
+
+                        HPEN oldPen = (HPEN)SelectObject(hdc, pen);
+                        MoveToEx(hdc, s.points[i - 1].x, s.points[i - 1].y, nullptr);
+                        LineTo(hdc, s.points[i].x, s.points[i].y);
+
+                        SelectObject(hdc, oldPen);
+                        DeleteObject(pen);
+                        ReleaseDC(m_hSaverWnd, hdc);
+                    }
+                }
+            }
+
+            // 한 그림 완료 후 대기
+            for (int i = 0; i < 20; i++) {
+                if (m_stopThread) break;
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
+        }
+    }
+}
 
 LRESULT CALLBACK GlobalSaverWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -77,68 +205,50 @@ LRESULT CALLBACK GlobalSaverWndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
     if (message == WM_NCCREATE) {
         CREATESTRUCT* cs = reinterpret_cast<CREATESTRUCT*>(lParam);
         pThis = static_cast<ScreensaverManager*>(cs->lpCreateParams);
-        // 'this' 포인터를 윈도우 데이터로 저장
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pThis);
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 
-    // 저장된 'this' 포인터 가져오기
     pThis = reinterpret_cast<ScreensaverManager*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
-
     if (pThis) {
-        // 멤버 함수로 메시지 전달
         return pThis->HandleSaverMessage(hWnd, message, wParam, lParam);
     }
-
     return DefWindowProc(hWnd, message, wParam, lParam);
 }
-
 
 LRESULT ScreensaverManager::HandleSaverMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     const ULONGLONG IGNORE_INPUT_DELAY = 1000;
-
-    // 현재 시간과 시작 시간 비교
     ULONGLONG currentTime = GetTickCount64();
 
-    // 1초 미만이라면 입력 이벤트를 무시합니다.
     if ((currentTime - m_saverStartTime) < IGNORE_INPUT_DELAY) {
-        // WM_DESTROY만 아니면 모든 입력 메시지를 무시하고 DefWindowProc으로 전달하지 않습니다.
         if (message != WM_DESTROY) return 0;
     }
+
     switch (message)
     {
-        // 어떤 입력이라도 감지되면 윈도우 종료
     case WM_KEYDOWN:
     case WM_MOUSEMOVE:
     case WM_LBUTTONDOWN:
     case WM_RBUTTONDOWN:
     case WM_MBUTTONDOWN:
-        ShowCursor(TRUE);     // 커서 다시 보이기
-        DestroyWindow(hWnd);  // 윈도우 파괴 (WM_DESTROY 호출)
+        ShowCursor(TRUE);
+        DestroyWindow(hWnd);
         break;
 
     case WM_PAINT:
     {
-        // 배경색 칠하기를 강제합니다.
         PAINTSTRUCT ps;
-        HDC hdc = BeginPaint(hWnd, &ps);
-
-        RECT clientRect;
-        GetClientRect(hWnd, &clientRect);
-
-        // 검은색 브러시를 가져와 클라이언트 영역을 채웁니다.
-        HBRUSH hBlackBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
-        FillRect(hdc, &clientRect, hBlackBrush);
-
+        BeginPaint(hWnd, &ps);
         EndPaint(hWnd, &ps);
-        return 0; // WM_PAINT 처리 완료
+        return 0;
     }
 
     case WM_DESTROY:
-        m_hSaverWnd = NULL;       // 핸들 초기화
-        m_isSaverActive = false;  // 상태 변경
-        ResetActivityTimer();     // 닫힌 시점부터 다시 타이머 시작
+        StopSaverThread(); // 종료 시 스레드 중단
+        m_hSaverWnd = NULL;
+        m_isSaverActive = false;
+        ResetActivityTimer();
         break;
 
     default:
@@ -147,16 +257,13 @@ LRESULT ScreensaverManager::HandleSaverMessage(HWND hWnd, UINT message, WPARAM w
     return 0;
 }
 
-//무활동 검사 (WM_TIMER에서 호출)
 void ScreensaverManager::CheckInactivity() {
-    // 이미 활성화 상태면 검사 안 함
-    if (m_isSaverActive.load()) {
-        return;
-    }
-    // 시스템 전체 유휴 시간 확인 (GetLastInputInfo)
+    if (m_isSaverActive.load()) return;
+
     LASTINPUTINFO lii = { 0 };
     lii.cbSize = sizeof(LASTINPUTINFO);
     DWORD dwSystemIdleTime = 0;
+
     if (GetLastInputInfo(&lii)) {
         dwSystemIdleTime = (DWORD)(GetTickCount64() - lii.dwTime);
     }
@@ -164,23 +271,17 @@ void ScreensaverManager::CheckInactivity() {
         dwSystemIdleTime = (DWORD)(GetTickCount64() - m_lastActivityTime);
     }
 
-    // 앱 내부 유휴 시간 확인 (isReplaying 등에 의해 갱신됨)
     ULONGLONG dwAppIdleTime = GetTickCount64() - m_lastActivityTime;
 
-    // 두 조건이 모두 임계값을 넘었는지 확인
     if ((dwSystemIdleTime > INACTIVITY_THRESHOLD) && (dwAppIdleTime > INACTIVITY_THRESHOLD)) {
-        std::cout << "Inactivity detected. Starting saver window..." << std::endl;
-        ShowSaverWindow(); // StartSaver() 대신 호출
+        ShowSaverWindow();
     }
 }
 
-//활동 감지 (WndProc에서 호출)
 void ScreensaverManager::ResetActivityTimer() {
-    //    어떤 경우든 마지막 활동 시간은 현재로 갱신
     m_lastActivityTime = GetTickCount64();
 }
 
-// 스크린세이버 활성화 상태 반환
 bool ScreensaverManager::IsSaverActive() const {
     return m_isSaverActive.load();
 }

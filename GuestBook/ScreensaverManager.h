@@ -1,7 +1,11 @@
 ﻿#pragma once
 #include <windows.h>
 #include <atomic>
-#define INACTIVITY_THRESHOLD 5000 //세이버 시간
+#include <thread>
+#include <vector>
+#include <string>
+#include "Stroke.h"
+#define INACTIVITY_THRESHOLD 60000 //세이버 시간
 
 #define SAVER_WND_CLASS_NAME L"IndependentSaverWindow"
 
@@ -15,6 +19,12 @@ public:
 
     void RegisterSaverWndClass(); // 세이버 윈도우 클래스 등록
     void ShowSaverWindow();       // 세이버 윈도우 생성
+
+
+    void StartSaverThread();     // 스레드 시작
+    void StopSaverThread();      // 스레드 종료
+    void SaverLoop();            // 실제 그리기를 수행하는 루프 함수
+
 
     // GlobalSaverWndProc에서 호출할 실제 메시지 핸들러
     LRESULT HandleSaverMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -40,5 +50,11 @@ private:
     HINSTANCE m_hInstance;
     ULONGLONG m_lastActivityTime; // 마지막 활동 시간 (GetTickCount64)
     std::atomic<bool> m_isSaverActive; // 스크린세이버 활성화 플래그
+
+    // 스레드 제어
+    std::atomic<bool> m_stopThread; // 스레드 종료 플래그
+    std::thread m_saverThread;      // 리플레이를 담당할 워커 스레드
+
+    std::vector<std::wstring> GetFileList(const std::wstring& directory);
 
 };
