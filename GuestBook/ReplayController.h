@@ -1,18 +1,20 @@
-#pragma once
+ï»¿#pragma once
 #include <vector>
 #include <WINDOWS.h>
 #include <thread>
 #include <functional>
 #include <atomic>
+#include <condition_variable>
+#include <mutex>
 #include "Stroke.h"
 
 using OnReplayFinishedCallback = std::function<void(const std::vector<Stroke>&)>;
 
 enum class ReplayState {
-	Stopped,  // ¿ÏÀü ¸ØÃã (ÃÊ±â »óÅÂ)
-	Running,  // Àç»ı Áß
-	Paused,   // ÀÏ½ÃÁ¤Áö
-	Stopping  // Áß´Ü ¿äÃ» (Clear ¹öÆ°)
+	Stopped,  // ì™„ì „ ë©ˆì¶¤ (ì´ˆê¸° ìƒíƒœ)
+	Running,  // ì¬ìƒ ì¤‘
+	Paused,   // ì¼ì‹œì •ì§€
+	Stopping  // ì¤‘ë‹¨ ìš”ì²­ (Clear ë²„íŠ¼)
 };
 
 class ReplayController
@@ -30,6 +32,8 @@ public:
 private:
 
 	std::thread replayThread;
+	std::condition_variable m_cv;
+	std::mutex m_cvMutex;
 	std::vector<Stroke> replayStrokes;
 
 	std::atomic<ReplayState> r_state = ReplayState::Stopped;

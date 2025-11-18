@@ -1,60 +1,64 @@
-#include "ReplayController.h"
+ï»¿#include "ReplayController.h"
 #include "Application.h"
 
 void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
-    /// ¸®ÇÃ·¹ÀÌ ½ÃÀÛ ½Ã, ±âÁ¸ ½º·¹µå ¿ÏÀü Á¾·á
+    /// ë¦¬í”Œë ˆì´ ì‹œì‘ ì‹œ, ê¸°ì¡´ ìŠ¤ë ˆë“œ ì™„ì „ ì¢…ë£Œ
     StopReplay();
 
-    r_state = ReplayState::Running; // "Àç»ı Áß"À¸·Î »óÅÂ º¯°æ
+    r_state = ReplayState::Running; // "ì¬ìƒ ì¤‘"ìœ¼ë¡œ ìƒíƒœ ë³€ê²½
 
-    std::thread tempThread([=]() { // 'this' Ä¸Ã³
-        // ¡Ú¡Ú¡Ú 1. ½º·¹µå ³»ºÎÀÇ ¹«ÇÑ ·çÇÁ ¡Ú¡Ú¡Ú
+    std::thread tempThread([=]() { // 'this' ìº¡ì²˜
+        // â˜…â˜…â˜… 1. ìŠ¤ë ˆë“œ ë‚´ë¶€ì˜ ë¬´í•œ ë£¨í”„ â˜…â˜…â˜…
         while (true) {
 
-            // --- 2. ·çÇÁ ½ÃÀÛ ½Ã 'Áß´Ü' È®ÀÎ ---
+            // --- 2. ë£¨í”„ ì‹œì‘ ì‹œ 'ì¤‘ë‹¨' í™•ì¸ ---
             if (r_state == ReplayState::Stopped) {
-                break; // ¹«ÇÑ ·çÇÁ Å»Ãâ
+                break; // ë¬´í•œ ë£¨í”„ íƒˆì¶œ
             }
 
-            // --- 3. 'ÀÏ½ÃÁ¤Áö' È®ÀÎ (´ë±â ·çÇÁ) ---
+            // --- 3. 'ì¼ì‹œì •ì§€' í™•ì¸ (ëŒ€ê¸° ë£¨í”„) ---
             while (r_state == ReplayState::Paused) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
-                // ÀÏ½ÃÁ¤Áö Áß¿¡µµ 'Áß´Ü' ¿äÃ»Àº È®ÀÎÇØ¾ß ÇÔ
+                // ì¼ì‹œì •ì§€ ì¤‘ì—ë„ 'ì¤‘ë‹¨' ìš”ì²­ì€ í™•ì¸í•´ì•¼ í•¨
                 if (r_state == ReplayState::Stopped) {
                     break;
                 }
             }
             if (r_state == ReplayState::Stopped) {
-                break; // ´ë±â ·çÇÁ Å»Ãâ ½Ã ´Ù½Ã È®ÀÎ
+                break; // ëŒ€ê¸° ë£¨í”„ íƒˆì¶œ ì‹œ ë‹¤ì‹œ í™•ì¸
             }
             HDC hdc_clear = GetDC(hDrawWnd);
             if (hdc_clear) {
                 RECT rc;
                 GetClientRect(hDrawWnd, &rc);
 
-                // (°¡Àå °£´ÜÇÑ ¹æ¹ı: À©µµ¿ì ±âº» ¹è°æ»ö ºê·¯½Ã »ç¿ë)
+                // (ê°€ì¥ ê°„ë‹¨í•œ ë°©ë²•: ìœˆë„ìš° ê¸°ë³¸ ë°°ê²½ìƒ‰ ë¸ŒëŸ¬ì‹œ ì‚¬ìš©)
                 HBRUSH hBgBrush = (HBRUSH)(COLOR_WINDOW + 1);
                 FillRect(hdc_clear, &rc, hBgBrush);
 
                 ReleaseDC(hDrawWnd, hdc_clear);
             }
-            // --- 4. ÇÑ »çÀÌÅ¬ Àç»ı (±âÁ¸ ·ÎÁ÷) ---
+            // --- 4. í•œ ì‚¬ì´í´ ì¬ìƒ (ê¸°ì¡´ ë¡œì§) ---
             for (const auto& s : copyStroke) {
                 for (size_t i = 1; i < s.points.size(); ++i) {
 
-                    // ¡Ú 5. ¸Å ½ºÅÜ¸¶´Ù Áß´Ü/ÀÏ½ÃÁ¤Áö È®ÀÎ (ºü¸¥ ¹İÀÀ)
+                    // â˜… 5. ë§¤ ìŠ¤í…ë§ˆë‹¤ ì¤‘ë‹¨/ì¼ì‹œì •ì§€ í™•ì¸ (ë¹ ë¥¸ ë°˜ì‘)
                     if (r_state == ReplayState::Stopped) break;
                     while (r_state == ReplayState::Paused) {
-                        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                        std::unique_lock<std::mutex> lock(m_cvMutex);
+                        // 100ms ëŒ€ê¸°í•˜ë˜, Stopped ë˜ë©´ ì¦‰ì‹œ ê¹¸
+                        m_cv.wait_for(lock, std::chrono::milliseconds(100), [this] {
+                            return r_state == ReplayState::Stopped; 
+                            });
                         if (r_state == ReplayState::Stopped) break;
                     }
                     if (r_state == ReplayState::Stopped) break;
 
-                    // (±âÁ¸ GDI ·ÎÁ÷)
+                    // (ê¸°ì¡´ GDI ë¡œì§)
                     Sleep(s.points[i].timestamp);
                         
                     HDC hdc = GetDC(hDrawWnd);
-                    SetGraphicsMode(hdc, GM_ADVANCED); /// DASH, DOT ¼± Á¾·ùÀÇ µÎ²² 1pxÀÌ»ó »ç¿ëÇÏ±â À§ÇØ ¼±¾ğ
+                    SetGraphicsMode(hdc, GM_ADVANCED); /// DASH, DOT ì„  ì¢…ë¥˜ì˜ ë‘ê»˜ 1pxì´ìƒ ì‚¬ìš©í•˜ê¸° ìœ„í•´ ì„ ì–¸
                     LOGBRUSH lb = {};
                     lb.lbStyle = BS_SOLID;
                     lb.lbColor = s.color;
@@ -74,17 +78,17 @@ void ReplayController::StartReplay(HWND hDrawWnd, vector<Stroke> copyStroke) {
                     DeleteObject(pen);
                     ReleaseDC(hDrawWnd, hdc);
                 }
-                if (r_state == ReplayState::Stopped) break; // ¹Ù±ùÂÊ for ·çÇÁ Å»Ãâ
+                if (r_state == ReplayState::Stopped) break; // ë°”ê¹¥ìª½ for ë£¨í”„ íƒˆì¶œ
             }
-            if (r_state == ReplayState::Stopped) break;
-            Sleep(2000);
+            {
+                std::unique_lock<std::mutex> lock(m_cvMutex);
+                m_cv.wait_for(lock, std::chrono::milliseconds(2000), [this] { // Sleep ëŒ€ì²´ ëŒ€ê¸°í•˜ì§€ë§Œ stoppedê°€ ë˜ë©´ ë„˜ì–´ê°
+                    return r_state == ReplayState::Stopped;
+                    });
+            }
 
-            // (ÇÑ »çÀÌÅ¬ Àç»ı ³¡)
+            // (í•œ ì‚¬ì´í´ ì¬ìƒ ë)
         }
-
-        // --- 6. ¹«ÇÑ ·çÇÁ Å»Ãâ (Áß´ÜµÊ) ---
-
-        // ½º·¹µå ÃÖÁ¾ Á¾·á
         r_state = ReplayState::Stopped;
         });
     replayThread = std::move(tempThread);
@@ -103,18 +107,14 @@ void ReplayController::ToggleReplay() {
 }
 
 void ReplayController::StopReplay() {
-    // 1. (¼öÁ¤) Stopped°¡ ¾Æ´Ï¸é ½º·¹µå¸¦ Á¾·á½ÃÅ´
     if (r_state != ReplayState::Stopped) {
-        r_state = ReplayState::Stopped; // 2. ½º·¹µå¿¡ 'Áß´Ü' ½ÅÈ£ Àü¼Û
+        r_state = ReplayState::Stopped;
+        m_cv.notify_all(); // ê¹¨ìš°ê¸°
     }
 
-    // 3. ¡Ú ½º·¹µå°¡ À¯È¿ÇÏ°í, Á¶ÀÎ °¡´É(½ÇÇà Áß)ÇÑÁö È®ÀÎ
     if (replayThread.joinable()) {
-        // 4. ¡Ú ½º·¹µå°¡ ¿ÏÀüÈ÷ Á¾·áµÉ ¶§±îÁö UI ½º·¹µå°¡ ¿©±â¼­ '´ë±â' (Blocking)
-        replayThread.join();
+        replayThread.join(); // ì¢…ë£ŒëŒ€ê¸°
     }
 
-    // (join()ÀÌ ³¡³ª¸é ½º·¹µå´Â 100% Á¾·áµÈ »óÅÂ)
-    r_state = ReplayState::Stopped; // (È®ÀÎÂ÷ »óÅÂ º¯°æ)
-    // (isReplaying = false; Á¦°ÅµÊ)
+    r_state = ReplayState::Stopped;
 }
