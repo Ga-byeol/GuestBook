@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <windows.h>
 #include "MainWindow.h"
 #include "DrawWindow.h"
@@ -37,28 +37,30 @@ public:
 
             replayController.StopReplay();
 
-            drawWindow.ClearAll();
-
             fileManager.StartLoad(drawWindow.GetHwnd(), loadStrokes, drawWindow.GetHwnd());
 
-            if (!loadStrokes.empty())
+            if (loadStrokes.empty())
             {
-                drawWindow.SetStrokes(loadStrokes);
-
-                InvalidateRect(drawWindow.GetHwnd(), nullptr, TRUE);
-                UpdateWindow(drawWindow.GetHwnd());
+                return 0;
             }
+
+            drawWindow.ClearAll();
+            drawWindow.SetStrokes(loadStrokes);
+
+            InvalidateRect(drawWindow.GetHwnd(), nullptr, TRUE);
+            UpdateWindow(drawWindow.GetHwnd());
 
             drawWindow.setReplaying(true);
             replayController.StartReplay(drawWindow.GetHwnd(), loadStrokes);
             });
         /// 재생
         btnCtrl.RegisterHandler(REPLAY, [&]() {
+            if (drawWindow.GetDrawnStrokes().empty()) return 0;
             
             ReplayState state = replayController.GetState();
             HWND hReplayBtn = toolWindow.GetReplayHwnd();
             HICON hIcon = nullptr;
-            if (state == ReplayState::Stopped) {
+            if (state == ReplayState::Stopped ) {
 
                 HWND hDrawWnd = drawWindow.GetHwnd();
                 vector<Stroke> strokesCopy = drawWindow.GetDrawnStrokes();
@@ -74,16 +76,31 @@ public:
                 hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP));
                 SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
             }
-            else {
+            else if (state == ReplayState::Running) {
+                /// 일시정지
                 replayController.ToggleReplay();
-                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP));
+                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_REPLAY));  /// 재생 아이콘
+                SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+            }
+            else if (state == ReplayState::Paused) {
+                /// 재개
+                replayController.ToggleReplay();
+                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP)); /// 일시정지 아이콘
                 SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
             }
         });
+        /// 재생 중단
+        btnCtrl.RegisterHandler(STOP, [&]() {
+            if (!replayController.IsReplaying()) return 0;
+            replayController.StopReplay();
+            drawWindow.ClearAll();
+
+            drawWindow.setReplaying(false);
+            
+            });
         /// 화면 초기화
         btnCtrl.RegisterHandler(CLEAR, [&]() {
-            drawWindow.setReplaying(false);
-            replayController.StopReplay();
+            if (replayController.IsReplaying()) return 0;
             drawWindow.ClearAll();
         });
         /// 지우기
@@ -104,23 +121,44 @@ public:
         /// 펜
         btnCtrl.RegisterHandler(BRUSH, [&]() {
             penBox.setDrawWindow(&drawWindow);
+            penBox.PenWidth = drawWindow.GetCurrentPenWidth();
             penBox.ShowDialog();
         });
         /// 색상
         btnCtrl.RegisterHandler(COLOR, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
                 colorBox.Show();
                 drawWindow.setSelectedColor(colorBox.GetColor());
         });
         btnCtrl.RegisterHandler(BLACK, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
             drawWindow.setSelectedColor(RGB(0, 0, 0));
         });
         btnCtrl.RegisterHandler(RED, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
             drawWindow.setSelectedColor(RGB(255, 0, 0));
             });
         btnCtrl.RegisterHandler(GREEN, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
             drawWindow.setSelectedColor(RGB(153, 255, 51));
             });
         btnCtrl.RegisterHandler(BLUE, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing();
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+            }
             drawWindow.setSelectedColor(RGB(173, 216, 230));
             });
     }

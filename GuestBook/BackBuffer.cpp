@@ -1,4 +1,4 @@
-#include "BackBuffer.h"
+﻿#include "BackBuffer.h"
 
 BackBuffer::~BackBuffer() {
 	ReleaseBuffer();

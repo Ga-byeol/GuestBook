@@ -11,8 +11,8 @@ public:
 	void setDrawWindow(DrawWindow* dw) { drawWindow = dw; };
 	int PenNum = 0;
 	int PenWidth = 1;
-	int LastPenNum;
-	int LastPenWidth; 
+	int LastPenNum = 0;
+	int LastPenWidth = 0; 
 
 private:
 	HINSTANCE hInstance = nullptr;

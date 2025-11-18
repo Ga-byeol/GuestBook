@@ -8,8 +8,6 @@
 
 using OnReplayFinishedCallback = std::function<void(const std::vector<Stroke>&)>;
 
-class Application;
-
 enum class ReplayState {
 	Stopped,  // 완전 멈춤 (초기 상태)
 	Running,  // 재생 중
@@ -20,21 +18,21 @@ enum class ReplayState {
 class ReplayController
 {
 public:
+	  ~ReplayController() {
+		  StopReplay();
+	  }
 	void StartReplay(HWND drawWindowHwnd, std::vector<Stroke> copyStroke);
-	bool IsReplaying() const { return isReplaying; }
+	bool IsReplaying() const { return r_state != ReplayState::Stopped;}
 	ReplayState GetState() const { return r_state; }
 	void ToggleReplay();
 	void StopReplay();
 
 private:
 
-
-	Application* app;
 	std::thread replayThread;
 	std::vector<Stroke> replayStrokes;
 
 	std::atomic<ReplayState> r_state = ReplayState::Stopped;
 	bool isPaused = false;
-	bool isReplaying = false;
 	bool stopRequested = false;
 };

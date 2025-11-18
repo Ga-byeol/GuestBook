@@ -184,3 +184,4 @@ void ScreensaverManager::ResetActivityTimer() {
 bool ScreensaverManager::IsSaverActive() const {
     return m_isSaverActive.load();
 }
+

@@ -27,6 +27,9 @@ void Sidebar::SetSlider(HWND hWnd, HINSTANCE hInstance)
 	SendMessage(hSlider, TBM_SETRANGE,
 		(WPARAM)TRUE,                   // (TRUE = Redraw)
 		(LPARAM)MAKELONG(1, 50));       // (MAKELONG(Min, Max))
+	SendMessage(hSlider, TBM_SETPOS,
+		(WPARAM)TRUE,
+		(LPARAM)INITIAL_VALUE);
 }
 
 void Sidebar::SetStroke(int s) {

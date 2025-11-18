@@ -70,7 +70,7 @@ LRESULT MainWindow::HandleMessage(UINT msg, WPARAM wParam, LPARAM lParam) {
 
             if (LOWORD(wParam) == TB_THUMBTRACK || LOWORD(wParam) == TB_ENDTRACK) {
 
-                int newPenWidth = SendMessage(hSlider, TBM_GETPOS, 0, 0);
+                int newPenWidth = (int) SendMessage(hSlider, TBM_GETPOS, 0, 0);
 
                 drawWindow->SetPenWidth(newPenWidth);
             }

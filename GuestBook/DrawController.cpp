@@ -38,7 +38,6 @@ void DrawController::DrawStrokes(HDC hdc,
 }
 
 void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidth, COLORREF color) { /// 점과 점을 이어주는 역할
-    if (stroke.points.size() < 2) return; 
 
     LOGBRUSH style = {};
     style.lbStyle = BS_SOLID;
@@ -46,10 +45,6 @@ void DrawController::DrawLatestStroke(HDC hdc, const Stroke& stroke, int penWidt
     HPEN pen = ExtCreatePen(PS_GEOMETRIC | stroke.penStyle, stroke.penWidth,&style,0,nullptr);
     HGDIOBJ oldPen = SelectObject(hdc, pen);
     HGDIOBJ oldBrush = SelectObject(hdc, GetStockObject(HOLLOW_BRUSH));
-
-    
-    const Point& prevPoint = stroke.points[stroke.points.size() - 2];
-    const Point& lastPoint = stroke.points.back();
 
     DrawPointsLine(hdc, stroke.points);
 

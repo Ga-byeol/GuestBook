@@ -13,7 +13,6 @@ public:
     void AddPoint(Point p);
     void AddStroke();
 
-    //const std::vector<Stroke>& Strokes() const { return strokes; }
     const Stroke* Current() const { return recording ? &current : nullptr; }
     bool IsRecording() const { return recording; }
 
@@ -21,7 +20,7 @@ public:
     const std::vector<Stroke>& Strokes() const { return strokes; }
 private:
     std::mutex mtx;
-    DWORD lastTime;
+    DWORD lastTime{};
     std::vector<Stroke> strokes;
     Stroke current;
     bool recording = false;
