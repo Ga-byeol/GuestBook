@@ -76,9 +76,16 @@ public:
                 hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP));
                 SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
             }
-            else {
+            else if (state == ReplayState::Running) {
+                /// 일시정지
                 replayController.ToggleReplay();
-                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP));
+                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_REPLAY));  /// 재생 아이콘
+                SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
+            }
+            else if (state == ReplayState::Paused) {
+                /// 재개
+                replayController.ToggleReplay();
+                hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_STOP)); /// 일시정지 아이콘
                 SendMessage(hReplayBtn, STM_SETIMAGE, IMAGE_ICON, (LPARAM)hIcon);
             }
         });
