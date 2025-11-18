@@ -3,17 +3,17 @@
 
 ScreensaverManager::ScreensaverManager(HWND hWnd, HINSTANCE hInst)
     : m_hMainWnd(hWnd),
-    m_hInstance(hInst),      // ÀÎ½ºÅÏ½º ÀúÀå
-    m_hSaverWnd(NULL),       // ¼¼ÀÌ¹ö ÇÚµé ÃÊ±âÈ­
+    m_hInstance(hInst),      // ì¸ìŠ¤í„´ìŠ¤ ì €ì¥
+    m_hSaverWnd(NULL),       // ì„¸ì´ë²„ í•¸ë“¤ ì´ˆê¸°í™”
     m_isSaverActive(false)
 {
     ResetActivityTimer();
-    RegisterSaverWndClass(); // »ı¼º ½Ã ¼¼ÀÌ¹ö À©µµ¿ì Å¬·¡½º µî·Ï
+    RegisterSaverWndClass(); // ìƒì„± ì‹œ ì„¸ì´ë²„ ìœˆë„ìš° í´ë˜ìŠ¤ ë“±ë¡
 }
 
 ScreensaverManager::~ScreensaverManager() {
     if (m_hSaverWnd) {
-        // ¸Å´ÏÀú°¡ ¼Ò¸êÇÒ ¶§ ¼¼ÀÌ¹ö À©µµ¿ìµµ ´İÀ½
+        // ë§¤ë‹ˆì €ê°€ ì†Œë©¸í•  ë•Œ ì„¸ì´ë²„ ìœˆë„ìš°ë„ ë‹«ìŒ
         DestroyWindow(m_hSaverWnd);
     }
 }
@@ -23,11 +23,11 @@ void ScreensaverManager::RegisterSaverWndClass()
     WNDCLASSEX wc = { 0 };
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = GlobalSaverWndProc; // C-style ÇÔ¼ö ¿¬°á
+    wc.lpfnWndProc = GlobalSaverWndProc; // C-style í•¨ìˆ˜ ì—°ê²°
     wc.hInstance = m_hInstance;
-    wc.hCursor = NULL; // Ä¿¼­ ¼û±è
-    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // °ËÀº»ö ¹è°æ
-    wc.lpszClassName = SAVER_WND_CLASS_NAME; // #defineÀ¸·Î Á¤ÀÇµÈ ÀÌ¸§
+    wc.hCursor = NULL; // ì»¤ì„œ ìˆ¨ê¹€
+    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH); // ê²€ì€ìƒ‰ ë°°ê²½
+    wc.lpszClassName = SAVER_WND_CLASS_NAME; // #defineìœ¼ë¡œ ì •ì˜ëœ ì´ë¦„
 
     RegisterClassEx(&wc);
 }
@@ -35,11 +35,11 @@ void ScreensaverManager::RegisterSaverWndClass()
 void ScreensaverManager::ShowSaverWindow()
 {
     if (m_hSaverWnd != NULL) {
-        return; // ÀÌ¹Ì ÄÑÁ® ÀÖÀ½
+        return; // ì´ë¯¸ ì¼œì ¸ ìˆìŒ
     }
 
     m_isSaverActive = true;
-    ShowCursor(FALSE); // ¸¶¿ì½º Ä¿¼­ ¼û±â±â
+    ShowCursor(FALSE); // ë§ˆìš°ìŠ¤ ì»¤ì„œ ìˆ¨ê¸°ê¸°
 
     m_saverStartTime = GetTickCount64();
 
@@ -47,15 +47,15 @@ void ScreensaverManager::ShowSaverWindow()
     int cyScreen = GetSystemMetrics(SM_CYSCREEN);
 
     m_hSaverWnd = CreateWindowEx(
-        WS_EX_TOPMOST | WS_EX_TOOLWINDOW,            // Ç×»ó ÃÖ»óÀ§
-        SAVER_WND_CLASS_NAME,     // µî·ÏÇÑ Å¬·¡½º ÀÌ¸§
+        WS_EX_TOPMOST | WS_EX_TOOLWINDOW,            // í•­ìƒ ìµœìƒìœ„
+        SAVER_WND_CLASS_NAME,     // ë“±ë¡í•œ í´ë˜ìŠ¤ ì´ë¦„
         L"Saver Mode",
-        WS_POPUP | WS_VISIBLE,    // ÆË¾÷ ½ºÅ¸ÀÏ
-        0, 0, cxScreen, cyScreen, // ÀüÃ¼ È­¸é Å©±â
-        NULL,                     // ºÎ¸ğ ¾øÀ½ (µ¶¸³ À©µµ¿ì)
+        WS_POPUP | WS_VISIBLE,    // íŒì—… ìŠ¤íƒ€ì¼
+        0, 0, cxScreen, cyScreen, // ì „ì²´ í™”ë©´ í¬ê¸°
+        NULL,                     // ë¶€ëª¨ ì—†ìŒ (ë…ë¦½ ìœˆë„ìš°)
         NULL,
         m_hInstance,
-        this                      // [Áß¿ä] lpParam¿¡ 'this' Æ÷ÀÎÅÍ Àü´Ş
+        this                      // [ì¤‘ìš”] lpParamì— 'this' í¬ì¸í„° ì „ë‹¬
     );
     if (m_hSaverWnd != NULL) {
         OutputDebugString(L"ERROR: Saver Window creation success\n");
@@ -77,16 +77,16 @@ LRESULT CALLBACK GlobalSaverWndProc(HWND hWnd, UINT message, WPARAM wParam, LPAR
     if (message == WM_NCCREATE) {
         CREATESTRUCT* cs = reinterpret_cast<CREATESTRUCT*>(lParam);
         pThis = static_cast<ScreensaverManager*>(cs->lpCreateParams);
-        // 'this' Æ÷ÀÎÅÍ¸¦ À©µµ¿ì µ¥ÀÌÅÍ·Î ÀúÀå
+        // 'this' í¬ì¸í„°ë¥¼ ìœˆë„ìš° ë°ì´í„°ë¡œ ì €ì¥
         SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)pThis);
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 
-    // ÀúÀåµÈ 'this' Æ÷ÀÎÅÍ °¡Á®¿À±â
+    // ì €ì¥ëœ 'this' í¬ì¸í„° ê°€ì ¸ì˜¤ê¸°
     pThis = reinterpret_cast<ScreensaverManager*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 
     if (pThis) {
-        // ¸â¹ö ÇÔ¼ö·Î ¸Ş½ÃÁö Àü´Ş
+        // ë©¤ë²„ í•¨ìˆ˜ë¡œ ë©”ì‹œì§€ ì „ë‹¬
         return pThis->HandleSaverMessage(hWnd, message, wParam, lParam);
     }
 
@@ -98,47 +98,47 @@ LRESULT ScreensaverManager::HandleSaverMessage(HWND hWnd, UINT message, WPARAM w
 {
     const ULONGLONG IGNORE_INPUT_DELAY = 1000;
 
-    // ÇöÀç ½Ã°£°ú ½ÃÀÛ ½Ã°£ ºñ±³
+    // í˜„ì¬ ì‹œê°„ê³¼ ì‹œì‘ ì‹œê°„ ë¹„êµ
     ULONGLONG currentTime = GetTickCount64();
 
-    // 1ÃÊ ¹Ì¸¸ÀÌ¶ó¸é ÀÔ·Â ÀÌº¥Æ®¸¦ ¹«½ÃÇÕ´Ï´Ù.
+    // 1ì´ˆ ë¯¸ë§Œì´ë¼ë©´ ì…ë ¥ ì´ë²¤íŠ¸ë¥¼ ë¬´ì‹œí•©ë‹ˆë‹¤.
     if ((currentTime - m_saverStartTime) < IGNORE_INPUT_DELAY) {
-        // WM_DESTROY¸¸ ¾Æ´Ï¸é ¸ğµç ÀÔ·Â ¸Ş½ÃÁö¸¦ ¹«½ÃÇÏ°í DefWindowProcÀ¸·Î Àü´ŞÇÏÁö ¾Ê½À´Ï´Ù.
+        // WM_DESTROYë§Œ ì•„ë‹ˆë©´ ëª¨ë“  ì…ë ¥ ë©”ì‹œì§€ë¥¼ ë¬´ì‹œí•˜ê³  DefWindowProcìœ¼ë¡œ ì „ë‹¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤.
         if (message != WM_DESTROY) return 0;
     }
     switch (message)
     {
-        // ¾î¶² ÀÔ·ÂÀÌ¶óµµ °¨ÁöµÇ¸é À©µµ¿ì Á¾·á
+        // ì–´ë–¤ ì…ë ¥ì´ë¼ë„ ê°ì§€ë˜ë©´ ìœˆë„ìš° ì¢…ë£Œ
     case WM_KEYDOWN:
     case WM_MOUSEMOVE:
     case WM_LBUTTONDOWN:
     case WM_RBUTTONDOWN:
     case WM_MBUTTONDOWN:
-        ShowCursor(TRUE);     // Ä¿¼­ ´Ù½Ã º¸ÀÌ±â
-        DestroyWindow(hWnd);  // À©µµ¿ì ÆÄ±« (WM_DESTROY È£Ãâ)
+        ShowCursor(TRUE);     // ì»¤ì„œ ë‹¤ì‹œ ë³´ì´ê¸°
+        DestroyWindow(hWnd);  // ìœˆë„ìš° íŒŒê´´ (WM_DESTROY í˜¸ì¶œ)
         break;
 
     case WM_PAINT:
     {
-        // ¹è°æ»ö Ä¥ÇÏ±â¸¦ °­Á¦ÇÕ´Ï´Ù.
+        // ë°°ê²½ìƒ‰ ì¹ í•˜ê¸°ë¥¼ ê°•ì œí•©ë‹ˆë‹¤.
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hWnd, &ps);
 
         RECT clientRect;
         GetClientRect(hWnd, &clientRect);
 
-        // °ËÀº»ö ºê·¯½Ã¸¦ °¡Á®¿Í Å¬¶óÀÌ¾ğÆ® ¿µ¿ªÀ» Ã¤¿ó´Ï´Ù.
+        // ê²€ì€ìƒ‰ ë¸ŒëŸ¬ì‹œë¥¼ ê°€ì ¸ì™€ í´ë¼ì´ì–¸íŠ¸ ì˜ì—­ì„ ì±„ì›ë‹ˆë‹¤.
         HBRUSH hBlackBrush = (HBRUSH)GetStockObject(BLACK_BRUSH);
         FillRect(hdc, &clientRect, hBlackBrush);
 
         EndPaint(hWnd, &ps);
-        return 0; // WM_PAINT Ã³¸® ¿Ï·á
+        return 0; // WM_PAINT ì²˜ë¦¬ ì™„ë£Œ
     }
 
     case WM_DESTROY:
-        m_hSaverWnd = NULL;       // ÇÚµé ÃÊ±âÈ­
-        m_isSaverActive = false;  // »óÅÂ º¯°æ
-        ResetActivityTimer();     // ´İÈù ½ÃÁ¡ºÎÅÍ ´Ù½Ã Å¸ÀÌ¸Ó ½ÃÀÛ
+        m_hSaverWnd = NULL;       // í•¸ë“¤ ì´ˆê¸°í™”
+        m_isSaverActive = false;  // ìƒíƒœ ë³€ê²½
+        ResetActivityTimer();     // ë‹«íŒ ì‹œì ë¶€í„° ë‹¤ì‹œ íƒ€ì´ë¨¸ ì‹œì‘
         break;
 
     default:
@@ -147,13 +147,13 @@ LRESULT ScreensaverManager::HandleSaverMessage(HWND hWnd, UINT message, WPARAM w
     return 0;
 }
 
-//¹«È°µ¿ °Ë»ç (WM_TIMER¿¡¼­ È£Ãâ)
+//ë¬´í™œë™ ê²€ì‚¬ (WM_TIMERì—ì„œ í˜¸ì¶œ)
 void ScreensaverManager::CheckInactivity() {
-    // ÀÌ¹Ì È°¼ºÈ­ »óÅÂ¸é °Ë»ç ¾È ÇÔ
+    // ì´ë¯¸ í™œì„±í™” ìƒíƒœë©´ ê²€ì‚¬ ì•ˆ í•¨
     if (m_isSaverActive.load()) {
         return;
     }
-    // ½Ã½ºÅÛ ÀüÃ¼ À¯ÈŞ ½Ã°£ È®ÀÎ (GetLastInputInfo)
+    // ì‹œìŠ¤í…œ ì „ì²´ ìœ íœ´ ì‹œê°„ í™•ì¸ (GetLastInputInfo)
     LASTINPUTINFO lii = { 0 };
     lii.cbSize = sizeof(LASTINPUTINFO);
     DWORD dwSystemIdleTime = 0;
@@ -164,24 +164,23 @@ void ScreensaverManager::CheckInactivity() {
         dwSystemIdleTime = (DWORD)(GetTickCount64() - m_lastActivityTime);
     }
 
-    // ¾Û ³»ºÎ À¯ÈŞ ½Ã°£ È®ÀÎ (isReplaying µî¿¡ ÀÇÇØ °»½ÅµÊ)
+    // ì•± ë‚´ë¶€ ìœ íœ´ ì‹œê°„ í™•ì¸ (isReplaying ë“±ì— ì˜í•´ ê°±ì‹ ë¨)
     ULONGLONG dwAppIdleTime = GetTickCount64() - m_lastActivityTime;
 
-    // µÎ Á¶°ÇÀÌ ¸ğµÎ ÀÓ°è°ªÀ» ³Ñ¾ú´ÂÁö È®ÀÎ
+    // ë‘ ì¡°ê±´ì´ ëª¨ë‘ ì„ê³„ê°’ì„ ë„˜ì—ˆëŠ”ì§€ í™•ì¸
     if ((dwSystemIdleTime > INACTIVITY_THRESHOLD) && (dwAppIdleTime > INACTIVITY_THRESHOLD)) {
         std::cout << "Inactivity detected. Starting saver window..." << std::endl;
-        ShowSaverWindow(); // StartSaver() ´ë½Å È£Ãâ
+        ShowSaverWindow(); // StartSaver() ëŒ€ì‹  í˜¸ì¶œ
     }
 }
 
-//È°µ¿ °¨Áö (WndProc¿¡¼­ È£Ãâ)
+//í™œë™ ê°ì§€ (WndProcì—ì„œ í˜¸ì¶œ)
 void ScreensaverManager::ResetActivityTimer() {
-    //    ¾î¶² °æ¿ìµç ¸¶Áö¸· È°µ¿ ½Ã°£Àº ÇöÀç·Î °»½Å
+    //    ì–´ë–¤ ê²½ìš°ë“  ë§ˆì§€ë§‰ í™œë™ ì‹œê°„ì€ í˜„ì¬ë¡œ ê°±ì‹ 
     m_lastActivityTime = GetTickCount64();
 }
 
-// ½ºÅ©¸°¼¼ÀÌ¹ö È°¼ºÈ­ »óÅÂ ¹İÈ¯
+// ìŠ¤í¬ë¦°ì„¸ì´ë²„ í™œì„±í™” ìƒíƒœ ë°˜í™˜
 bool ScreensaverManager::IsSaverActive() const {
     return m_isSaverActive.load();
 }
-
