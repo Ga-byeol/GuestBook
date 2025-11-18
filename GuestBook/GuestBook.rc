@@ -1,4 +1,4 @@
-// Microsoft Visual C++ generated resource script.
+﻿// Microsoft Visual C++ generated resource script.
 //
 #pragma code_page(65001)
 
@@ -50,7 +50,7 @@ IDI_PEN                 ICON                    "ImageResource\\Pen.ico"
 
 IDI_REPLAY              ICON                    "ImageResource\\Replay.ico"
 
-IDI_SAVE                ICON                    "C:\\새 폴더\\GuestBook\\GuestBook\\ImageResource\\Save.ico"
+IDI_SAVE                ICON                    "ImageResource\\Save.ico"
 
 IDI_STOP                ICON                    "ImageResource\\stop.ico"
 
