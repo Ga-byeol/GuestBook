@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <windows.h>
 #include "ToolWindow.h"
 #include "BackBuffer.h"
@@ -13,7 +13,7 @@ public:
 
 	void SetDrawWindow(DrawWindow* draw) { drawWindow = draw; }
 	void SetToolWindow(ToolWindow* tool) { toolWindow = tool; }
-
+	void ResetSideBar() { sideBar.Reset(); }
 	void Show(int nCmdShow = SW_SHOW);
 	void ResizeChildren();
 

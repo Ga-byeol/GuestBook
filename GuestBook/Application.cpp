@@ -1,4 +1,4 @@
-#include "Application.h"
+ï»¿#include "Application.h"
 
 bool Application::Init(HINSTANCE hInst, int nCmdShow) {
 
@@ -14,7 +14,7 @@ bool Application::Init(HINSTANCE hInst, int nCmdShow) {
         return false;
 
 
-    // ¼­·Î ¿¬°á
+    // ì„œë¡œ ì—°ê²°
     mainWindow.SetDrawWindow(&drawWindow);
     mainWindow.SetToolWindow(&toolWindow);
 

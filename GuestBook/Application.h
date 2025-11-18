@@ -28,6 +28,10 @@ public:
         auto& btnCtrl = toolWindow.GetButtonController();
         /// 새파일
         btnCtrl.RegisterHandler(NEW, [&]() {
+            drawWindow.Reset();
+            mainWindow.ResetSideBar();
+            setReplayingStop();
+
             });
         /// 저장
         btnCtrl.RegisterHandler(SAVE, [&]() {

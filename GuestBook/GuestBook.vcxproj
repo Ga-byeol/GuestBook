@@ -169,7 +169,6 @@
     <ResourceCompile Include="GuestBook.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\Users\김용현\OneDrive\Desktop\stop.ico" />
     <Image Include="..\ImageResource\Logo.ico" />
     <Image Include="GuestBook.ico" />
     <Image Include="ImageResource\black.ico" />

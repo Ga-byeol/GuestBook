@@ -347,4 +347,5 @@
 		currentPenStyle = PS_SOLID;
 		erasing = false;
 		isReplaying = false;
+		InvalidateRect(hwnd, NULL, TRUE);
 	}
