@@ -125,6 +125,12 @@ public:
         });
         /// 펜
         btnCtrl.RegisterHandler(BRUSH, [&]() {
+            if (drawWindow.GetErasing()) {
+                drawWindow.setErasing(); 
+                drawWindow.setSelectedColor(drawWindow.lastSelectedColor);
+                drawWindow.SetPenStyle(penBox.LastPenNum);
+
+            }
             penBox.setDrawWindow(&drawWindow);
             penBox.PenWidth = drawWindow.GetCurrentPenWidth();
             penBox.ShowDialog();
