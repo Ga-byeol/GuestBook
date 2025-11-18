@@ -1,4 +1,4 @@
-#include "PenController.h"
+ï»¿#include "PenController.h"
 #include "DrawWindow.h"
 #include "resource.h"
 #include <string>
@@ -23,16 +23,25 @@ void PenController::ShowDialog()
     );
 }
 
+void PenController::Reset()
+{
+    int PenNum = 0;
+    int PenWidth = 1;
+    int LastPenNum = 0;
+    int LastPenWidth = 1;
+
+}
+
 INT_PTR CALLBACK PenController::DialogMsg(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 
     switch (uMsg)
     {
         {
-    case WM_INITDIALOG: /// ´ÙÀÌ¾ó·Î±× »ı¼º ½Ã ¿î¿µÃ¼Á¦°¡ º¸³»´Â ¸Ş¼¼Áö
-        SetWindowLongPtr(hwndDlg, GWLP_USERDATA, lParam); /// ¸Ş¼¼Áö¸¦ ¹ŞÀ¸¸é ÄÁÆ®·Ñ ÃÊ±âÈ­, ±âº»°ª ¼¼ÆÃ, °´Ã¼ ¿¬°á 
+    case WM_INITDIALOG: /// ë‹¤ì´ì–¼ë¡œê·¸ ìƒì„± ì‹œ ìš´ì˜ì²´ì œê°€ ë³´ë‚´ëŠ” ë©”ì„¸ì§€
+        SetWindowLongPtr(hwndDlg, GWLP_USERDATA, lParam); /// ë©”ì„¸ì§€ë¥¼ ë°›ìœ¼ë©´ ì»¨íŠ¸ë¡¤ ì´ˆê¸°í™”, ê¸°ë³¸ê°’ ì„¸íŒ…, ê°ì²´ ì—°ê²° 
         PenController* pThis = reinterpret_cast<PenController*>(lParam);
-        CheckRadioButton(hwndDlg, IDC_RADIO_SOLID, IDC_RADIO_DASH, IDC_RADIO_SOLID); /// ´ÙÀÌ¾ó·Î±× Ã¢ »ı¼º ½Ã ¹öÆ° ÃÊ±âÈ­ À§Ä¡
+        CheckRadioButton(hwndDlg, IDC_RADIO_SOLID, IDC_RADIO_DASH, IDC_RADIO_SOLID); /// ë‹¤ì´ì–¼ë¡œê·¸ ì°½ ìƒì„± ì‹œ ë²„íŠ¼ ì´ˆê¸°í™” ìœ„ì¹˜
 
         return TRUE;
     }
@@ -46,7 +55,7 @@ INT_PTR CALLBACK PenController::DialogMsg(HWND hwndDlg, UINT uMsg, WPARAM wParam
         case IDOK:
         {
        
-            if (IsDlgButtonChecked(hwndDlg, IDC_RADIO_SOLID)) {  /// ¶óµğ¿À ¹öÆ° Ã¼Å©
+            if (IsDlgButtonChecked(hwndDlg, IDC_RADIO_SOLID)) {  /// ë¼ë””ì˜¤ ë²„íŠ¼ ì²´í¬
                 pThis->PenNum = 0;
             }
             else if (IsDlgButtonChecked(hwndDlg, IDC_RADIO_DASH)) {
