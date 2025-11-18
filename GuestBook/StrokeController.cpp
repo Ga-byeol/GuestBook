@@ -2,7 +2,7 @@
 
 void StrokeController::Begin(int x, int y, COLORREF color,int penStyle, int penWidth) {
 	current.points.clear();
-	lastTime = GetTickCount64();
+	lastTime = (DWORD)GetTickCount64();
 	current.points.push_back(Point{ x, y});
 	current.color = color;
 	current.penStyle = penStyle;
@@ -12,7 +12,7 @@ void StrokeController::Begin(int x, int y, COLORREF color,int penStyle, int penW
 
 void StrokeController::Add(int x, int y) {
 	if (!recording) return;
-	DWORD now = GetTickCount64();
+	DWORD now = (DWORD)GetTickCount64();
 
 	if (!current.points.empty()) {
 		const Point& last = current.points.back();
