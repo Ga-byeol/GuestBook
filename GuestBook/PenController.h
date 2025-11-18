@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include <Windows.h>
 
 class DrawWindow;
@@ -7,13 +7,13 @@ class PenController
 {
 public:
 	PenController(HINSTANCE hInst, HWND parent);
-	void ShowDialog(); /// ´ÙÀÌ¾î·Î±× ¶ç¿ì±â
+	void ShowDialog(); /// ë‹¤ì´ì–´ë¡œê·¸ ë„ìš°ê¸°
 	void setDrawWindow(DrawWindow* dw) { drawWindow = dw; };
 	int PenNum = 0;
 	int PenWidth = 1;
 	int LastPenNum = 0;
 	int LastPenWidth = 0; 
-
+	void Reset();
 private:
 	HINSTANCE hInstance = nullptr;
 	HWND parentHwnd = nullptr;
