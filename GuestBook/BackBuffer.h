@@ -1,4 +1,4 @@
-#pragma once
+Ôªø#pragma once
 #include <windows.h>
 
 class BackBuffer {
@@ -12,11 +12,14 @@ public:
 	void CreateBuffer(HDC refDC, int w, int h);
 	void ClearBuffer(const RECT& rc) const;
 	void DrawBufferToScreen(HDC dst, int x = 0, int y = 0) const;
-	HDC dc() const { return memdc; }
 	void ReleaseBuffer();
 
+	HDC dc() const { return memdc; }
+	int Width() const { return width; }
+	int Height() const { return height; }
+
 private:
-	HDC memdc = nullptr; // ∏ﬁ∏∏Æ DC
-	HBITMAP bmp = nullptr; // πÈπˆ∆€ ∫Ò∆Æ∏ 
-	HGDIOBJ old = nullptr; // Select ¿Ã¿¸ ∞¥√º
+	HDC memdc = nullptr; // Î©îÎ™®Î¶¨ DC
+	HBITMAP bmp = nullptr; // Î∞±Î≤ÑÌçº ÎπÑÌä∏Îßµ
+	HGDIOBJ old = nullptr; // Select Ïù¥Ï†Ñ Í∞ùÏ≤¥
 };

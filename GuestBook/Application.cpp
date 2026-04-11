@@ -1,4 +1,4 @@
-#include "Application.h"
+ï»¿#include "Application.h"
 
 bool Application::Init(HINSTANCE hInst, int nCmdShow) {
 
@@ -13,7 +13,8 @@ bool Application::Init(HINSTANCE hInst, int nCmdShow) {
     if (!toolWindow.Create(mainWindow.GetHwnd(), hInstance))
         return false;
 
-    // ¼­·Î ¿¬°á
+
+    // ì„œë¡œ ì—°ê²°
     mainWindow.SetDrawWindow(&drawWindow);
     mainWindow.SetToolWindow(&toolWindow);
 
@@ -35,7 +36,3 @@ int Application::Run() {
     return (int)msg.wParam;
 }
 
-void Application::DrawForReplay() {
-    OutputDebugString(L"draw\n");
-    PostMessage(drawWindow.GetHwnd(), WM_USER_REPLAY_UPDATE, 0, 0);
-}

@@ -1,13 +1,18 @@
-#include "StrokeController.h"
+﻿#include "StrokeController.h"
 
-void StrokeController::Begin(int x, int y) {
+void StrokeController::Begin(int x, int y, COLORREF color,int penStyle, int penWidth) {
 	current.points.clear();
-	current.points.push_back(Point{ x, y, 0 });
+	lastTime = (DWORD)GetTickCount64();
+	current.points.push_back(Point{ x, y});
+	current.color = color;
+	current.penStyle = penStyle;
+	current.penWidth = penWidth;
 	recording = true;
 }
 
 void StrokeController::Add(int x, int y) {
 	if (!recording) return;
+	DWORD now = (DWORD)GetTickCount64();
 
 	if (!current.points.empty()) {
 		const Point& last = current.points.back();
@@ -15,7 +20,8 @@ void StrokeController::Add(int x, int y) {
 			return;
 		}
 	}
-	current.points.push_back(Point{ x, y, 0 });
+	current.points.push_back(Point{ x, y, now - lastTime });
+	lastTime = now;
 }
 
 void StrokeController::End() {
@@ -26,6 +32,7 @@ void StrokeController::End() {
 }
 
 void StrokeController::Clear() {
+	std::lock_guard<std::mutex> lock(mtx);
 	strokes.clear();
 	current.points.clear();
 	recording = false;
@@ -38,4 +45,14 @@ void StrokeController::AddPoint(Point p) {
 void StrokeController::AddStroke() {
 	strokes.push_back(current);
 	current.points.clear();
+}
+
+void StrokeController::Reset() {
+	strokes.clear();
+	current.points.clear();
+	current.penStyle = PS_SOLID;
+	current.penWidth = 5;
+	current.color = RGB(0, 0, 0);
+	recording = false;
+	lastTime = 0; 
 }

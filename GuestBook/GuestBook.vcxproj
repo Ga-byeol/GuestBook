@@ -118,6 +118,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -129,14 +130,16 @@
   <ItemGroup>
     <ClInclude Include="Application.h" />
     <ClInclude Include="BackBuffer.h" />
-    <ClInclude Include="BackBufferManager.h" />
     <ClInclude Include="ButtonController.h" />
     <ClInclude Include="ColorController.h" />
+    <ClInclude Include="PenController.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="ReplayController.h" />
+    <ClInclude Include="ScreensaverManager.h" />
+    <ClInclude Include="Sidebar.h" />
     <ClInclude Include="Stroke.h" />
     <ClInclude Include="DrawController.h" />
     <ClInclude Include="StrokeController.h" />
-    <ClInclude Include="StrokeStore.h" />
     <ClInclude Include="DrawWindow.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="GuestBook.h" />
@@ -151,9 +154,12 @@
     <ClCompile Include="ButtonController.cpp" />
     <ClCompile Include="ColorController.cpp" />
     <ClCompile Include="DrawController.cpp" />
+    <ClCompile Include="PenController.cpp" />
+    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="ReplayController.cpp" />
+    <ClCompile Include="ScreensaverManager.cpp" />
+    <ClCompile Include="Sidebar.cpp" />
     <ClCompile Include="StrokeController.cpp" />
-    <ClCompile Include="StrokeStore.cpp" />
     <ClCompile Include="DrawWindow.cpp" />
     <ClCompile Include="GuestBook.cpp" />
     <ClCompile Include="MainWindow.cpp" />
@@ -163,8 +169,31 @@
     <ResourceCompile Include="GuestBook.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\ImageResource\Logo.ico" />
     <Image Include="GuestBook.ico" />
+    <Image Include="ImageResource\black.ico" />
+    <Image Include="ImageResource\blue.ico" />
+    <Image Include="ImageResource\Color.ico" />
+    <Image Include="ImageResource\Delete.ico" />
+    <Image Include="ImageResource\end.ico" />
+    <Image Include="ImageResource\Eraser.ico" />
+    <Image Include="ImageResource\green.ico" />
+    <Image Include="ImageResource\Load.ico" />
+    <Image Include="ImageResource\Logo.ico" />
+    <Image Include="ImageResource\New.ico" />
+    <Image Include="ImageResource\Open.ico" />
+    <Image Include="ImageResource\Pen.ico" />
+    <Image Include="ImageResource\red.ico" />
+    <Image Include="ImageResource\red1.ico" />
+    <Image Include="ImageResource\Replay.ico" />
+    <Image Include="ImageResource\Save.ico" />
+    <Image Include="ImageResource\stop.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imageresource\cursor1.cur" />
+    <None Include="ImageResource\eraser.cur" />
+    <None Include="ImageResource\pencil.cur" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
